@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.driving.ButterySmoothDriveCommand;
+import frc.robot.commands.driving.DriveCommand;
+import frc.robot.lib.music.TalonMusic;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-@SuppressWarnings("unused")
 public class RobotContainer {
 
     private final Joystick joystick = new Joystick(0);
@@ -24,21 +24,17 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem;
     private final VisionSubsystem visionSubsystem = new VisionSubsystem();
     private SubsystemBase[] subsystems;
-    private final PigeonIMU pigeon;
-    private final double autoGripperCal = 0.8; // 0.8
-    private double lastPitch = 0;
 
     public RobotContainer(PigeonIMU pigeon) {
         pigeon.setYaw(0);
-        this.pigeon = pigeon;
         this.driveSubsystem = new DriveSubsystem(pigeon);
         subsystems = new SubsystemBase[]{driveSubsystem, visionSubsystem};
-        driveSubsystem.setDefaultCommand(new ButterySmoothDriveCommand(() -> -joystick.getRawAxis(1), () -> -joystick.getRawAxis(0),  () -> -joystick.getRawAxis(2), () -> joystick.getRawButton(12), true, driveSubsystem)); // default to driving from joystick input
+        driveSubsystem.setDefaultCommand(new DriveCommand(() -> -joystick.getRawAxis(1), () -> -joystick.getRawAxis(0),  () -> -joystick.getRawAxis(2), () -> joystick.getRawButton(12), true, driveSubsystem)); // default to driving from joystick input
         configureButtons();
         // logSubsystems();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unused")
     private void logSubsystems() {
         try {
             final Field fieldIndex = SequentialCommandGroup.class.getDeclaredField("m_currentCommandIndex");
@@ -55,6 +51,7 @@ public class RobotContainer {
                         name = command.getName();
                         if (command instanceof SequentialCommandGroup) {
                             try {
+                                @SuppressWarnings("unchecked")
                                 List<Command> list = (List<Command>) fieldCommands.get(command);
                                 name += " - " + list.get(fieldIndex.getInt(command)).getName();
                             } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -79,6 +76,7 @@ public class RobotContainer {
     }
 
     public void stopEverything() {
+        TalonMusic.stopPlaying();
         CommandScheduler.getInstance().cancelAll();
         driveSubsystem.stop();
     }

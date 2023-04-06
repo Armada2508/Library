@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.Drive;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class ButterySmoothDriveCommand extends CommandBase {
+public class DriveCommand extends CommandBase {
 
     private DoubleSupplier joystickSpeed;
     private DoubleSupplier joystickTurn;
@@ -18,7 +18,7 @@ public class ButterySmoothDriveCommand extends CommandBase {
     private DriveSubsystem driveSubsystem;
     private SlewRateLimiter limiterNormal = new SlewRateLimiter(Drive.slewRate);
 
-    public ButterySmoothDriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, boolean squareInputs, DriveSubsystem driveSubsystem) {
+    public DriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, boolean squareInputs, DriveSubsystem driveSubsystem) {
         this.joystickSpeed = joystickSpeed;
         this.joystickTurn = joystickTurn;
         this.joystickTrim = joystickTrim;

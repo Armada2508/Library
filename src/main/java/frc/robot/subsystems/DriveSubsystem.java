@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drive;
 import frc.robot.lib.Encoder;
+import frc.robot.lib.music.TalonMusic;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -42,6 +43,7 @@ public class DriveSubsystem extends SubsystemBase {
         talonFXR.configNominalOutputForward(Drive.nominalOutputRight);
         talonFXR.configNominalOutputReverse(-Drive.nominalOutputRight);
         odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), getLeftPostition(), getRightPostition());
+        TalonMusic.addTalonFX(this, talonFXL, talonFXLfollow, talonFXR, talonFXRfollow);
     }
 
     private void configureMotor(TalonFX talon) {
