@@ -34,5 +34,6 @@
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "python.analysis.typeCheckingMode": "off",
-  "wpilib.selectDefaultSimulateExtension": false
+  "wpilib.selectDefaultSimulateExtension": false,
+  "java.compile.nullAnalysis.mode": "disabled"
 }

@@ -3,7 +3,7 @@ package frc.robot;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,20 +15,21 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.driving.DriveCommand;
 import frc.robot.lib.music.TalonMusic;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.ExampleSubsystem;
 
 public class RobotContainer {
 
     private final Joystick joystick = new Joystick(0);
     private final Joystick buttonBoard = new Joystick(1);
+	private final WPI_PigeonIMU pigeon = new WPI_PigeonIMU(Constants.pigeonID);
     private final DriveSubsystem driveSubsystem;
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+    private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
     private SubsystemBase[] subsystems;
 
-    public RobotContainer(PigeonIMU pigeon) {
+    public RobotContainer() {
         pigeon.setYaw(0);
         this.driveSubsystem = new DriveSubsystem(pigeon);
-        subsystems = new SubsystemBase[]{driveSubsystem, visionSubsystem};
+        subsystems = new SubsystemBase[]{driveSubsystem, exampleSubsystem};
         driveSubsystem.setDefaultCommand(new DriveCommand(() -> -joystick.getRawAxis(1), () -> -joystick.getRawAxis(0),  () -> -joystick.getRawAxis(2), () -> joystick.getRawButton(12), true, driveSubsystem)); // default to driving from joystick input
         configureButtons();
         // logSubsystems();

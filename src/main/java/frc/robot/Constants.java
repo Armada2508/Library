@@ -1,11 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import frc.robot.lib.util.Util;
 
@@ -15,6 +9,7 @@ public class Constants {
     public static final int timeoutMs = 30;
     
     public static final class Drive {
+        
         public static final int RID = 0;
         public static final int RFID = 1;
         public static final int LID = 2;
@@ -43,42 +38,12 @@ public class Constants {
         public static final double nominalOutputLeft = 0.03;
         public static final double nominalOutputRight = 0.03;
 
-        // Closed Loop Turning (WPILib not on Falcons)
-        public static final double turnkP = 0.015;
-        public static final double turnkI = 0;
-        public static final double turnkD = 0.001;
-        public static final double maxTurnSpeed = 0.2;
-        
         // DriveBase
         public static final double wheelDiameterMeters = Units.inchesToMeters(6);
         public static final int encoderUnitsPerRev = 2048;
         public static final double gearboxRatio = 10.71;
         public static final double trackWidthMeters = Util.inchesToMeters(24.5);
 
-        // Trajectories
-        public static final double ramseteB = 2.0;
-        public static final double ramseteZeta = 0.7;
-        public static final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(0.75, 0.5);
-        static {
-            trajectoryConfig.addConstraint(new DifferentialDriveKinematicsConstraint(
-            new DifferentialDriveKinematics(Drive.trackWidthMeters), 0.5) // 1.5
-            );
-        }
-    }
-
-    public static final class Vision {
-        // Robot Frame
-        public static final Translation3d cameraTranslationOffset = new Translation3d(0, -1.282, Units.inchesToMeters(13.5));
-        public static final Rotation3d cameraRotationOffset = new Rotation3d(Units.degreesToRadians(-53.17), 0, 0);
-        public static final Pose3d cameraPoseRobotFrame = new Pose3d(cameraTranslationOffset, cameraRotationOffset);
-        public static final double centerToFront = Units.inchesToMeters(14.5);
-        // Target Heights
-        public static final double coneHeightMeters = 0;
-        public static final double cubeHeightMeters = 0;
-        public static final double aprilTagHeightMeters = 0;
-        // Camera
-        public static final double cameraHeightMeters = Units.inchesToMeters(50.3);
-        public static final double cameraPitchRadians = Units.degreesToRadians(0.1); 
     }
 
     // ========================================
