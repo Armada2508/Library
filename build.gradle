@@ -52,7 +52,7 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
 dependencies {
-    implementation files("$projectDir/libs/NTLogger-1.0-shadow.jar")
+    // implementation files("$projectDir/libs/NTLogger-1.0-shadow.jar")
 	// implementation 'com.github.WispySparks:NetworkTablesLogger:master-SNAPSHOT'
 
     implementation wpi.java.deps.wpilib()

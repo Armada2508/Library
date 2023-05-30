@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.lib.logging.NTLogger;
 import frc.robot.lib.music.TalonMusic;
-import ntannotate.NTLogger;
 
 public class Robot extends TimedRobot {
 
@@ -18,9 +18,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		DataLogManager.start("C:\\Users\\armad\\Robotics\\TestingGrounds\\RobotTesting\\logs");
+		DataLogManager.start("C:\\Users\\armad\\Robotics\\LibDevTesting\\logs");
 		DriverStation.silenceJoystickConnectionWarning(true);
-		NTLogger.initialize(getClass());
 		container = new RobotContainer();
 	}
 
@@ -69,4 +68,5 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void simulationPeriodic() {}
+	
 }
