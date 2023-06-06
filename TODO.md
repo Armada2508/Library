@@ -1,0 +1,24 @@
+# Lib Dev:
+
+- Print Util
+    - Pretty printing variable names with variable values
+- Logger
+    - ~~Basic logging to NT~~
+    - Subsystem logging default template (ex: current commands)
+    - Anyone can log stuff to network tables using our class which automatically gets put into the log file
+    - Use AdvantageScope to visualize this data
+- Motion Magic Interface (Maybe baseclass?)
+    - ~~Basic Implementation~~
+    - I want really easy integration with motion magic, just supply motors and some constants.
+    - ~~Should also make use of Talon Configs for easy constants classes~~
+- Improve python vision code
+    - Clean up
+    - Fix network tables code for newer versions of NT
+- Falcon Music Class
+    - ~~Basic Implementation~~
+- Smart Joystick
+    - ~~Basic Implementation~~
+    - ~~Should throw an exception the second you try to map multiple buttons to the same thing so it doesn't happen during running the robot~~
+- Maybe experiment with a base command class that isn't interruptible by default
+    - Class created
+    - ~~This also means we need to ensure that the user has a way to stop commands (RobotContainer#stopEverything)~~

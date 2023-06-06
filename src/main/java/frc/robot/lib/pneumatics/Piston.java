@@ -1,4 +1,4 @@
-package frc.robot.lib.mechanisms;
+package frc.robot.lib.pneumatics;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;

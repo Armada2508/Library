@@ -12,14 +12,11 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true,
-    "**/*~": true,
     ".OutlineViewer" : true,
-    ".SysId" : true,
     ".wpilib" : true,
     ".Glass" : true,
     ".gradle" : true,
     "*.json" : true,
-    // "PathWeaver": true
   },
   "java.test.config": [
     {
@@ -33,7 +30,9 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "python.analysis.typeCheckingMode": "off",
-  "wpilib.selectDefaultSimulateExtension": false,
-  "java.compile.nullAnalysis.mode": "disabled"
+  "java.compile.nullAnalysis.mode": "interactive",
+  // So I don't get pissed everytime I work in lib
+  "explorer.autoRevealExclude": {
+    "**/lib": true
+  }
 }

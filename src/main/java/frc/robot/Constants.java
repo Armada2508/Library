@@ -12,11 +12,14 @@ public class Constants {
     
     public static final class Drive {
         
+        // Motors
         public static final int RID = 0;
         public static final int RFID = 1;
         public static final int LID = 2;
         public static final int LFID = 3;
-        public static final double speedAdjustment = 0.75; // For Fredy
+        
+        // Driving
+        public static final double speedAdjustment = 0.75; 
         public static final double turnAdjustment = 0.5;
         public static final double trimAdjustment = .23;
         public static final double joystickDeadband = 0.07;
@@ -28,7 +31,7 @@ public class Constants {
         public static final double motionMagickP = 0.3; 
         public static final double motionMagickI = 0;
         public static final double motionMagickD = 0;
-        public static final double motionMagickF = 0; // Probably keep this at 0
+        public static final double motionMagickF = 0; 
 
         public static final int velocitySlot = 1; 
         public static final double velocitykP = 0.35; 
