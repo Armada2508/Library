@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,7 +19,6 @@ public class LogUtil {
 
 	// RFC2822
     private static SimpleDateFormat kDateFormat = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
-    
 	private static SimpleDateFormat kSessionNameFormat = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss", Locale.US);
 
 	public static String getTimestamp() {
@@ -47,6 +48,43 @@ public class LogUtil {
 	public static double boolToDouble(boolean bool) {
 		return bool ? 1d : 0d;
 	}
+
+    // variable formatting, either outputs or returns a command that will print it out but that input is a supplier not a string
+
+    /**
+     * Formats a list of names with their associated variables.
+     * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll 
+     * @param variables to print out
+     */
+    public static String getFormatted(String names, Object... variables) {
+        String formatted = "";
+        String[] namesArr = names.split(" +");
+        if (namesArr.length != variables.length) throw new IllegalArgumentException("Number of names doesn't match number of variables.");
+        for (int i = 0; i < namesArr.length; i++) {
+            String currentName = namesArr[i];
+            if (currentName.length() > 1) {
+                String n = (currentName.charAt(0) + "").toUpperCase() + currentName.substring(1);
+                formatted += n + ": " + variables[i] + " ";
+            } 
+            else {
+                formatted += currentName.toUpperCase() + ": " + variables[i] + " ";
+            }
+        }
+        return formatted;
+    }
+
+    /**
+     * Pretty prints a list of names with their associated variables.
+     * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll 
+     * @param variables to print out
+     */
+    public static void printFormatted(String names, Object... variables) {
+        System.out.println(getFormatted(names, variables));
+    }
+
+    public static void printFormattedCommand(String names, Supplier<Object>[] variables) {
+        Command printCommand = new InstantCommand();
+    }
 
 	public static void logSubsystems(SubsystemBase[] subsystems) {
         try {
