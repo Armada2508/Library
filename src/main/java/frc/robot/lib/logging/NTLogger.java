@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -48,6 +50,25 @@ public final class NTLogger {
             .collect(Collectors.toList())
             .size();
         indexedLoggables.put(index, obj);
+    }
+
+    /**
+     * Use this method to get a hashmap with logged values of a talon to merge/add to your hashmap in your loggable's log method.
+     * @param talon to log
+     * @return
+     */
+    public static Map<String, Object> getTalonLog(TalonFX talon) {
+        Map<String, Object> map = new HashMap<>();
+        int ID = talon.getDeviceID();
+        map.put("TalonFX " + ID + ": ControlMode", talon.getControlMode());
+        map.put("TalonFX " + ID + ": FwdLimitSwitchClosed", talon.isFwdLimitSwitchClosed());
+        map.put("TalonFX " + ID + ": RevLimitSwitchClosed", talon.isRevLimitSwitchClosed());
+        map.put("TalonFX " + ID + ": SensorPosition", talon.getSelectedSensorPosition());
+        map.put("TalonFX " + ID + ": SensorVelocity", talon.getSelectedSensorVelocity());
+        map.put("TalonFX " + ID + ": ClosedLoopTarget", talon.getClosedLoopTarget());
+        map.put("TalonFX " + ID + ": SupplyCurrent", talon.getSupplyCurrent());
+        map.put("TalonFX " + ID + ": Temperature", talon.getTemperature());
+        return map;
     }
 
 }

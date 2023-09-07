@@ -52,6 +52,7 @@ public class Constants {
     }
 
     public static final class Example {
+        public static final int ID = 4;
         public static final TalonFXConfiguration talonConfig = new TalonFXConfiguration();
         static {
             talonConfig.slot0.kP = 0;

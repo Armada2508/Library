@@ -1,6 +1,8 @@
 package frc.robot.lib.util;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -226,6 +228,13 @@ public class Util {
         x = distance * Math.cos(theta);
         y = distance * Math.sin(theta);
         return new Pair<Double,Double>(x, y);
+    }
+
+    public static <T, U> Map<T, U> mergeMaps(Map<T, U> map1, Map<T, U> map2) {
+        Map<T, U> mergedMap = new HashMap<>();
+        mergedMap.putAll(map1);
+        mergedMap.putAll(map2);
+        return mergedMap;
     }
 
 }

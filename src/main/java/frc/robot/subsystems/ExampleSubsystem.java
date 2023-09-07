@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Example;
@@ -16,10 +15,11 @@ import frc.robot.lib.logging.Loggable;
 import frc.robot.lib.logging.NTLogger;
 import frc.robot.lib.motionmagic.MotionMagicCommand;
 import frc.robot.lib.motionmagic.MotionMagicSubsystem;
+import frc.robot.lib.util.Util;
 
 public class ExampleSubsystem extends SubsystemBase implements MotionMagicSubsystem, Loggable {
 
-    private TalonFX talon = new TalonFX(-1);
+    private final TalonFX talon = new TalonFX(Example.ID);
 
     public ExampleSubsystem() {
         NTLogger.register(this);
@@ -72,13 +72,9 @@ public class ExampleSubsystem extends SubsystemBase implements MotionMagicSubsys
     @Override
     public Map<String, Object> log() {
         Map<String, Object> map = new HashMap<>();
-        map.put("Test1", false);
-        map.put("Test2", 0.2);
-        map.put("Test3", 6);
-        map.put("Test4", "woo");
-        map.put("Test5", new byte[]{3, 4});
-        map.put("Test6", new PIDController(0, 0, 0));
-        return map;
+        map.put("TestString", "Hi!");
+        Map<String, Object> merged = Util.mergeMaps(map, NTLogger.getTalonLog(talon));
+        return merged;
     }
 
 }

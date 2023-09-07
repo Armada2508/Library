@@ -9,16 +9,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.lib.logging.NTLogger;
-import frc.robot.lib.music.TalonMusic;
 
 public class Robot extends TimedRobot {
 
 	private RobotContainer container;
-	private boolean firstInit = true;
 
 	@Override
 	public void robotInit() {
 		DataLogManager.start("C:\\Users\\armad\\Robotics\\LibDevTesting\\logs");
+		DriverStation.startDataLog(DataLogManager.getLog(), false);
 		DriverStation.silenceJoystickConnectionWarning(true);
 		container = new RobotContainer();
 	}
@@ -40,10 +39,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		container.stopEverything();
-		if (firstInit) {
-			TalonMusic.playStartupTune();
-			firstInit = false;
-		}
 	}
 
 	@Override

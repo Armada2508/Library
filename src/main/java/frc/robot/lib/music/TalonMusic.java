@@ -2,6 +2,7 @@ package frc.robot.lib.music;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
@@ -19,7 +20,8 @@ public class TalonMusic {
     private static final List<Subsystem> subsystems = new ArrayList<>();
 
     public static void addTalonFX(Subsystem currentSubsystem, TalonFX... talons) {
-        if (talons == null) throw new IllegalArgumentException("Talons are null.");
+        Objects.requireNonNull(currentSubsystem);
+        Objects.requireNonNull(talons);
         for (TalonFX talonFX : talons) {
             orchestra.addInstrument(talonFX);
             subsystems.add(currentSubsystem);
