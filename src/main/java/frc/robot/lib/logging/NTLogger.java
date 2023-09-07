@@ -9,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Used to log fields and methods(Can't have parameters 
@@ -25,6 +27,11 @@ public final class NTLogger {
     private static Map<Integer, Loggable> indexedLoggables = new HashMap<>();
 
     private NTLogger() {}
+
+    public static void initDataLogger(String dir) {
+        DataLogManager.start(dir);
+		DriverStation.startDataLog(DataLogManager.getLog(), false);
+    }
 
     /**
      * Call this in robot periodic to log everything to network tables.

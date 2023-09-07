@@ -12,11 +12,7 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true,
-    ".OutlineViewer" : true,
-    ".wpilib" : true,
-    ".Glass" : true,
-    ".gradle" : true,
-    "*.json" : true,
+    ".gradle": true
   },
   "java.test.config": [
     {

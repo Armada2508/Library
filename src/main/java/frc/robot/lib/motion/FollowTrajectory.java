@@ -21,7 +21,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.subsystems.DriveSubsystem;
 
 
 /**
@@ -76,7 +75,7 @@ public class FollowTrajectory {
      * @param zeroPose The position to start relative to
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommandFeedforward(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
+    public static Command getCommandFeedforward(TrajectorySubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         trajectory = trajectory.relativeTo(zeroPose);
         PIDController leftController = new PIDController(0, 0, 0);
         PIDController rightController = new PIDController(0, 0, 0);
@@ -107,7 +106,7 @@ public class FollowTrajectory {
      * @param zeroPose The position to start relative to
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
+    public static Command getCommand(TrajectorySubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         trajectory = trajectory.relativeTo(zeroPose);
         return new RamseteCommand(
                 trajectory,
@@ -136,7 +135,7 @@ public class FollowTrajectory {
      * @param zeroPose The position to start relative to
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommandTalon(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
+    public static Command getCommandTalon(TrajectorySubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         trajectory = trajectory.transformBy(new Transform2d(new Pose2d(), zeroPose));
         return new RamseteCommand(
                 trajectory,
@@ -164,7 +163,7 @@ public class FollowTrajectory {
      * @param reversed If the trajectory should be reversed
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommandFeedforward(DriveSubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
+    public static Command getCommandFeedforward(TrajectorySubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
         TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
         config.setReversed(reversed);
         config.addConstraint(new DifferentialDriveKinematicsConstraint(kKinematics, maxVelocity));
@@ -187,7 +186,7 @@ public class FollowTrajectory {
      * @param reversed If the trajectory should be reversed
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommand(DriveSubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
+    public static Command getCommand(TrajectorySubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
         TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
         config.setReversed(reversed);
         config.addConstraint(new DifferentialDriveKinematicsConstraint(kKinematics, maxVelocity));
@@ -210,7 +209,7 @@ public class FollowTrajectory {
      * @param reversed If the trajectory should be reversed
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommandTalon(DriveSubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
+    public static Command getCommandTalon(TrajectorySubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
         TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
         config.setReversed(reversed);
         config.addConstraint(new DifferentialDriveKinematicsConstraint(kKinematics, maxVelocity));
