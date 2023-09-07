@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -62,12 +60,13 @@ public class LogUtil {
         if (namesArr.length != variables.length) throw new IllegalArgumentException("Number of names doesn't match number of variables.");
         for (int i = 0; i < namesArr.length; i++) {
             String currentName = namesArr[i];
+            Object currentVar = variables[i];
             if (currentName.length() > 1) {
                 String n = (currentName.charAt(0) + "").toUpperCase() + currentName.substring(1);
-                formatted += n + ": " + variables[i] + " ";
+                formatted += n + ": " + currentVar + " ";
             } 
             else {
-                formatted += currentName.toUpperCase() + ": " + variables[i] + " ";
+                formatted += currentName.toUpperCase() + ": " + currentVar + " ";
             }
         }
         return formatted;
@@ -80,10 +79,6 @@ public class LogUtil {
      */
     public static void printFormatted(String names, Object... variables) {
         System.out.println(getFormatted(names, variables));
-    }
-
-    public static void printFormattedCommand(String names, Supplier<Object>[] variables) {
-        Command printCommand = new InstantCommand();
     }
 
 	public static void logSubsystems(SubsystemBase[] subsystems) {
