@@ -2,8 +2,7 @@
 # If you remove items from this file, intellisense might break.
 
 ### 2508
-# Testing
-logs
+.vscode
 
 ### C++ ###
 # Prerequisites
