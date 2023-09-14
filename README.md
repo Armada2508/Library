@@ -2,7 +2,7 @@
 
 This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match.
 
-## Adding to a Project
+## Adding to a project
 Make sure you're in the project's top directory.
 To add library as a submodule. <br>
 `git submodule add https://github.com/Armada2508/Library library`
@@ -17,3 +17,18 @@ Make sure you have all vender deps installed for the library to work and that th
 
 To pull updates from upstream. <br>
 `git submodule update --remote`
+
+## Editing library from within a project
+https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
+Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
+`git checkout master`
+
+Add the merge flag to not delete your changes when pulling from upstream. <br>
+`git submodule update --remote --merge`
+
+Commit your changes and then when you want to push it, if you're at the root directory run this. <br>
+`git push --recurse-submodules=on-demand`
+
+Otherwise just cd into the directory and manually git push from there.
+VSCode source control tab will help out a lot with using submodules so you can rely on that.
