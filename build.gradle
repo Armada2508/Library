@@ -1,29 +1,16 @@
 plugins {
     id "java"
-    id 'edu.wpi.first.WpilibTools' version '1.1.0'
+    id "edu.wpi.first.GradleRIO" version "2023.4.3"
 }
 
-def wpilibVersion = "2023.4.3"
-def phoenixVersion = "5.31.0"
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-wpilibTools.getDeps().setWpilibVersion(wpilibVersion)
-
-repositories {
-    maven {url = "https://frcmaven.wpi.edu/artifactory/release/"}
-    maven {url = "https://maven.ctr-electronics.com/release/"}
-}
+repositories {}
 
 dependencies {
-    // WPILib
-    implementation wpilibTools.deps.wpilibJava("wpilibj")
-    implementation wpilibTools.deps.wpilibJava("wpilibNewCommands")
-    implementation wpilibTools.deps.wpilibJava("wpiutil")
-    implementation wpilibTools.deps.wpilibJava("wpimath")
-    implementation wpilibTools.deps.wpilibJava("ntcore")
-    // Vendor Deps
-    implementation "com.ctre.phoenix:api-java:" + phoenixVersion
+    implementation wpi.java.deps.wpilib()
+    implementation wpi.java.vendor.java()
 }
 
 defaultTasks 'clean'
