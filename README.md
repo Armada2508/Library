@@ -3,7 +3,9 @@
 This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match.
 
 ## Adding to a Project
-Make sure you're in the project's top directory.
+Make sure you're in the project's root directory in the terminal.
+![](imgs/topdirectory.png) <br>
+![](imgs/terminal.png) <br>
 To add library as a submodule. <br>
 `git submodule add https://github.com/Armada2508/Library library`
 
