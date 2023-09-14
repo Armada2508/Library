@@ -21,7 +21,7 @@ To pull updates from upstream. <br>
 `git submodule update --remote`
 
 ## Editing library from within a project
-https://git-scm.com/book/en/v2/Git-Tools-Submodules
+Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
 Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
 `git checkout master`
