@@ -96,7 +96,7 @@ public class FollowTrajectory {
                     kLeftReference.setNumber(leftController.getSetpoint());
                     kRightReference.setNumber(rightController.getSetpoint());
                 },
-                driveSubsystem);
+                driveSubsystem.getRequirements());
     }
 
     /**
@@ -125,7 +125,7 @@ public class FollowTrajectory {
                     kLeftReference.setNumber(kLeftPidController.getSetpoint());
                     kRightReference.setNumber(kRightPidController.getSetpoint());
                 },
-                driveSubsystem);
+                driveSubsystem.getRequirements());
     }
 
     /**
@@ -148,7 +148,7 @@ public class FollowTrajectory {
                     kLeftReference.setNumber(velocityL);
                     kRightReference.setNumber(velocityR);
                 },
-                driveSubsystem);
+                driveSubsystem.getRequirements());
     }
     
     /**
