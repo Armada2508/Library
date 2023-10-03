@@ -16,8 +16,8 @@ Add `includeBuild 'library'` to your settings.gradle.
 Make sure source and target compatibility in build.gradle match that of the library, right now it's Java 17.
 Make sure GradleRIO version matches.
 
-Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix.
-
+Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix. <br>
+**Important** I would run `./gradlew build` before continuing. <br>
 To pull updates from upstream. <br>
 `git submodule update --remote`
 
