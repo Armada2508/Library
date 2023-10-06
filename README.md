@@ -2,6 +2,8 @@
 
 This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match.
 
+### Cloning a Repo with a submodule
+When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git.
 ## Adding to a project
 **IMPORTANT** - Before adding the library to a project you should have basic knowledge of git, gradle and navigating around directories. <br>
 Make sure you're in the project's root directory in the terminal. <br>
@@ -14,7 +16,7 @@ Add `implementation ':library'` to your dependencies block in build.gradle. <br>
 Add `includeBuild 'library'` to your settings.gradle.
 
 Make sure source and target compatibility in build.gradle match that of the library, right now it's Java 17. <br>
-Make sure GradleRIO version matches.
+Make sure GradleRIO version matches. <br>
 Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix. <br>
 
 **Important** - I would run `./gradlew build` before continuing. <br>
