@@ -8,7 +8,7 @@ public class MotionMagicCommand extends CommandBase {
     private double velocity;
     private double acceleration;
     private MotionMagicSubsystem subsystem;
-    private final double allowedSensorError = 0.05;
+    private final int allowedSensorError = 32; // TalonFX Sensor Units
 
     public MotionMagicCommand(double targetPosition, double velocity, double accerleration, MotionMagicSubsystem subsystem) {
         this.targetPosition = targetPosition;
