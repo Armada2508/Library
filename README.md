@@ -1,6 +1,6 @@
 # Library 
 
-This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match.
+This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match. 
 
 ### Cloning a Repo with a submodule
 When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git.
