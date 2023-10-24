@@ -1,8 +1,8 @@
 package frc.robot.lib.motionmagic;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class MotionMagicCommand extends CommandBase {
+public class MotionMagicCommand extends Command {
 
     private double targetPosition;
     private double velocity;
