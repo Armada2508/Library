@@ -11,7 +11,8 @@ Make sure you're in the project's root directory in the terminal. <br>
 ![](imgs/topdirectory.png) <br>
 ![](imgs/terminal.png) <br>
 To add library as a submodule. <br>
-`git submodule add https://github.com/Armada2508/Library library`
+`git submodule add -b master https://github.com/Armada2508/Library library` <br>
+Of course if you want to track commits from a different branch then replace master with a branch of your choice.
 
 Add `implementation ':library'` to your dependencies block in build.gradle. <br>
 Add `includeBuild 'library'` to your settings.gradle.
@@ -25,9 +26,9 @@ Make sure you have all vender deps installed for the library to work and that th
 ### Using a project with git submodules
 Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
-To update the commit that the submodule points to. (Pull from upstream)<br>
+To update the commit that the submodule points to on the branch specified in .gitsubmodules. (Pull from upstream)<br>
 `git submodule update --remote` <br>
-Every time you update the master branch of the library (or whatever branch you want to be on) and you want to advance the commit that your repo points to you must run this.
+Every time you update the library and you want to advance the commit that your repo points to you must run this.
 ## Editing library from within a project
 Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
 `git checkout master` <br>
