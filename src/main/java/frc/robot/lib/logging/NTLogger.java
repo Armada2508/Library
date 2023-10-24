@@ -1,5 +1,7 @@
 package frc.robot.lib.logging;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * Used to log fields and methods(Can't have parameters 
@@ -28,18 +31,33 @@ public final class NTLogger {
 
     private NTLogger() {}
 
-    public static void initDataLogger(String dir) {
-        DataLogManager.start(dir);
-		DriverStation.startDataLog(DataLogManager.getLog(), false);
+    /**
+     * Convenience method to start the data log manager in a good directory and log driver station and joystick data.
+     */
+    public static void initDataLogger() {
+        DataLogManager.start(getLoggingPath());
+		DriverStation.startDataLog(DataLogManager.getLog());
+    }
+
+    private static String getLoggingPath() {
+        if (RobotBase.isReal()) {
+            try {
+                return Paths.get("/u/logs").toRealPath().toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } 
+        return "logs";
     }
 
     /**
-     * Call this in robot periodic to log everything to network tables.
+     * Call this in robot periodic to log all registered objects to network tables.
      */
     public static void log() {
         indexedLoggables.forEach((index, loggable) -> {
             NetworkTable table = mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
-            loggable.log().forEach((name, val) -> {
+            Map<String, Object> map = new HashMap<>();
+            loggable.log(map).forEach((name, val) -> {
                 NetworkTableEntry entry = table.getEntry(name);
                 try {
                     entry.setValue(val);
@@ -50,6 +68,10 @@ public final class NTLogger {
         });
     }
 
+    /**
+     * Registers an object to the logger who's 'log' method will be called.
+     * @param obj
+     */
     public static void register(Loggable obj) {
         int index = indexedLoggables.values()
             .stream()

@@ -3,6 +3,7 @@ package frc.robot.lib.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -230,10 +231,13 @@ public class Util {
         return new Pair<Double,Double>(x, y);
     }
 
-    public static <T, U> Map<T, U> mergeMaps(Map<T, U> map1, Map<T, U> map2) {
+    @SafeVarargs
+    public static <T, U> Map<T, U> mergeMaps(Map<T, U>... mapsToMerge) {
+        Objects.requireNonNull(mapsToMerge);
         Map<T, U> mergedMap = new HashMap<>();
-        mergedMap.putAll(map1);
-        mergedMap.putAll(map2);
+        for (Map<T, U> map : mapsToMerge) {
+            mergedMap.putAll(map);
+        }
         return mergedMap;
     }
 
