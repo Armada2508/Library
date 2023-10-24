@@ -2,9 +2,10 @@
 
 This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match. 
 
-### Cloning a Repo with a submodule
-When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git.
-## Adding to a project
+### Cloning a project with git submodules
+When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git. <br>
+`git clone URLTOREPO --recurse-submodules`
+## Adding the library to a project
 **IMPORTANT** - Before adding the library to a project you should have basic knowledge of git, gradle and navigating around directories. <br>
 Make sure you're in the project's root directory in the terminal. <br>
 ![](imgs/topdirectory.png) <br>
@@ -21,14 +22,16 @@ Make sure you have all vender deps installed for the library to work and that th
 
 **Important** - I would run `./gradlew build` before continuing. <br>
 
-To pull updates from upstream. <br>
-`git submodule update --remote`
-
-## Editing library from within a project
+### Using a project with git submodules
 Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
+To update the commit that the submodule points to. (Pull from upstream)<br>
+`git submodule update --remote` <br>
+Every time you update the master branch of the library (or whatever branch you want to be on) and you want to advance the commit that your repo points to you must run this.
+## Editing library from within a project
 Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
-`git checkout master`
+`git checkout master` <br>
+If you've updated the submodule since the last time you checked out a branch you probably need to run `git pull` in the library's directory.
 
 Add the merge flag to not delete your changes when pulling from upstream. <br>
 `git submodule update --remote --merge`
