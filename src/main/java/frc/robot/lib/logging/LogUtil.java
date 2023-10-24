@@ -1,6 +1,8 @@
 package frc.robot.lib.logging;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -79,6 +82,17 @@ public class LogUtil {
      */
     public static void printFormatted(String names, Object... variables) {
         System.out.println(getFormatted(names, variables));
+    }
+
+    public static String getLoggingPath() {
+        if (RobotBase.isReal()) {
+            try {
+                return Paths.get("/u/logs").toRealPath().toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } 
+        return "logs";
     }
 
 	public static void logSubsystems(SubsystemBase[] subsystems) {
