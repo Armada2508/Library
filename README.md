@@ -30,6 +30,7 @@ To update the commit that the submodule points to on the branch specified in .gi
 `git submodule update --remote` <br>
 Every time you update the library and you want to advance the commit that your repo points to you must run this.
 ## Editing library from within a project
+***This only applies if you have write access to the library in the first place, otherwise you would just fork and pull request as normal.*** <br>
 Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
 `git checkout master` <br>
 If you've updated the submodule since the last time you checked out a branch you probably need to run `git pull` in the library's directory.
