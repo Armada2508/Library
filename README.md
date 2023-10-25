@@ -26,7 +26,7 @@ Make sure you have all vender deps installed for the library to work and that th
 ### Using a project with git submodules
 Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
-To update the commit that the submodule points to on the branch specified in .gitsubmodules. (Pull from upstream)<br>
+To update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
 `git submodule update --remote` <br>
 Every time you update the library and you want to advance the commit that your repo points to you must run this.
 ## Editing library from within a project
