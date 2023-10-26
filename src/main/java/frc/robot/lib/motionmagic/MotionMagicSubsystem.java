@@ -5,8 +5,8 @@ public interface MotionMagicSubsystem {
     void configMotionMagic(double velocity, double acceleration);
     void stop();
     void setPosition(double position);
-    double getSensorPosition();
-    double getSensorTarget(); 
+    double getPosition();
+    double getTarget(); 
     /**
      * @param position SPECIFY UNITS
      * @param velocity SPECIFY UNITS

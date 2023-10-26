@@ -1,6 +1,7 @@
 package frc.robot.lib;
 
 public class Encoder {
+
     /**
      * Converts from encoder units to real-world units
      * @param sensorPosition The current value read from the sensor
@@ -26,8 +27,6 @@ public class Encoder {
     public static double fromDistance(double distance, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
         return (distance / ( Math.PI * wheelDiameter )) * (double)encoderUnitsPerRev * gearRatio;
     }
-
-
 
     /**
      * Converts encoder units per 100 millisecond to units per second
@@ -55,7 +54,6 @@ public class Encoder {
         return toDistance(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter) / time;
     }
 
-
     /**
      *  Converts from units per second to encoder units per 100 millisecond
      * @param velocity The current velocity measured by the sensor
@@ -81,7 +79,6 @@ public class Encoder {
     public static double fromVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter, double time) {
         return fromDistance(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter) * time;
     }
-
 
     /**
      * Converts encoder velocity to RPM
