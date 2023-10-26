@@ -1,12 +1,23 @@
 # Library 
 
-This should hold all of the common robot code to be developed and used throughout the years for our projects. You should be updating the versions of GradleRIO and vendor dependencies at the same rate as projects so the versions always match. 
+This should hold all of the common robot code to be developed and used throughout the years for our projects. I have split the document into what concerns collaborators and what concerns maintainers.
 
+## Collaborators
+If you're here you are a collaborator that is working on one of our robot projects that requires this library as a submodule.
 ### Cloning a project with git submodules
 When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git. <br>
-`git clone URLTOREPO --recurse-submodules`
-## Adding the library to a project
-**IMPORTANT** - Before adding the library to a project you should have basic knowledge of git, gradle and navigating around directories. <br>
+`git clone URLTOREPO --recurse-submodules` <br>
+### Using a project with git submodules
+After you run git pull in a repo with submodules it only updates what commit they point to and does not update submodules themselves. To do that you must run this command after git pull. <br>
+`git submodule update --init --recursive` <br>
+
+However there is a config to make git automatically run this command after every pull; **I strongly recommend** setting this config. <br>
+`git config --global submodule.recurse true` <br>
+## Maintainers
+Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules <br>
+You should be updating the versions of GradleRIO and vendor dependencies in your projects so they match that of the library as new updates are released. 
+### Adding the library to a project
+**Important** - Before adding the library to a project you should have basic knowledge of git, gradle and navigating around directories. <br>
 Make sure you're in the project's root directory in the terminal. <br>
 ![](imgs/topdirectory.png) <br>
 ![](imgs/terminal.png) <br>
@@ -23,16 +34,14 @@ Make sure you have all vender deps installed for the library to work and that th
 
 **Important** - I would run `./gradlew build` before continuing. <br>
 
-### Using a project with git submodules
-Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
-
+### Updating your submodules
 To update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
 `git submodule update --remote` <br>
 Every time you update the library and you want to advance the commit that your repo points to you must run this.
-## Editing library from within a project
-***This only applies if you have write access to the library in the first place, otherwise you would just fork and pull request as normal.*** <br>
+### Editing library from within a project
 Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
-`git checkout master` <br>
+Cd into the libary's directory. <br>
+`git checkout branchname` <br>
 If you've updated the submodule since the last time you checked out a branch you probably need to run `git pull` in the library's directory.
 
 Add the merge flag to not delete your changes when pulling from upstream. <br>
@@ -42,4 +51,4 @@ Commit your changes and then when you want to push it, if you're at the root dir
 `git push --recurse-submodules=on-demand`
 
 Otherwise just cd into the directory and manually git push from there.
-VSCode source control tab will help out a lot with using submodules so you can rely on that.
+VSCode source control tab should help out with using submodules, but I honestly recommend sticking to commands in the terminal.
