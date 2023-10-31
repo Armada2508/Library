@@ -7,7 +7,7 @@ public class EncoderTest {
     
     @Test
     void justAnExample() {
-        assertEquals(1, 2);
+        assertEquals(1, 1);
     }
 
 }

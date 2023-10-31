@@ -11,10 +11,8 @@ public class Encoder {
      * @return Distance traveled
      */
     public static double toDistance(double sensorPosition, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
-        return ((double)sensorPosition / (double)(encoderUnitsPerRev * gearRatio)) * Math.PI * wheelDiameter;
+        return ((double) sensorPosition / (double) (encoderUnitsPerRev * gearRatio)) * Math.PI * wheelDiameter;
     }
-    //d = s*pi*w/(e*g)
-    //s = d*e*g/pi*w
 
     /**
      * Converts from real-world units to encoder units
@@ -25,11 +23,11 @@ public class Encoder {
      * @return Distance in encoder units
      */
     public static double fromDistance(double distance, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
-        return (distance / ( Math.PI * wheelDiameter )) * (double)encoderUnitsPerRev * gearRatio;
+        return (distance / ( Math.PI * wheelDiameter )) * (double) encoderUnitsPerRev * gearRatio;
     }
 
     /**
-     * Converts encoder units per 100 millisecond to units per second
+     * Convenience toVelocity for TalonFX
      * @param velocity The current velocity measured by the sensor
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
@@ -37,8 +35,8 @@ public class Encoder {
      * @return
      */
 
-    public static double toVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
-        return toVelocity(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter, 0.1);
+    public static double toVelocity(double velocity, double gearRatio, double wheelDiameter) {
+        return toVelocity(velocity, 1, gearRatio, wheelDiameter, 1);
     }
     
     /**
@@ -47,7 +45,7 @@ public class Encoder {
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @param wheelDiameter The diameter of the wheel, input units will dictate output units
-     * @param time The time period over which the encoder velocity was measured(e.g. 0.1s for Talons)
+     * @param time The time period over which the encoder velocity was measured(e.g. 1s for Talons)
      * @return
      */
     public static double toVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter, double time) {
@@ -55,7 +53,7 @@ public class Encoder {
     }
 
     /**
-     *  Converts from units per second to encoder units per 100 millisecond
+     * Convenience fromVelocity for TalonFX
      * @param velocity The current velocity measured by the sensor
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
@@ -63,8 +61,8 @@ public class Encoder {
      * @return
      */
 
-    public static double fromVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
-        return fromVelocity(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter, 0.1);
+    public static double fromVelocity(double velocity, double gearRatio, double wheelDiameter) {
+        return fromVelocity(velocity, 1, gearRatio, wheelDiameter, 1);
     }
     
     /**
@@ -73,7 +71,7 @@ public class Encoder {
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @param wheelDiameter The diameter of the wheel, input units will dictate output units
-     * @param time The time period over which the encoder velocity was measured(e.g. 0.1s for Talons)
+     * @param time The time period over which the encoder velocity was measured(e.g. 1s for Talons)
      * @return
      */
     public static double fromVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter, double time) {
@@ -81,14 +79,14 @@ public class Encoder {
     }
 
     /**
-     * Converts encoder velocity to RPM
+     * Convenience toRPM for TalonFX
      * @param velocity The encoder velocity
      * @param encoderUnitsPerRev The number of encoder units per revolution
      * @param gearRatio The gear ratio between the output and the motor
      * @return RPM of the output
      */
-    public static double toRPM(double velocity, int encoderUnitsPerRev, double gearRatio) {
-        return toRPM(velocity, encoderUnitsPerRev, gearRatio, 0.1);
+    public static double toRPM(double velocity, double gearRatio) {
+        return toRPM(velocity, 1, gearRatio, 1);
     }
 
 
@@ -97,22 +95,22 @@ public class Encoder {
      * @param velocity The encoder velocity
      * @param encoderUnitsPerRev The number of encoder units per revolution
      * @param gearRatio The gear ratio between the output and the motor
-     * @param time The time over which the encoder velocity was measured(e.g. 0.1s for Talons)
+     * @param time The time over which the encoder velocity was measured(e.g. 1s for Talons)
      * @return RPM of the output
      */
     public static double toRPM(double velocity, int encoderUnitsPerRev, double gearRatio, double time) {
-        return (velocity * 60.0 / (double)encoderUnitsPerRev) / (gearRatio * time);
+        return (velocity * 60.0 / (double) encoderUnitsPerRev) / (gearRatio * time);
     }
 
     /**
-     * Converts RPM to encoder velocity
+     * Convenience fromRPM for TalonFX
      * @param velocity The input RPM
      * @param encoderUnitsPerRev The number of encoder units per revolution
      * @param gearRatio The gear ratio between the output and the motor
      * @return Encoder velocity
      */
-    public static double fromRPM(double RPM, int encoderUnitsPerRev, double gearRatio) {
-        return fromRPM(RPM, encoderUnitsPerRev, gearRatio, 0.1);
+    public static double fromRPM(double RPM, double gearRatio) {
+        return fromRPM(RPM, 1, gearRatio, 1);
     }
 
     /**
@@ -120,11 +118,11 @@ public class Encoder {
      * @param velocity The input RPM
      * @param encoderUnitsPerRev The number of encoder units per revolution
      * @param gearRatio The gear ratio between the output and the motor
-     * @param time The time over which the encoder velocity is measured(e.g. 0.1s for Talons)
+     * @param time The time over which the encoder velocity is measured(e.g. 1s for Talons)
      * @return Encoder velocity
      */
     public static double fromRPM(double RPM, int encoderUnitsPerRev, double gearRatio, double time) {
-        return RPM * ((double)encoderUnitsPerRev / 60.0) * time * gearRatio;
+        return RPM * ((double) encoderUnitsPerRev / 60.0) * time * gearRatio;
     }
 
     /**
