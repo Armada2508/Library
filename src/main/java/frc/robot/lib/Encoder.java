@@ -3,91 +3,150 @@ package frc.robot.lib;
 public class Encoder {
 
     /**
-     * Converts from revolutions to real-world units
-     * @param revolutions The current value read from the sensor
+     * Converts from encoder units to real-world units
+     * @param sensorPosition The current value read from the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @param wheelDiameter The diameter of the wheel, input units will dictate output units
      * @return Distance traveled
      */
-    public static double toDistance(double revolutions, double gearRatio, double wheelDiameter) {
-        return (revolutions / gearRatio) * Math.PI * wheelDiameter;
-    } //?CHECK
+    public static double toDistance(double sensorPosition, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
+        return ((double)sensorPosition / (double)(encoderUnitsPerRev * gearRatio)) * Math.PI * wheelDiameter;
+    }
+    //d = s*pi*w/(e*g)
+    //s = d*e*g/pi*w
+
+    /**
+     * Converts from real-world units to encoder units
+     * @param distance The distance traveled
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
+     * @return Distance in encoder units
+     */
+    public static double fromDistance(double distance, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
+        return (distance / ( Math.PI * wheelDiameter )) * (double)encoderUnitsPerRev * gearRatio;
+    }
+
+    /**
+     * Converts encoder units per 100 millisecond to units per second
+     * @param velocity The current velocity measured by the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
+     * @return
+     */
+
+    public static double toVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
+        return toVelocity(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter, 0.1);
+    }
     
     /**
-     * Converts from real-world units to revolutions
-     * @param distance The distance traveled
-     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
-     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
-     * @return Distance in revolutions
-     */
-    public static double fromDistance(double distance, double gearRatio, double wheelDiameter) {
-        return (distance / (Math.PI * wheelDiameter)) * gearRatio;
-    } //?CHECK
-
-    /**
-     * Converts revolutions per time unit specified to unit per time unit specified
-     * @param rotationalVelocity The current velocity measured by the sensor
-     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
-     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
-     * @param time The time period over which the rotational velocity was measured(e.g. 1s for TalonFX)
-     * @return Velocity in unit specified
-     */
-    public static double toVelocity(double rotationalVelocity, double gearRatio, double wheelDiameter, double time) {
-        return toDistance(rotationalVelocity, gearRatio, wheelDiameter) / time;
-    } //?CHECK
-
-    /**
-     * Converts from units per time unit specified to revolutions per time unit specified 
+     * Converts encoder units per time unit specified to velocity
      * @param velocity The current velocity measured by the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @param wheelDiameter The diameter of the wheel, input units will dictate output units
-     * @param time The time period over which the rotational velocity was measured(e.g. 1s for TalonFX)
-     * @return rotational velocity
+     * @param time The time period over which the encoder velocity was measured(e.g. 0.1s for Talons)
+     * @return
      */
-    public static double fromVelocity(double velocity, double gearRatio, double wheelDiameter, double time) {
-        return fromDistance(velocity, gearRatio, wheelDiameter) * time;
-    } //?CHECK
+    public static double toVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter, double time) {
+        return toDistance(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter) / time;
+    }
 
     /**
-     * Converts rotational velocity to RPM
-     * @param velocity The rotational velocity
+     *  Converts from units per second to encoder units per 100 millisecond
+     * @param velocity The current velocity measured by the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
+     * @return
+     */
+
+    public static double fromVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
+        return fromVelocity(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter, 0.1);
+    }
+    
+    /**
+     * Converts from units per second specified to encoder units per time unit specified 
+     * @param velocity The current velocity measured by the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
+     * @param time The time period over which the encoder velocity was measured(e.g. 0.1s for Talons)
+     * @return
+     */
+    public static double fromVelocity(double velocity, int encoderUnitsPerRev, double gearRatio, double wheelDiameter, double time) {
+        return fromDistance(velocity, encoderUnitsPerRev, gearRatio, wheelDiameter) * time;
+    }
+
+    /**
+     * Converts encoder velocity to RPM
+     * @param velocity The encoder velocity
+     * @param encoderUnitsPerRev The number of encoder units per revolution
      * @param gearRatio The gear ratio between the output and the motor
-     * @param time The time over which the encoder velocity was measured(e.g. 1s for TalonFX)
      * @return RPM of the output
      */
-    public static double toRPM(double velocity, double gearRatio, double time) {
-        return (velocity * 60.0) / (gearRatio * time);
-    } //?CHECK
+    public static double toRPM(double velocity, int encoderUnitsPerRev, double gearRatio) {
+        return toRPM(velocity, encoderUnitsPerRev, gearRatio, 0.1);
+    }
+
 
     /**
-     * Converts RPM to rotational velocity
-     * @param RPM The input RPM
+     * Converts encoder velocity to RPM
+     * @param velocity The encoder velocity
+     * @param encoderUnitsPerRev The number of encoder units per revolution
      * @param gearRatio The gear ratio between the output and the motor
-     * @param time The time over which the encoder velocity is measured(e.g. 1s for TalonFX)
-     * @return rotational velocity
+     * @param time The time over which the encoder velocity was measured(e.g. 0.1s for Talons)
+     * @return RPM of the output
      */
-    public static double fromRPM(double RPM, double gearRatio, double time) {
-        return RPM / 60.0 * time * gearRatio;
-    } //?CHECK
+    public static double toRPM(double velocity, int encoderUnitsPerRev, double gearRatio, double time) {
+        return (velocity * 60.0 / (double)encoderUnitsPerRev) / (gearRatio * time);
+    }
 
     /**
-     * Converts revolutions to a rotational angle in degrees 
-     * @param revolutions The current value read from the sensor
+     * Converts RPM to encoder velocity
+     * @param velocity The input RPM
+     * @param encoderUnitsPerRev The number of encoder units per revolution
+     * @param gearRatio The gear ratio between the output and the motor
+     * @return Encoder velocity
+     */
+    public static double fromRPM(double RPM, int encoderUnitsPerRev, double gearRatio) {
+        return fromRPM(RPM, encoderUnitsPerRev, gearRatio, 0.1);
+    }
+
+    /**
+     * Converts RPM to encoder velocity
+     * @param velocity The input RPM
+     * @param encoderUnitsPerRev The number of encoder units per revolution
+     * @param gearRatio The gear ratio between the output and the motor
+     * @param time The time over which the encoder velocity is measured(e.g. 0.1s for Talons)
+     * @return Encoder velocity
+     */
+    public static double fromRPM(double RPM, int encoderUnitsPerRev, double gearRatio, double time) {
+        return RPM * ((double)encoderUnitsPerRev / 60.0) * time * gearRatio;
+    }
+
+    /**
+     * Converts sensor units to a rotational angle in degrees 
+     * @param sensorPosition The current value read from the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @return Angle in degrees
      */
-    public static double toRotationalAngle(double revolutions, double gearRatio) {
-        return revolutions * 360.0 / gearRatio;
-    } //?CHECK
+    public static double toRotationalAngle(double sensorPosition, double encoderUnitsPerRev, double gearRatio) {
+        return sensorPosition * (360.0 / encoderUnitsPerRev) / gearRatio;
+    }
 
     /**
-     * Converts a rotational angle in degrees to revolutions
+     * Converts a rotational angle in degrees to sensor units
      * @param sensorPosition The current value read from the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @return Angle in encoder units
-     */ 
-    public static double fromRotationalAngle(double angle, double gearRatio) {
-        return angle / 360.0 * gearRatio;
-    } //?CHECK
+     */
+    public static double fromRotationalAngle(double angleDegrees, double encoderUnitsPerRev, double gearRatio) {
+        return angleDegrees * (encoderUnitsPerRev / 360.0) * gearRatio;
+    }
 
 }
