@@ -32,7 +32,7 @@ public final class NTLogger {
      * Convenience method to start the data log manager in a good directory and log driver station and joystick data.
      */
     public static void initDataLogger() {
-        DataLogManager.start();
+        DataLogManager.start("logs");
 		DriverStation.startDataLog(DataLogManager.getLog());
     }
 
@@ -40,6 +40,7 @@ public final class NTLogger {
      * Call this in robot periodic to log all registered objects to network tables.
      */
     public static void log() {
+        logDS();
         indexedLoggables.forEach((index, loggable) -> {
             NetworkTable table = mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
             Map<String, Object> map = new HashMap<>();
@@ -84,6 +85,18 @@ public final class NTLogger {
         map.put("TalonFX " + ID + ": SupplyCurrent", talon.getSupplyCurrent());
         map.put("TalonFX " + ID + ": Temperature", talon.getTemperature());
         return map;
+    }
+
+    private static void logDS() {
+        String mode = "Teleop";
+        if (DriverStation.isAutonomous()) {
+            mode = "Autonomous";
+        } 
+        else if (DriverStation.isTest()) {
+            mode = "Test";
+        }
+        mainTable.getEntry("DSMode").setString(mode);
+        mainTable.getEntry("isFMSAttached").setBoolean(DriverStation.isFMSAttached());
     }
 
 }
