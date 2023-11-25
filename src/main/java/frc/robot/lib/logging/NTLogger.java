@@ -29,10 +29,10 @@ public final class NTLogger {
     private NTLogger() {}
 
     /**
-     * Convenience method to start the data log manager in a good directory and log driver station and joystick data.
+     * Convenience method to start the data log manager in a directory and log driver station and joystick data.
      */
-    public static void initDataLogger() {
-        DataLogManager.start("logs");
+    public static void initDataLogger(String dir) {
+        DataLogManager.start(dir);
 		DriverStation.startDataLog(DataLogManager.getLog());
     }
 
