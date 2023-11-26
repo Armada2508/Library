@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -76,12 +77,16 @@ public final class NTLogger {
     public static Map<String, Object> getTalonLog(TalonFX talon) {
         Map<String, Object> map = new HashMap<>();
         int ID = talon.getDeviceID();
-        map.put("TalonFX " + ID + ": ControlMode", talon.getControlMode());
+        ControlMode mode = talon.getControlMode();
+        boolean closedLoop = (mode != ControlMode.PercentOutput && mode != ControlMode.MusicTone 
+        && mode != ControlMode.Disabled);
+        double target = closedLoop ? talon.getClosedLoopTarget() : 0;
+        map.put("TalonFX " + ID + ": ControlMode", mode);
         map.put("TalonFX " + ID + ": FwdLimitSwitchClosed", talon.isFwdLimitSwitchClosed());
         map.put("TalonFX " + ID + ": RevLimitSwitchClosed", talon.isRevLimitSwitchClosed());
         map.put("TalonFX " + ID + ": SensorPosition", talon.getSelectedSensorPosition());
         map.put("TalonFX " + ID + ": SensorVelocity", talon.getSelectedSensorVelocity());
-        map.put("TalonFX " + ID + ": ClosedLoopTarget", talon.getClosedLoopTarget());
+        map.put("TalonFX " + ID + ": ClosedLoopTarget", target);
         map.put("TalonFX " + ID + ": SupplyCurrent", talon.getSupplyCurrent());
         map.put("TalonFX " + ID + ": Temperature", talon.getTemperature());
         return map;
