@@ -31,8 +31,8 @@ public final class NTLogger {
     /**
      * Convenience method to start the data log manager in a directory and log driver station and joystick data.
      */
-    public static void initDataLogger(String dir) {
-        DataLogManager.start(dir);
+    public static void initDataLogger() {
+        DataLogManager.start();
 		DriverStation.startDataLog(DataLogManager.getLog());
     }
 
