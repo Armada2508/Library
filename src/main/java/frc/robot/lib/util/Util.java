@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -250,8 +251,16 @@ public class Util {
         return talon;
     }
 
-    public static void factoryReset(TalonFX talon) {
-        talon.getConfigurator().apply(new TalonFXConfiguration());
+    public static void factoryResetTalons(TalonFX... talons) {
+        for (TalonFX talon : talons) {
+            talon.getConfigurator().apply(new TalonFXConfiguration());
+        }
+    }
+
+    public static void brakeMode(TalonFX... talons) {
+        for (TalonFX talon : talons) {
+            talon.setNeutralMode(NeutralModeValue.Brake);
+        }
     }
 
 }

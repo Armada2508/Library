@@ -9,10 +9,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
- * A drive command with good bit of functionality. Implementations should implement the end function to stop the drive subsystem
- * and can simplify their constructors to take in a drivesubsystem and use that as the speed consumer and requirements.
+ * A drive command with good bit of functionality. 
  */
-public abstract class ButterySmoothDriveCommand extends Command {
+public class ButterySmoothDriveCommand extends Command {
 
     private DoubleSupplier joystickSpeed;
     private DoubleSupplier joystickTurn;
@@ -20,14 +19,17 @@ public abstract class ButterySmoothDriveCommand extends Command {
     private BooleanSupplier joystickSlow;
     private SlewRateLimiter limiter;
     private BiConsumer<Double, Double> speedConsumer;
+    private Runnable onEnd;
     private DriveConfig config;
 
-    public ButterySmoothDriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, DriveConfig config, BiConsumer<Double, Double> speedConsumer, Subsystem subsystem) {
+    public ButterySmoothDriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, DriveConfig config, 
+        BiConsumer<Double, Double> speedConsumer, Runnable onEnd, Subsystem subsystem) {
         this.joystickSpeed = joystickSpeed;
         this.joystickTurn = joystickTurn;
         this.joystickTrim = joystickTrim;
         this.joystickSlow = joystickSlow;
         this.speedConsumer = speedConsumer;
+        this.onEnd = onEnd;
         this.config = config;
         limiter = new SlewRateLimiter(config.slewRate);
         addRequirements(subsystem);
@@ -96,9 +98,11 @@ public abstract class ButterySmoothDriveCommand extends Command {
     }
 
     @Override
-    public abstract void end(boolean interrupted);
+    public void end(boolean interrupted) {
+        onEnd.run();
+    }
 
-    record DriveConfig(
+    public record DriveConfig(
         double speedAdjustment, 
         double turnAdjustment, 
         double trimAdjustment, 
