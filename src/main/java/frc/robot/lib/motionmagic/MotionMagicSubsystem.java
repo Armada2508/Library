@@ -13,6 +13,6 @@ public interface MotionMagicSubsystem {
      * @param acceleration SPECIFY UNITS
      * @return A command that will tell the subsystem to go to a position with motion magic using the specified velocity and acceleration
      */
-    MotionMagicCommand doMotionMagic(double position, double velocity, double acceleration);
+    MotionMagicCommand motionMagicCommand(double position, double velocity, double acceleration);
     
 }

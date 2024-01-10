@@ -250,4 +250,8 @@ public class Util {
         return talon;
     }
 
+    public static void factoryReset(TalonFX talon) {
+        talon.getConfigurator().apply(new TalonFXConfiguration());
+    }
+
 }

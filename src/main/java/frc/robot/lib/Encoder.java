@@ -137,6 +137,17 @@ public class Encoder {
     }
 
     /**
+     * Converts sensor units to a rotational angle in degrees for the TalonFX
+     * @param sensorPosition The current value read from the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @return Angle in degrees
+     */
+    public static double toRotationalAngle(double sensorPosition, double gearRatio) {
+        return toRotationalAngle(sensorPosition, 1, gearRatio);
+    }
+
+    /**
      * Converts a rotational angle in degrees to sensor units
      * @param sensorPosition The current value read from the sensor
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
@@ -145,6 +156,17 @@ public class Encoder {
      */
     public static double fromRotationalAngle(double angleDegrees, double encoderUnitsPerRev, double gearRatio) {
         return angleDegrees * (encoderUnitsPerRev / 360.0) * gearRatio;
+    }
+
+    /**
+     * Converts a rotational angle in degrees to sensor units for the TalonFX
+     * @param sensorPosition The current value read from the sensor
+     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @return Angle in encoder units
+     */
+    public static double fromRotationalAngle(double angleDegrees, double gearRatio) {
+        return fromRotationalAngle(angleDegrees, 1, gearRatio);
     }
 
 }
