@@ -15,6 +15,17 @@ public class Encoder {
     }
 
     /**
+     * Converts from encoder units to real-world units for TalonFX
+     * @param sensorPosition The current value read from the sensor
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
+     * @return Distance traveled
+     */
+    public static double toDistance(double sensorPosition, double gearRatio, double wheelDiameter) {
+        return toDistance(sensorPosition, 1, gearRatio, wheelDiameter);
+    }
+
+    /**
      * Converts from real-world units to encoder units
      * @param distance The distance traveled
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
@@ -24,6 +35,17 @@ public class Encoder {
      */
     public static double fromDistance(double distance, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
         return (distance / ( Math.PI * wheelDiameter )) * (double) encoderUnitsPerRev * gearRatio;
+    }
+
+    /**
+     * Converts from real-world units to encoder units for TalonFX
+     * @param distance The distance traveled
+     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
+     * @param wheelDiameter The diameter of the wheel, input units will dictate output units
+     * @return Distance in encoder units
+     */
+    public static double fromDistance(double distance, double gearRatio, double wheelDiameter) {
+        return fromDistance(distance, 1, gearRatio, wheelDiameter);
     }
 
     /**
@@ -139,7 +161,6 @@ public class Encoder {
     /**
      * Converts sensor units to a rotational angle in degrees for the TalonFX
      * @param sensorPosition The current value read from the sensor
-     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @return Angle in degrees
      */
@@ -161,7 +182,6 @@ public class Encoder {
     /**
      * Converts a rotational angle in degrees to sensor units for the TalonFX
      * @param sensorPosition The current value read from the sensor
-     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
      * @return Angle in encoder units
      */
