@@ -47,8 +47,6 @@ public class LogUtil {
 		return bool ? 1d : 0d;
 	}
 
-    // variable formatting, either outputs or returns a command that will print it out but that input is a supplier not a string
-
     /**
      * Formats a list of names with their associated variables.
      * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll 

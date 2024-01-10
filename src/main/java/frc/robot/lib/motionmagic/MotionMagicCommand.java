@@ -1,19 +1,20 @@
 package frc.robot.lib.motionmagic;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class MotionMagicCommand extends CommandBase {
+public class MotionMagicCommand extends Command {
 
-    private double targetPosition;
-    private double velocity;
-    private double acceleration;
-    private MotionMagicSubsystem subsystem;
-    private final int allowedSensorError = 32; // TalonFX Sensor Units
-
-    public MotionMagicCommand(double targetPosition, double velocity, double accerleration, MotionMagicSubsystem subsystem) {
+    private final double targetPosition;
+    private final double velocity;
+    private final double acceleration;
+    private final double allowedError;
+    private final MotionMagicSubsystem subsystem;
+    
+    public MotionMagicCommand(double targetPosition, double velocity, double acceleration, double allowedError, MotionMagicSubsystem subsystem) {
         this.targetPosition = targetPosition;
         this.velocity = velocity;
-        this.acceleration = accerleration;
+        this.acceleration = acceleration;
+        this.allowedError = allowedError;
         this.subsystem = subsystem;
     }
 
@@ -33,9 +34,9 @@ public class MotionMagicCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        double current = subsystem.getSensorPosition();
-        double target = subsystem.getSensorTarget();
-        return Math.abs(target-current) < allowedSensorError;
+        double current = subsystem.getPosition();
+        double target = subsystem.getTarget();
+        return Math.abs(target-current) < allowedError;
     }
     
 }

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -239,6 +242,16 @@ public class Util {
             mergedMap.putAll(map);
         }
         return mergedMap;
+    }
+
+    public static TalonFX createTalon(int Id, TalonFXConfiguration config) {
+        TalonFX talon = new TalonFX(Id);
+        talon.getConfigurator().apply(config);
+        return talon;
+    }
+
+    public static void factoryReset(TalonFX talon) {
+        talon.getConfigurator().apply(new TalonFXConfiguration());
     }
 
 }
