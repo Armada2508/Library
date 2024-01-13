@@ -61,10 +61,10 @@ public class LogUtil {
             Object currentVar = variables[i];
             if (currentName.length() > 1) {
                 String n = (currentName.charAt(0) + "").toUpperCase() + currentName.substring(1);
-                formatted += n + ": " + currentVar + " ";
+                formatted += n + ": " + currentVar + ", ";
             } 
             else {
-                formatted += currentName.toUpperCase() + ": " + currentVar + " ";
+                formatted += currentName.toUpperCase() + ": " + currentVar + ", ";
             }
         }
         return formatted;
