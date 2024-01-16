@@ -21,6 +21,12 @@ public class SmartJoystick extends Joystick {
         boundButtons.add(button);
     }
 
+    public void bindButtons(int... buttons) {
+        for (int i : buttons) {
+            addOrThrow(i);
+        }
+    }
+
     public Trigger onTrue(int button, Command command) {
         addOrThrow(button);
         return new JoystickButton(this, button).onTrue(command);
