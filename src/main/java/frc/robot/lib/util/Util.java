@@ -263,4 +263,10 @@ public class Util {
         }
     }
 
+    public static void coastMode(TalonFX... talons) {
+        for (TalonFX talon : talons) {
+            talon.setNeutralMode(NeutralModeValue.Coast);
+        }
+    }
+
 }
