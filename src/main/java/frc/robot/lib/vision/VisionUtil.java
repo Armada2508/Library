@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.lib.util.Util;
 
 public class VisionUtil {
+    
     /**
      * Converts a pixel input to an angle output(measured in degrees)
      * 

@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
  * Contains basic functions that are used often.
  */
 public class Util {
+    
     public static final double kEpsilon = 1e-12;
 
     /**

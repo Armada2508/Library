@@ -3,6 +3,7 @@ package frc.robot.lib.vision;
 import frc.robot.lib.util.Util;
 
 public class CameraPoint2d {
+    
     private double mX;
     private double mY;
     private boolean mIsAngle;

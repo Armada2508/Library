@@ -3,6 +3,7 @@ package frc.robot.lib.vision;
 import frc.robot.lib.util.Util;
 
 public class FOV {
+    
     public final double mX;
     public final double mY;
 

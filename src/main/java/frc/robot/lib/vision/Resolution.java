@@ -3,6 +3,7 @@ package frc.robot.lib.vision;
 import frc.robot.lib.util.Util;
 
 public class Resolution {
+    
     private final int mX;
     private final int mY;
 

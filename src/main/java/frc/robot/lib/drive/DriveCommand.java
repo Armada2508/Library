@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 /**
  * A drive command with good bit of functionality. 
  */
-public class ButterySmoothDriveCommand extends Command {
+public class DriveCommand extends Command {
 
     private DoubleSupplier joystickSpeed;
     private DoubleSupplier joystickTurn;
@@ -22,7 +22,7 @@ public class ButterySmoothDriveCommand extends Command {
     private Runnable onEnd;
     private DriveConfig config;
 
-    public ButterySmoothDriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, DriveConfig config, 
+    public DriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, DriveConfig config, 
         BiConsumer<Double, Double> speedConsumer, Runnable onEnd, Subsystem subsystem) {
         this.joystickSpeed = joystickSpeed;
         this.joystickTurn = joystickTurn;
