@@ -45,6 +45,7 @@ public final class NTLogger {
             NetworkTable table = mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
             Map<String, Object> map = new HashMap<>();
             loggable.log(map).forEach((name, val) -> {
+                if (name == null || val == null) return;
                 NetworkTableEntry entry = table.getEntry(name);
                 try {
                     entry.setValue(val);
