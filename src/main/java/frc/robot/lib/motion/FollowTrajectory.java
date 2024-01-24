@@ -1,6 +1,8 @@
 package frc.robot.lib.motion;
 
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -21,6 +23,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 
 /**
@@ -135,19 +138,14 @@ public class FollowTrajectory {
      * @param zeroPose The position to start relative to
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public static Command getCommandTalon(TrajectorySubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
+    public static Command getCommandTalon(Trajectory trajectory, Pose2d zeroPose, Supplier<Pose2d> pose, BiConsumer<Double, Double> velocity, Subsystem driveSubsystem) {
         trajectory = trajectory.transformBy(new Transform2d(new Pose2d(), zeroPose));
         return new RamseteCommand(
                 trajectory,
-                driveSubsystem::getPose,
+                pose::get,
                 kController,
                 kKinematics,
-                (velocityL, velocityR) -> {
-                    driveSubsystem.setVelocity(velocityL, velocityR);
-
-                    kLeftReference.setNumber(velocityL);
-                    kRightReference.setNumber(velocityR);
-                },
+                velocity::accept,
                 driveSubsystem);
     }
     
@@ -217,6 +215,6 @@ public class FollowTrajectory {
         config.addConstraint(new CentripetalAccelerationConstraint(10));
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end,config);
         trajectory = trajectory.relativeTo(trajectory.getInitialPose());
-        return getCommandTalon(driveSubsystem, trajectory, trajectory.getInitialPose());
+        return getCommandTalon(trajectory, trajectory.getInitialPose(), driveSubsystem::getPose, driveSubsystem::setVelocity, driveSubsystem);
     }
 } 
