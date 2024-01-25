@@ -21,6 +21,8 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -55,7 +57,7 @@ public class FollowTrajectory {
      * @param pidController The PID Controller to use
      * @param turnCompensation How much to overcorrect for turning aka how much the tracks are couple, 0 for a perfect drive
      */
-    public static void config(double kS, double kV, double kA, double b, double zeta, double trackWidth, PIDController pidController, double turnCompensation) {
+    public static void config(double kS, double kV, double kA, double b, double zeta, Measure<Distance> trackWidth, PIDController pidController, double turnCompensation) {
         kFeedforward = new SimpleMotorFeedforward(kS, kV, kA);
         kKinematics = new DifferentialDriveKinematics(trackWidth);
         kController = new RamseteController(b, zeta);
@@ -69,6 +71,16 @@ public class FollowTrajectory {
             }
         };
         kTurnCompensation = turnCompensation;
+    }
+
+    /**
+     * Shorter config call for when using the Talon commands
+     * @param b
+     * @param zeta
+     * @param trackWidth
+     */
+    public static void config(double b, double zeta, Measure<Distance> trackWidth) {
+        config(0, 0, 0, b, zeta, trackWidth, new PIDController(0, 0, 0), 0);
     }
 
     /**
