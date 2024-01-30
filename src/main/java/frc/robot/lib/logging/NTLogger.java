@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public final class NTLogger {
 
     private static NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("Logging");
-    private static Map<Integer, Loggable> indexedLoggables = new HashMap<>();
+    private static Map<Loggable, Integer> indexedLoggables = new HashMap<>();
 
     private NTLogger() {}
 
@@ -42,7 +42,7 @@ public final class NTLogger {
      */
     public static void log() {
         logDS();
-        indexedLoggables.forEach((index, loggable) -> {
+        indexedLoggables.forEach((loggable, index) -> {
             NetworkTable table = mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
             Map<String, Object> map = new HashMap<>();
             loggable.log(map).forEach((name, val) -> {
@@ -67,7 +67,7 @@ public final class NTLogger {
             .filter((value) -> value.getClass().equals(obj.getClass()))
             .collect(Collectors.toList())
             .size();
-        indexedLoggables.put(index, obj);
+        indexedLoggables.put(obj, index);
     }
 
     /**
