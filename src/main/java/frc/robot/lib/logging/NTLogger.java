@@ -105,8 +105,10 @@ public final class NTLogger {
         else if (DriverStation.isTest()) {
             mode = "Test";
         }
-        mainTable.getEntry("DSMode").setString(mode);
-        mainTable.getEntry("isFMSAttached").setBoolean(DriverStation.isFMSAttached());
+        String alliance = DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().toString() : "None";
+        mainTable.getEntry("_DSMode").setString(mode);
+        mainTable.getEntry("_isFMSAttached").setBoolean(DriverStation.isFMSAttached());
+        mainTable.getEntry("_Alliance").setString(alliance);
     }
 
 }
