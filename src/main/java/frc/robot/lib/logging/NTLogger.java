@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Used to log fields and methods(Can't have parameters 
@@ -85,6 +86,14 @@ public final class NTLogger {
         map.put("TalonFX " + ID + ": ClosedLoopTarget", talon.getClosedLoopReference());
         map.put("TalonFX " + ID + ": SupplyCurrent", talon.getSupplyCurrent());
         map.put("TalonFX " + ID + ": Temperature", talon.getDeviceTemp());
+        return map;
+    }
+
+    public static Map<String, Object> getSubsystemLog(Subsystem subsystem) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("Name", subsystem.getName());
+        map.put("Current Command", subsystem.getCurrentCommand() == null ? "None" : subsystem.getCurrentCommand().getName());
+        map.put("Default Command", subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
         return map;
     }
 
