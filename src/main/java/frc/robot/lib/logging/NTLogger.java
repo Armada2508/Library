@@ -11,6 +11,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
@@ -91,9 +94,18 @@ public final class NTLogger {
 
     public static Map<String, Object> getSubsystemLog(Subsystem subsystem) {
         Map<String, Object> map = new HashMap<>();
+        Command currentCommand = subsystem.getCurrentCommand();
+        String commandGroupCurrentCommand = "None";
+        if (currentCommand instanceof SequentialCommandGroup group) {
+            commandGroupCurrentCommand = LogUtil.getSequentialCommandCurrentCommand(group).getName();
+        }
+        if (currentCommand instanceof ParallelCommandGroup group) {
+            commandGroupCurrentCommand = "None";
+        }
         map.put("Name", subsystem.getName());
-        map.put("Current Command", subsystem.getCurrentCommand() == null ? "None" : subsystem.getCurrentCommand().getName());
         map.put("Default Command", subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
+        map.put("Current Command", currentCommand == null ? "None" : currentCommand.getName());
+        map.put("Command Group Current Command", commandGroupCurrentCommand);
         return map;
     }
 
