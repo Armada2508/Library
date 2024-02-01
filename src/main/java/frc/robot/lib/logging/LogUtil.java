@@ -2,9 +2,11 @@ package frc.robot.lib.logging;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 public class LogUtil {
 
@@ -111,12 +114,28 @@ public class LogUtil {
 
     public static List<Command> getParallelCommandCurrentCommands(ParallelCommandGroup command) {
         try {
+            List<Command> list = new ArrayList<>();
             final Field fieldCommands = ParallelCommandGroup.class.getDeclaredField("m_commands");
             fieldCommands.setAccessible(true);
-            return List.of(Commands.none());
-        } catch (Exception e) {
+            @SuppressWarnings("unchecked")
+            Map<Command, Boolean> map = (Map<Command, Boolean>) fieldCommands.get(command);
+            map.forEach((cmd, running) -> {
+                if (running) list.add(cmd);
+            });
+            return list;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             return List.of(Commands.none());
         }
     }
+
+    public static Command getWrapperCommandInner(WrapperCommand command) {
+        try {
+            final Field cmd = WrapperCommand.class.getDeclaredField("m_command");
+            cmd.setAccessible(true);
+            return (Command) cmd.get(command);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            return Commands.none();
+        }
+    } 
 
 }
