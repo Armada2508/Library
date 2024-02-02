@@ -83,13 +83,17 @@ public final class NTLogger {
     public static Map<String, Object> getTalonLog(TalonFX talon) {
         Map<String, Object> map = new HashMap<>();
         int ID = talon.getDeviceID();
-        map.put("TalonFX " + ID + ": ControlMode", talon.getControlMode());
-        map.put("TalonFX " + ID + ": FwdLimitSwitchClosed", talon.getForwardLimit());
-        map.put("TalonFX " + ID + ": RevLimitSwitchClosed", talon.getReverseLimit());
-        map.put("TalonFX " + ID + ": SensorPosition", talon.getPosition());
-        map.put("TalonFX " + ID + ": SensorVelocity", talon.getVelocity());
-        map.put("TalonFX " + ID + ": ClosedLoopTarget", talon.getClosedLoopReference());
-        map.put("TalonFX " + ID + ": SupplyCurrent", talon.getSupplyCurrent());
+        map.put("TalonFX " + ID + ": Control Mode", talon.getControlMode());
+        map.put("TalonFX " + ID + ": Fwd Limit Switch", talon.getForwardLimit());
+        map.put("TalonFX " + ID + ": Rev Limit Switch", talon.getReverseLimit());
+        map.put("TalonFX " + ID + ": Position", talon.getPosition());
+        map.put("TalonFX " + ID + ": Velocity", talon.getVelocity());
+        map.put("TalonFX " + ID + ": Acceleration", talon.getAcceleration());
+        map.put("TalonFX " + ID + ": Closed Loop Target", talon.getClosedLoopReference());
+        map.put("TalonFX " + ID + ": Closed Loop Slot", talon.getClosedLoopSlot());
+        map.put("TalonFX " + ID + ": Supply Voltage", talon.getSupplyVoltage());
+        map.put("TalonFX " + ID + ": Supply Current", talon.getSupplyCurrent());
+        map.put("TalonFX " + ID + ": Torque Current", talon.getTorqueCurrent());
         map.put("TalonFX " + ID + ": Temperature", talon.getDeviceTemp());
         return map;
     }
@@ -118,17 +122,25 @@ public final class NTLogger {
     }
 
     private static void logDS() {
-        String mode = "Teleop";
-        if (DriverStation.isAutonomous()) {
+        String mode = "Unknown";
+        if (DriverStation.isTeleop()) {
+            mode = "Teleop";
+        }
+        else if (DriverStation.isAutonomous()) {
             mode = "Autonomous";
         } 
         else if (DriverStation.isTest()) {
             mode = "Test";
         }
-        String alliance = DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().toString() : "None";
-        mainTable.getEntry("_DSMode").setString(mode);
-        mainTable.getEntry("_isFMSAttached").setBoolean(DriverStation.isFMSAttached());
+        String alliance = DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().toString() : "Unknown";
         mainTable.getEntry("_Alliance").setString(alliance);
+        mainTable.getEntry("_Alliance Station").setString(DriverStation.getRawAllianceStation().toString());
+        mainTable.getEntry("_DS Mode").setString(mode);
+        mainTable.getEntry("_Robot Enabled").setBoolean(DriverStation.isEnabled());
+        mainTable.getEntry("_Match Time").setDouble(DriverStation.getMatchTime());
+        mainTable.getEntry("_Match Type").setString(DriverStation.getMatchType().toString());
+        mainTable.getEntry("_Match Number").setInteger(DriverStation.getMatchNumber());
+        mainTable.getEntry("_is FMS Attached").setBoolean(DriverStation.isFMSAttached());
     }
 
 }
