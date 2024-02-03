@@ -218,10 +218,6 @@ public class Util {
         return new Rotation2d(boundedAnglePositive(rotation.getRadians()));
     }
 
-    public static double inchesToMeters(double in){
-        return in*.0254;
-    }
-
     /**
      * Go from polar coordinates to cartesian coordinates
      * @param distance
@@ -244,12 +240,6 @@ public class Util {
             mergedMap.putAll(map);
         }
         return mergedMap;
-    }
-
-    public static TalonFX createTalon(int Id, TalonFXConfiguration config) {
-        TalonFX talon = new TalonFX(Id);
-        talon.getConfigurator().apply(config);
-        return talon;
     }
 
     public static void factoryResetTalons(TalonFX... talons) {

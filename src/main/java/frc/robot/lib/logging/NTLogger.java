@@ -48,7 +48,8 @@ public final class NTLogger {
     public static void log() {
         logDS();
         indexedLoggables.forEach((loggable, index) -> {
-            NetworkTable table = mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
+            NetworkTable table = (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
+                mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
             Map<String, Object> map = new HashMap<>();
             loggable.log(map).forEach((name, val) -> {
                 if (name == null || val == null) return;
@@ -86,15 +87,15 @@ public final class NTLogger {
         map.put("TalonFX " + ID + ": Control Mode", talon.getControlMode());
         map.put("TalonFX " + ID + ": Fwd Limit Switch", talon.getForwardLimit());
         map.put("TalonFX " + ID + ": Rev Limit Switch", talon.getReverseLimit());
-        map.put("TalonFX " + ID + ": Position", talon.getPosition());
-        map.put("TalonFX " + ID + ": Velocity", talon.getVelocity());
-        map.put("TalonFX " + ID + ": Acceleration", talon.getAcceleration());
-        map.put("TalonFX " + ID + ": Closed Loop Target", talon.getClosedLoopReference());
+        map.put("TalonFX " + ID + ": Position (Rots)", talon.getPosition().getValueAsDouble());
+        map.put("TalonFX " + ID + ": Velocity (Rots\\s)", talon.getVelocity().getValueAsDouble());
+        map.put("TalonFX " + ID + ": Acceleration (Rots\\s^2)", talon.getAcceleration().getValueAsDouble());
+        map.put("TalonFX " + ID + ": Closed Loop Target", talon.getClosedLoopReference().getValueAsDouble());
         map.put("TalonFX " + ID + ": Closed Loop Slot", talon.getClosedLoopSlot());
-        map.put("TalonFX " + ID + ": Supply Voltage", talon.getSupplyVoltage());
-        map.put("TalonFX " + ID + ": Supply Current", talon.getSupplyCurrent());
-        map.put("TalonFX " + ID + ": Torque Current", talon.getTorqueCurrent());
-        map.put("TalonFX " + ID + ": Temperature", talon.getDeviceTemp());
+        map.put("TalonFX " + ID + ": Supply Voltage (V)", talon.getSupplyVoltage().getValueAsDouble());
+        map.put("TalonFX " + ID + ": Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
+        map.put("TalonFX " + ID + ": Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
+        map.put("TalonFX " + ID + ": Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
         return map;
     }
 
@@ -114,7 +115,7 @@ public final class NTLogger {
                 commandGroupCurrentCommand += c.getName() + " ";
             }
         }
-        map.put("Name", subsystem.getName());
+        map.put("_Name", subsystem.getName());
         map.put("Default Command", subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
         map.put("Current Command", currentCommand == null ? "None" : currentCommand.getName());
         map.put("Command Group Current Command", commandGroupCurrentCommand);
@@ -132,14 +133,9 @@ public final class NTLogger {
         else if (DriverStation.isTest()) {
             mode = "Test";
         }
-        String alliance = DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().toString() : "Unknown";
-        mainTable.getEntry("_Alliance").setString(alliance);
-        mainTable.getEntry("_Alliance Station").setString(DriverStation.getRawAllianceStation().toString());
         mainTable.getEntry("_DS Mode").setString(mode);
         mainTable.getEntry("_Robot Enabled").setBoolean(DriverStation.isEnabled());
         mainTable.getEntry("_Match Time").setDouble(DriverStation.getMatchTime());
-        mainTable.getEntry("_Match Type").setString(DriverStation.getMatchType().toString());
-        mainTable.getEntry("_Match Number").setInteger(DriverStation.getMatchNumber());
         mainTable.getEntry("_is FMS Attached").setBoolean(DriverStation.isFMSAttached());
     }
 
