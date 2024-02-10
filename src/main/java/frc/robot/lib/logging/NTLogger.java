@@ -93,6 +93,7 @@ public final class NTLogger {
         map.put(name + ": Closed Loop Target", talon.getClosedLoopReference().getValueAsDouble());
         map.put(name + ": Closed Loop Slot", talon.getClosedLoopSlot());
         map.put(name + ": Supply Voltage (V)", talon.getSupplyVoltage().getValueAsDouble());
+        map.put(name + ": Motor Voltage (V)", talon.getMotorVoltage().getValueAsDouble());
         map.put(name + ": Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
         map.put(name + ": Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
         map.put(name + ": Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
