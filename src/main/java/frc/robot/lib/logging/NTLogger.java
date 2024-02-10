@@ -31,6 +31,7 @@ public final class NTLogger {
 
     private static NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("Logging");
     private static Map<Loggable, Integer> indexedLoggables = new HashMap<>();
+    private static Map<Loggable, Map<String, Object>> loggablesMaps = new HashMap<>();
 
     private NTLogger() {}
 
@@ -50,8 +51,7 @@ public final class NTLogger {
         indexedLoggables.forEach((loggable, index) -> {
             NetworkTable table = (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
                 mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
-            Map<String, Object> map = new HashMap<>();
-            loggable.log(map).forEach((name, val) -> {
+            loggable.log(loggablesMaps.get(loggable)).forEach((name, val) -> {
                 if (name == null || val == null) return;
                 NetworkTableEntry entry = table.getEntry(name);
                 try {
@@ -74,33 +74,40 @@ public final class NTLogger {
             .collect(Collectors.toList())
             .size();
         indexedLoggables.put(obj, index);
+        loggablesMaps.put(obj, new HashMap<>());
     }
 
     /**
-     * Use this method to get a hashmap with logged values of a talon to merge/add to your hashmap in your loggable's log method.
+     * Use this method to fill your map with talon status signals
      * @param talon to log
      * @return
      */
-    public static Map<String, Object> getTalonLog(TalonFX talon) {
-        Map<String, Object> map = new HashMap<>();
-        int ID = talon.getDeviceID();
-        map.put("TalonFX " + ID + ": Control Mode", talon.getControlMode());
-        map.put("TalonFX " + ID + ": Fwd Limit Switch", talon.getForwardLimit());
-        map.put("TalonFX " + ID + ": Rev Limit Switch", talon.getReverseLimit());
-        map.put("TalonFX " + ID + ": Position (Rots)", talon.getPosition().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Velocity (Rots\\s)", talon.getVelocity().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Acceleration (Rots\\s^2)", talon.getAcceleration().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Closed Loop Target", talon.getClosedLoopReference().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Closed Loop Slot", talon.getClosedLoopSlot());
-        map.put("TalonFX " + ID + ": Supply Voltage (V)", talon.getSupplyVoltage().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
-        map.put("TalonFX " + ID + ": Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
-        return map;
+    public static void putTalonLog(TalonFX talon, String name, Map<String, Object> map) {
+        map.put(name + ": Device ID", talon.getDeviceID());
+        map.put(name + ": Control Mode", talon.getControlMode());
+        map.put(name + ": Fwd Limit Switch", talon.getForwardLimit());
+        map.put(name + ": Rev Limit Switch", talon.getReverseLimit());
+        map.put(name + ": Position (Rots)", talon.getPosition().getValueAsDouble());
+        map.put(name + ": Velocity (Rots\\s)", talon.getVelocity().getValueAsDouble());
+        map.put(name + ": Acceleration (Rots\\s^2)", talon.getAcceleration().getValueAsDouble());
+        map.put(name + ": Closed Loop Target", talon.getClosedLoopReference().getValueAsDouble());
+        map.put(name + ": Closed Loop Slot", talon.getClosedLoopSlot());
+        map.put(name + ": Supply Voltage (V)", talon.getSupplyVoltage().getValueAsDouble());
+        map.put(name + ": Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
+        map.put(name + ": Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
+        map.put(name + ": Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
     }
 
-    public static Map<String, Object> getSubsystemLog(Subsystem subsystem) {
-        Map<String, Object> map = new HashMap<>();
+    public static void putTalonLog(TalonFX talon, Map<String, Object> map) {
+        int ID = talon.getDeviceID();
+        putTalonLog(talon, "TalonFX " + ID, map);
+    }
+    
+    /**
+     * Fills your map with subsystem logged values
+     * @param subsystem to log
+     */
+    public static void putSubsystemLog(Subsystem subsystem, Map<String, Object> map) {
         Command currentCommand = subsystem.getCurrentCommand();
         Command innerCommand = Commands.none();
         String commandGroupCurrentCommand = "None";
@@ -119,7 +126,6 @@ public final class NTLogger {
         map.put("Default Command", subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
         map.put("Current Command", currentCommand == null ? "None" : currentCommand.getName());
         map.put("Command Group Current Command", commandGroupCurrentCommand);
-        return map;
     }
 
     private static void logDS() {
