@@ -62,7 +62,9 @@ public class DriveCommand extends Command {
         trim *= config.trimAdjustment;
         speed = limiter.calculate(speed);
         // Constant Curvature, WPILib DifferentialDrive#curvatureDriveIK
-        turn = turn * speed + trim; 
+        if (config.constantCurvature) {
+            turn = turn * speed + trim; 
+        }
 
         double powerFactor = normalizeSpeed((speed - turn), (speed + turn));
 
@@ -108,6 +110,7 @@ public class DriveCommand extends Command {
         double trimAdjustment, 
         double slowSpeed, 
         boolean squareInputs, 
+        boolean constantCurvature,
         double slewRate, 
         double joystickDeadband
     ) {}
