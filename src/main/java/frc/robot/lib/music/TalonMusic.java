@@ -8,10 +8,8 @@ import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class TalonMusic {
 
@@ -33,13 +31,11 @@ public class TalonMusic {
             orchestra.stop();
         }
         orchestra.loadMusic(startupSong);
-        Subsystem[] systems = subsystems.toArray(new Subsystem[subsystems.size()]);
-        SequentialCommandGroup group = new SequentialCommandGroup(
-            new InstantCommand(orchestra::play),
-            new WaitUntilCommand(() -> !orchestra.isPlaying())
-        );
-        group.addRequirements(systems);
-        group.schedule();
+        Subsystem[] requirements = subsystems.toArray(new Subsystem[subsystems.size()]);
+        Commands.runOnce(orchestra::play, requirements)
+            .andThen(Commands.waitUntil(() -> !orchestra.isPlaying()))
+            .ignoringDisable(true)
+            .schedule();
     }
 
     public static void stopPlaying() {
