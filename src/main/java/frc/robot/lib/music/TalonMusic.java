@@ -19,6 +19,7 @@ public class TalonMusic {
     private static final AudioConfigs audioConfigs = new AudioConfigs().withAllowMusicDurDisable(true);
     private static final List<Subsystem> subsystems = new ArrayList<>();
     private static final String startupSong = "PacmanMelody.chrp";
+    private static int trackNumber = 0;
 
     /**
      * Adds talons to the class's internal orchestra, also modifies their audio configs to allow music when disabled.
@@ -30,9 +31,10 @@ public class TalonMusic {
         Objects.requireNonNull(talons);
         for (TalonFX talonFX : talons) {
             talonFX.getConfigurator().apply(audioConfigs);
-            orchestra.addInstrument(talonFX);
-            subsystems.add(currentSubsystem);
+            orchestra.addInstrument(talonFX, trackNumber);
+            trackNumber++;
         }
+        subsystems.add(currentSubsystem);
     }
     
     public static void playStartupTune() {
