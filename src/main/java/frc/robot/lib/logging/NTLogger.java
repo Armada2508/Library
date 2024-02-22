@@ -84,14 +84,14 @@ public final class NTLogger {
      */
     public static void putTalonLog(TalonFX talon, String name, Map<String, Object> map) {
         map.put(name + ": Device ID", talon.getDeviceID());
-        map.put(name + ": Control Mode", talon.getControlMode());
-        map.put(name + ": Fwd Limit Switch", talon.getForwardLimit());
-        map.put(name + ": Rev Limit Switch", talon.getReverseLimit());
+        map.put(name + ": Control Mode", talon.getControlMode().getValue().toString());
+        map.put(name + ": Fwd Limit Switch", talon.getForwardLimit().getValue().toString());
+        map.put(name + ": Rev Limit Switch", talon.getReverseLimit().getValue().toString());
         map.put(name + ": Position (Rots)", talon.getPosition().getValueAsDouble());
         map.put(name + ": Velocity (Rots\\s)", talon.getVelocity().getValueAsDouble());
         map.put(name + ": Acceleration (Rots\\s^2)", talon.getAcceleration().getValueAsDouble());
         map.put(name + ": Closed Loop Target", talon.getClosedLoopReference().getValueAsDouble());
-        map.put(name + ": Closed Loop Slot", talon.getClosedLoopSlot());
+        map.put(name + ": Closed Loop Slot", talon.getClosedLoopSlot().getValue().intValue());
         map.put(name + ": Supply Voltage (V)", talon.getSupplyVoltage().getValueAsDouble());
         map.put(name + ": Motor Voltage (V)", talon.getMotorVoltage().getValueAsDouble());
         map.put(name + ": Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
