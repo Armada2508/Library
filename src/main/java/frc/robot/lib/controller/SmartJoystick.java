@@ -57,4 +57,16 @@ public class SmartJoystick extends Joystick {
         return new JoystickButton(this, button).toggleOnFalse(command);
     }
 
+    public double getXInverted() {
+        return -getX();
+    }
+
+    public double getYInverted() {
+        return -getY();
+    }
+
+    public double getZInverted() {
+        return -getZ();
+    }
+
 }

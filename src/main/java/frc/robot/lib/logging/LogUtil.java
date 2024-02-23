@@ -9,12 +9,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 public class LogUtil {
@@ -83,19 +85,11 @@ public class LogUtil {
         System.out.println(getFormatted(names, variables));
     }
 
-	public static void logSubsystems(SubsystemBase[] subsystems) {
-        System.out.println("\nDEBUG: Subsystem Logger");
-        for (int i = 0; i < subsystems.length; i++) {
-            String name = "None";
-            Command command = subsystems[i].getCurrentCommand();
-            if (command != null) {
-                name = command.getName();
-                if (command instanceof SequentialCommandGroup c) {
-                    name += " - " + getSequentialCommandCurrentCommand(c).getName();
-                }
-            }
-            System.out.println(subsystems[i].getName() + ": " + name);
-        }
+    public static GenericEntry getTuner(String name, Object defaultValue) {
+        GenericEntry entry = NetworkTableInstance.getDefault().getTable("Tuning")
+            .getTopic(name).getGenericEntry(new PubSubOption[0]);
+        entry.setValue(defaultValue);
+        return entry;
     }
 
     public static Command getSequentialCommandCurrentCommand(SequentialCommandGroup command) {
