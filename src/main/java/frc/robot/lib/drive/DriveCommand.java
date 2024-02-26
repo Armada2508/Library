@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  */
 public class DriveCommand extends Command {
 
-    private DoubleSupplier joystickSpeed;
-    private DoubleSupplier joystickTurn;
-    private DoubleSupplier joystickTrim;
-    private BooleanSupplier joystickSlow;
-    private SlewRateLimiter limiter;
-    private BiConsumer<Double, Double> speedConsumer;
-    private Runnable onEnd;
-    private DriveConfig config;
+    protected DoubleSupplier joystickSpeed;
+    protected DoubleSupplier joystickTurn;
+    protected DoubleSupplier joystickTrim;
+    protected BooleanSupplier joystickSlow;
+    protected SlewRateLimiter limiter;
+    protected BiConsumer<Double, Double> speedConsumer;
+    protected Runnable onEnd;
+    protected DriveConfig config;
 
     public DriveCommand(DoubleSupplier joystickSpeed, DoubleSupplier joystickTurn, DoubleSupplier joystickTrim,  BooleanSupplier joystickSlow, DriveConfig config, 
         BiConsumer<Double, Double> speedConsumer, Runnable onEnd, Subsystem subsystem) {
@@ -31,7 +31,7 @@ public class DriveCommand extends Command {
         this.speedConsumer = speedConsumer;
         this.onEnd = onEnd;
         this.config = config;
-        limiter = new SlewRateLimiter(config.slewRate);
+        limiter = new SlewRateLimiter(config.slewRate());
         addRequirements(subsystem);
     }
 
@@ -46,23 +46,23 @@ public class DriveCommand extends Command {
         trim = processDeadband(trim); 
         // Slow Mode
         if (joystickSlow.getAsBoolean()) {
-            speed = config.slowSpeed * speed;
-            turn = config.slowSpeed * turn;
-            trim = config.slowSpeed * trim;
+            speed = config.slowSpeed() * speed;
+            turn = config.slowSpeed() * turn;
+            trim = config.slowSpeed() * trim;
         }
         // Square the inputs
-        if (config.squareInputs) {
+        if (config.squareInputs()) {
             speed = Math.signum(speed) * (speed * speed);
             turn = Math.signum(turn) * (turn * turn);        
             trim = Math.signum(trim) * (trim * trim);   
         }
         // Speed Adjusting and Slew Rate Limiting 
-        speed *= config.speedAdjustment;
-        turn *= config.turnAdjustment;
-        trim *= config.trimAdjustment;
+        speed *= config.speedAdjustment();
+        turn *= config.turnAdjustment();
+        trim *= config.trimAdjustment();
         speed = limiter.calculate(speed);
         // Constant Curvature, WPILib DifferentialDrive#curvatureDriveIK
-        if (config.constantCurvature) {
+        if (config.constantCurvature()) {
             turn = turn * speed + trim; 
         }
 
@@ -76,19 +76,19 @@ public class DriveCommand extends Command {
     /**
      * {@link} https://www.chiefdelphi.com/uploads/default/original/3X/b/a/ba7ccfd90bac0934e374dd4459d813cee2903942.pdf
      */
-    private double processDeadband(double val) {
+    protected double processDeadband(double val) {
         double newVal = val;
-        if(Math.abs(val) < config.joystickDeadband) {
+        if(Math.abs(val) < config.joystickDeadband()) {
             newVal = 0;
         }
         else {
             // Point slope form Y = M(X-X0)+Y0.
-            newVal = /*M*/ (1 / (1 - config.joystickDeadband)) * /*X-X0*/(val + (-Math.signum(val) * config.joystickDeadband));
+            newVal = /*M*/ (1 / (1 - config.joystickDeadband())) * /*X-X0*/(val + (-Math.signum(val) * config.joystickDeadband()));
         }
         return newVal;
     }
 
-    private double normalizeSpeed(double left, double right){
+    protected double normalizeSpeed(double left, double right){
         double p = 1;
         if (left > 1) {
             p = 1/left;
