@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.lib.util.Util;
 
 public class VisionUtil {
+    
     /**
      * Converts a pixel input to an angle output(measured in degrees)
      * 
@@ -107,8 +108,8 @@ public class VisionUtil {
   
         double x = horizontalOffset;
         double width = targetWidth;
-        double angleLeft = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(x, fov.getX(), resolution.getX())-width/2.0, fov.getX(), resolution.getX());
-        double angleRight = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(x, fov.getX(), resolution.getX())+width/2.0, fov.getX(), resolution.getX());
+        double angleLeft = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(x, fov.x(), resolution.x())-width/2.0, fov.x(), resolution.x());
+        double angleRight = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(x, fov.x(), resolution.x())+width/2.0, fov.x(), resolution.x());
         double widthAngle = angleRight-angleLeft; 
         double distance = (realTargetWidth / 2.0) / (Math.tan(Math.toRadians((widthAngle / 2.0))));
   
@@ -176,4 +177,8 @@ public class VisionUtil {
         }
         return topCorners;
     }
+
+    public record Resolution(int x, int y) {}
+    public record FOV(double x, double y) {}
+
 }

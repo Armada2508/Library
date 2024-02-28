@@ -1,8 +1,11 @@
 package frc.robot.lib.vision;
 
 import frc.robot.lib.util.Util;
+import frc.robot.lib.vision.VisionUtil.FOV;
+import frc.robot.lib.vision.VisionUtil.Resolution;
 
 public class CameraPoint2d {
+    
     private double mX;
     private double mY;
     private boolean mIsAngle;
@@ -93,8 +96,8 @@ public class CameraPoint2d {
      */
     public void center(Resolution resolution, boolean xInverted, boolean yInverted) {
         if(!mIsAngle) {
-            mX = VisionUtil.centerPixels(mX, (double)resolution.getX(), xInverted);
-            mY = VisionUtil.centerPixels(mY, (double)resolution.getY(), yInverted);
+            mX = VisionUtil.centerPixels(mX, (double)resolution.x(), xInverted);
+            mY = VisionUtil.centerPixels(mY, (double)resolution.y(), yInverted);
         }
     }
 
@@ -106,8 +109,8 @@ public class CameraPoint2d {
      */
     public void toAngle(FOV fov, Resolution resolution) {
         if(!mIsAngle) {
-            mX = VisionUtil.pixelsToAngles(mX, fov.getX(), resolution.getX());
-            mY = VisionUtil.pixelsToAngles(mY, fov.getY(), resolution.getY());
+            mX = VisionUtil.pixelsToAngles(mX, fov.x(), resolution.x());
+            mY = VisionUtil.pixelsToAngles(mY, fov.y(), resolution.y());
             mIsAngle = true;
         }
     }
@@ -120,8 +123,8 @@ public class CameraPoint2d {
      */
     public void toPixels(FOV fov, Resolution resolution) {
         if(mIsAngle) {
-            mX = VisionUtil.anglesToPixels(mX, fov.getX(), resolution.getX());
-            mY = VisionUtil.anglesToPixels(mY, fov.getY(), resolution.getY());
+            mX = VisionUtil.anglesToPixels(mX, fov.x(), resolution.x());
+            mY = VisionUtil.anglesToPixels(mY, fov.y(), resolution.y());
             mIsAngle = false;
         }
     }
@@ -146,8 +149,8 @@ public class CameraPoint2d {
             return;
         }
         if(!mIsAngle) {
-            mX = VisionUtil.pixelsToAngles(mX, mFov.getX(), mRes.getX());
-            mY = VisionUtil.pixelsToAngles(mY, mFov.getY(), mRes.getY());
+            mX = VisionUtil.pixelsToAngles(mX, mFov.x(), mRes.x());
+            mY = VisionUtil.pixelsToAngles(mY, mFov.y(), mRes.y());
             mIsAngle = true;
         }
     }
@@ -161,8 +164,8 @@ public class CameraPoint2d {
             return;
         }
         if(mIsAngle) {
-            mX = VisionUtil.anglesToPixels(mX, mFov.getX(), mRes.getX());
-            mY = VisionUtil.anglesToPixels(mY, mFov.getY(), mRes.getY());
+            mX = VisionUtil.anglesToPixels(mX, mFov.x(), mRes.x());
+            mY = VisionUtil.anglesToPixels(mY, mFov.y(), mRes.y());
             mIsAngle = false;
         }
     }

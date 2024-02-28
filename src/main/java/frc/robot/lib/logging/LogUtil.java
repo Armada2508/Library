@@ -2,16 +2,22 @@ package frc.robot.lib.logging;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 public class LogUtil {
 
@@ -61,10 +67,10 @@ public class LogUtil {
             Object currentVar = variables[i];
             if (currentName.length() > 1) {
                 String n = (currentName.charAt(0) + "").toUpperCase() + currentName.substring(1);
-                formatted += n + ": " + currentVar + " ";
+                formatted += n + ": " + currentVar + ", ";
             } 
             else {
-                formatted += currentName.toUpperCase() + ": " + currentVar + " ";
+                formatted += currentName.toUpperCase() + ": " + currentVar + ", ";
             }
         }
         return formatted;
@@ -79,36 +85,51 @@ public class LogUtil {
         System.out.println(getFormatted(names, variables));
     }
 
-	public static void logSubsystems(SubsystemBase[] subsystems) {
+    public static GenericEntry getTuner(String name, Object defaultValue) {
+        GenericEntry entry = NetworkTableInstance.getDefault().getTable("Tuning")
+            .getTopic(name).getGenericEntry(new PubSubOption[0]);
+        entry.setValue(defaultValue);
+        return entry;
+    }
+
+    public static Command getSequentialCommandCurrentCommand(SequentialCommandGroup command) {
         try {
             final Field fieldIndex = SequentialCommandGroup.class.getDeclaredField("m_currentCommandIndex");
             fieldIndex.setAccessible(true);
             final Field fieldCommands = SequentialCommandGroup.class.getDeclaredField("m_commands");
             fieldCommands.setAccessible(true);
-            SubsystemBase loggerSubsystem = new SubsystemBase() {};
-            loggerSubsystem.setDefaultCommand(Commands.run(() -> {
-                System.out.println("\nDEBUG: Subsystem Logger");
-                for (int i = 0; i < subsystems.length; i++) {
-                    String name = "None";
-                    Command command = subsystems[i].getCurrentCommand();
-                    if (command != null) {
-                        name = command.getName();
-                        if (command instanceof SequentialCommandGroup) {
-                            try {
-                                @SuppressWarnings("unchecked")
-                                List<Command> list = (List<Command>) fieldCommands.get(command);
-                                name += " - " + list.get(fieldIndex.getInt(command)).getName();
-                            } catch (IllegalArgumentException | IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    System.out.println(subsystems[i].getName() + ": " + name);
-                }
-            }, loggerSubsystem));
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
+            @SuppressWarnings("unchecked")
+            List<Command> list = (List<Command>) fieldCommands.get(command);
+            return list.get(fieldIndex.getInt(command));
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            return Commands.none();
         }
     }
+
+    public static List<Command> getParallelCommandCurrentCommands(ParallelCommandGroup command) {
+        try {
+            List<Command> list = new ArrayList<>();
+            final Field fieldCommands = ParallelCommandGroup.class.getDeclaredField("m_commands");
+            fieldCommands.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Map<Command, Boolean> map = (Map<Command, Boolean>) fieldCommands.get(command);
+            map.forEach((cmd, running) -> {
+                if (running) list.add(cmd);
+            });
+            return list;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            return List.of(Commands.none());
+        }
+    }
+
+    public static Command getWrapperCommandInner(WrapperCommand command) {
+        try {
+            final Field cmd = WrapperCommand.class.getDeclaredField("m_command");
+            cmd.setAccessible(true);
+            return (Command) cmd.get(command);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            return Commands.none();
+        }
+    } 
 
 }

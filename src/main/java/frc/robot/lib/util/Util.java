@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
  * Contains basic functions that are used often.
  */
 public class Util {
+    
     public static final double kEpsilon = 1e-12;
 
     /**
@@ -216,10 +218,6 @@ public class Util {
         return new Rotation2d(boundedAnglePositive(rotation.getRadians()));
     }
 
-    public static double inchesToMeters(double in){
-        return in*.0254;
-    }
-
     /**
      * Go from polar coordinates to cartesian coordinates
      * @param distance
@@ -244,14 +242,22 @@ public class Util {
         return mergedMap;
     }
 
-    public static TalonFX createTalon(int Id, TalonFXConfiguration config) {
-        TalonFX talon = new TalonFX(Id);
-        talon.getConfigurator().apply(config);
-        return talon;
+    public static void factoryResetTalons(TalonFX... talons) {
+        for (TalonFX talon : talons) {
+            talon.getConfigurator().apply(new TalonFXConfiguration());
+        }
     }
 
-    public static void factoryReset(TalonFX talon) {
-        talon.getConfigurator().apply(new TalonFXConfiguration());
+    public static void brakeMode(TalonFX... talons) {
+        for (TalonFX talon : talons) {
+            talon.setNeutralMode(NeutralModeValue.Brake);
+        }
+    }
+
+    public static void coastMode(TalonFX... talons) {
+        for (TalonFX talon : talons) {
+            talon.setNeutralMode(NeutralModeValue.Coast);
+        }
     }
 
 }

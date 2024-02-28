@@ -19,7 +19,6 @@ You should be updating the versions of GradleRIO and vendor dependencies in your
 ### Adding the library to a project
 **Important** - Before adding the library to a project you should have basic knowledge of git, gradle and navigating around directories. <br>
 Make sure you're in the project's root directory in the terminal. <br>
-![](imgs/topdirectory.png) <br>
 ![](imgs/terminal.png) <br>
 To add library as a submodule. <br>
 `git submodule add -b master https://github.com/Armada2508/Library library` <br>
@@ -30,7 +29,7 @@ Add `includeBuild 'library'` to your settings.gradle.
 
 Make sure source and target compatibility in build.gradle match that of the library, right now it's Java 17. <br>
 Make sure GradleRIO version matches. <br>
-Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix. <br>
+Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix 6. <br>
 
 **Important** - I would run `./gradlew build` before continuing. <br>
 
@@ -51,4 +50,4 @@ Commit your changes and then when you want to push it, if you're at the root dir
 `git push --recurse-submodules=on-demand`
 
 Otherwise just cd into the directory and manually git push from there.
-VSCode source control tab should help out with using submodules, but I honestly recommend sticking to commands in the terminal.
+VSCode source control tab should help out with using submodules or you can stick with commands in the terminal, both work.

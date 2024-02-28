@@ -21,6 +21,12 @@ public class SmartJoystick extends Joystick {
         boundButtons.add(button);
     }
 
+    public void bindButtons(int... buttons) {
+        for (int i : buttons) {
+            addOrThrow(i);
+        }
+    }
+
     public Trigger onTrue(int button, Command command) {
         addOrThrow(button);
         return new JoystickButton(this, button).onTrue(command);
@@ -49,6 +55,18 @@ public class SmartJoystick extends Joystick {
     public Trigger toggleOnFalse(int button, Command command) {
         addOrThrow(button);
         return new JoystickButton(this, button).toggleOnFalse(command);
+    }
+
+    public double getXInverted() {
+        return -getX();
+    }
+
+    public double getYInverted() {
+        return -getY();
+    }
+
+    public double getZInverted() {
+        return -getZ();
     }
 
 }
