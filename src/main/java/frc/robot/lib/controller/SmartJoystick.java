@@ -10,50 +10,51 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SmartJoystick extends Joystick {
 
-    private Set<Integer> boundButtons = new HashSet<>();
+    private Set<Integer> boundTrueButtons = new HashSet<>();
+    private Set<Integer> boundFalseButtons = new HashSet<>();
     
     public SmartJoystick(final int port) {
         super(port);
     }
 
-    private void addOrThrow(int button) throws IllegalArgumentException {
-        if (boundButtons.contains(button)) throw new IllegalArgumentException();
-        boundButtons.add(button);
+    private void addOrThrow(int button, Set<Integer> set) throws IllegalArgumentException {
+        if (set.contains(button)) throw new IllegalArgumentException();
+        set.add(button);
     }
 
     public void bindButtons(int... buttons) {
         for (int i : buttons) {
-            addOrThrow(i);
+            addOrThrow(i, boundTrueButtons);
         }
     }
 
     public Trigger onTrue(int button, Command command) {
-        addOrThrow(button);
+        addOrThrow(button, boundTrueButtons);
         return new JoystickButton(this, button).onTrue(command);
     }
 
     public Trigger onFalse(int button, Command command) {
-        addOrThrow(button);
+        addOrThrow(button, boundFalseButtons);
         return new JoystickButton(this, button).onFalse(command);
     }
 
     public Trigger whileTrue(int button, Command command) {
-        addOrThrow(button);
+        addOrThrow(button, boundTrueButtons);
         return new JoystickButton(this, button).whileTrue(command);
     }
 
     public Trigger whileFalse(int button, Command command) {
-        addOrThrow(button);
+        addOrThrow(button, boundFalseButtons);
         return new JoystickButton(this, button).whileFalse(command);
     }
 
     public Trigger toggleOnTrue(int button, Command command) {
-        addOrThrow(button);
+        addOrThrow(button, boundTrueButtons);
         return new JoystickButton(this, button).toggleOnTrue(command);
     }
 
     public Trigger toggleOnFalse(int button, Command command) {
-        addOrThrow(button);
+        addOrThrow(button, boundFalseButtons);
         return new JoystickButton(this, button).toggleOnFalse(command);
     }
 
