@@ -85,6 +85,7 @@ public final class NTLogger {
     public static void putTalonLog(TalonFX talon, String name, Map<String, Object> map) {
         map.put(name + ": Device ID", talon.getDeviceID());
         map.put(name + ": Control Mode", talon.getControlMode().getValue().toString());
+        map.put(name + ": Rotor Polarity", talon.getAppliedRotorPolarity().getValue().name());
         map.put(name + ": Fwd Limit Switch", talon.getForwardLimit().getValue().toString());
         map.put(name + ": Rev Limit Switch", talon.getReverseLimit().getValue().toString());
         map.put(name + ": Position (Rots)", talon.getPosition().getValueAsDouble());
