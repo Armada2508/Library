@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -12,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -23,30 +25,29 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 
 /**
- * Keeps the robot on a fixed trajectory
+ * Helper class to generate commands for following trajectories
  */
 public class FollowTrajectory {
 
-    private static NetworkTable kDebug = NetworkTableInstance.getDefault().getTable("ramsete");
-    private static NetworkTableEntry kLeftReference = kDebug.getEntry("left_reference");
-    private static NetworkTableEntry kRightReference = kDebug.getEntry("right_reference");
+    private static final NetworkTable debugTable = NetworkTableInstance.getDefault().getTable("ramsete");
+    private static final NetworkTableEntry leftReference = debugTable.getEntry("left_reference");
+    private static final NetworkTableEntry rightReference = debugTable.getEntry("right_reference");
 
-    private static SimpleMotorFeedforward kFeedforward;
-    private static DifferentialDriveKinematics kKinematics;
-    private static RamseteController kController;
-    private static RamseteController kDisabledController;
-    private static PIDController kLeftPidController;
-    private static PIDController kRightPidController;
+    private static SimpleMotorFeedforward feedForward;
+    private static DifferentialDriveKinematics diffKinematics;
+    private static RamseteController ramseteController;
+    private static RamseteController disabledController;
+    private static PIDController leftPidController;
+    private static PIDController rightPidController;
 
-    private static double kTurnCompensation;
-
-    
     /**
      * @param kS The kS constant(Feedforward)
      * @param kV The kV constant(Feedforward)
@@ -55,32 +56,30 @@ public class FollowTrajectory {
      * @param zeta The Zeta constant(RAMSETE)
      * @param trackWidth The width of the drivetrain(Kinematics)
      * @param pidController The PID Controller to use
-     * @param turnCompensation How much to overcorrect for turning aka how much the tracks are couple, 0 for a perfect drive
      */
-    public static void config(double kS, double kV, double kA, double b, double zeta, Measure<Distance> trackWidth, PIDController pidController, double turnCompensation) {
-        kFeedforward = new SimpleMotorFeedforward(kS, kV, kA);
-        kKinematics = new DifferentialDriveKinematics(trackWidth);
-        kController = new RamseteController(b, zeta);
-        kLeftPidController = new PIDController(pidController.getP(), pidController.getI(), pidController.getD());
-        kRightPidController = new PIDController(pidController.getP(), pidController.getI(), pidController.getD());
-        kDisabledController = new RamseteController() {
+    public static void config(double kS, double kV, double kA, double b, double zeta, Measure<Distance> trackWidth, PIDController pidController) {
+        feedForward = new SimpleMotorFeedforward(kS, kV, kA);
+        diffKinematics = new DifferentialDriveKinematics(trackWidth);
+        ramseteController = new RamseteController(b, zeta);
+        leftPidController = new PIDController(pidController.getP(), pidController.getI(), pidController.getD());
+        rightPidController = new PIDController(pidController.getP(), pidController.getI(), pidController.getD());
+        disabledController = new RamseteController() {
             @Override
             public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
                     double angularVelocityRefRadiansPerSecond) {
                 return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
             }
         };
-        kTurnCompensation = turnCompensation;
     }
 
     /**
      * Shorter config call for when using the Talon commands
-     * @param b
-     * @param zeta
-     * @param trackWidth
+     * @param b The B constant(RAMSETE)
+     * @param zeta The Zeta constant(RAMSETE)
+     * @param trackWidth The width of the drivetrain(Kinematics)
      */
     public static void config(double b, double zeta, Measure<Distance> trackWidth) {
-        config(0, 0, 0, b, zeta, trackWidth, new PIDController(0, 0, 0), 0);
+        config(0, 0, 0, b, zeta, trackWidth, new PIDController(0, 0, 0));
     }
 
     /**
@@ -97,19 +96,16 @@ public class FollowTrajectory {
         return new RamseteCommand(
                 trajectory,
                 driveSubsystem::getPose,
-                kDisabledController,
-                kFeedforward,
-                kKinematics,
+                disabledController,
+                feedForward,
+                diffKinematics,
                 driveSubsystem::getWheelSpeeds,
                 leftController,
                 rightController,
                 (voltsL, voltsR) -> {
-                    double turnCompensation = voltsR - voltsL;
-                    turnCompensation *= kTurnCompensation;
-                    driveSubsystem.setVoltage(voltsL - turnCompensation, voltsR + turnCompensation);
-
-                    kLeftReference.setNumber(leftController.getSetpoint());
-                    kRightReference.setNumber(rightController.getSetpoint());
+                    driveSubsystem.setVoltage(voltsL, voltsR);
+                    leftReference.setNumber(leftController.getSetpoint());
+                    rightReference.setNumber(rightController.getSetpoint());
                 },
                 driveSubsystem);
     }
@@ -126,19 +122,16 @@ public class FollowTrajectory {
         return new RamseteCommand(
                 trajectory,
                 driveSubsystem::getPose,
-                kController,
-                kFeedforward,
-                kKinematics,
+                ramseteController,
+                feedForward,
+                diffKinematics,
                 driveSubsystem::getWheelSpeeds,
-                kLeftPidController,
-                kRightPidController,
+                leftPidController,
+                rightPidController,
                 (voltsL, voltsR) -> {
-                    double turnCompensation = voltsR - voltsL;
-                    turnCompensation *= kTurnCompensation;
-                    driveSubsystem.setVoltage(voltsL - turnCompensation, voltsR + turnCompensation);
-
-                    kLeftReference.setNumber(kLeftPidController.getSetpoint());
-                    kRightReference.setNumber(kRightPidController.getSetpoint());
+                    driveSubsystem.setVoltage(voltsL, voltsR);
+                    leftReference.setNumber(leftPidController.getSetpoint());
+                    rightReference.setNumber(rightPidController.getSetpoint());
                 },
                 driveSubsystem);
     }
@@ -155,10 +148,22 @@ public class FollowTrajectory {
         return new RamseteCommand(
                 trajectory,
                 pose::get,
-                kController,
-                kKinematics,
+                ramseteController,
+                diffKinematics,
                 velocity::accept,
                 driveSubsystem);
+    }
+
+    public static Command LTVControllerCommand(Trajectory trajectory, Supplier<Pose2d> pose, BiConsumer<Double, Double> velocity, Subsystem driveSubsystem) {
+        LTVUnicycleController controller = new LTVUnicycleController(TimedRobot.kDefaultPeriod);
+        Timer timer = new Timer();
+        return driveSubsystem.runOnce(() -> {
+            timer.restart();
+        }) 
+        .andThen(driveSubsystem.run(() -> {
+            DifferentialDriveWheelSpeeds speeds = diffKinematics.toWheelSpeeds(controller.calculate(pose.get(), trajectory.sample(timer.get())));
+            velocity.accept(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
+        }).until(controller::atReference));
     }
     
     /**
@@ -176,10 +181,10 @@ public class FollowTrajectory {
     public static Command getCommandFeedforward(TrajectorySubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
         TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
         config.setReversed(reversed);
-        config.addConstraint(new DifferentialDriveKinematicsConstraint(kKinematics, maxVelocity));
-        config.addConstraint(new DifferentialDriveVoltageConstraint(kFeedforward, kKinematics, 6.0));
-        config.addConstraint(new CentripetalAccelerationConstraint(10));
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end,config);
+        config.addConstraint(new DifferentialDriveKinematicsConstraint(diffKinematics, maxVelocity));
+        config.addConstraint(new DifferentialDriveVoltageConstraint(feedForward, diffKinematics, maxVoltage));
+        config.addConstraint(new CentripetalAccelerationConstraint(maxAcceleration));
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end, config);
         trajectory = trajectory.relativeTo(trajectory.getInitialPose());
         return getCommandFeedforward(driveSubsystem, trajectory, trajectory.getInitialPose());
     }
@@ -199,10 +204,10 @@ public class FollowTrajectory {
     public static Command getCommand(TrajectorySubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
         TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
         config.setReversed(reversed);
-        config.addConstraint(new DifferentialDriveKinematicsConstraint(kKinematics, maxVelocity));
-        config.addConstraint(new DifferentialDriveVoltageConstraint(kFeedforward, kKinematics, 6.0));
-        config.addConstraint(new CentripetalAccelerationConstraint(10));
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end,config);
+        config.addConstraint(new DifferentialDriveKinematicsConstraint(diffKinematics, maxVelocity));
+        config.addConstraint(new DifferentialDriveVoltageConstraint(feedForward, diffKinematics, maxVoltage));
+        config.addConstraint(new CentripetalAccelerationConstraint(maxCentripetalAccleration));
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end, config);
         trajectory = trajectory.relativeTo(trajectory.getInitialPose());
         return getCommand(driveSubsystem, trajectory, trajectory.getInitialPose());
     }
@@ -222,10 +227,10 @@ public class FollowTrajectory {
     public static Command getCommandTalon(TrajectorySubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripetalAccleration, boolean reversed) {
         TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
         config.setReversed(reversed);
-        config.addConstraint(new DifferentialDriveKinematicsConstraint(kKinematics, maxVelocity));
-        config.addConstraint(new DifferentialDriveVoltageConstraint(kFeedforward, kKinematics, 6.0));
-        config.addConstraint(new CentripetalAccelerationConstraint(10));
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end,config);
+        config.addConstraint(new DifferentialDriveKinematicsConstraint(diffKinematics, maxVelocity));
+        config.addConstraint(new DifferentialDriveVoltageConstraint(feedForward, diffKinematics, maxVoltage));
+        config.addConstraint(new CentripetalAccelerationConstraint(maxCentripetalAccleration));
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end, config);
         trajectory = trajectory.relativeTo(trajectory.getInitialPose());
         return getCommandTalon(trajectory, trajectory.getInitialPose(), driveSubsystem::getPose, driveSubsystem::setVelocity, driveSubsystem);
     }
