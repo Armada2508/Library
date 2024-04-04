@@ -98,6 +98,7 @@ public final class NTLogger {
         map.put(name + ": Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
         map.put(name + ": Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
         map.put(name + ": Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
+        map.put(name + ": Has Reset Occurred", talon.hasResetOccurred());
     }
 
     public static void putTalonLog(TalonFX talon, Map<String, Object> map) {
