@@ -92,7 +92,7 @@ public class LogUtil {
         return entry;
     }
 
-    public static Command getSequentialCommandCurrentCommand(SequentialCommandGroup command) {
+    static Command getSequentialCommandCurrentCommand(SequentialCommandGroup command) {
         try {
             final Field fieldIndex = SequentialCommandGroup.class.getDeclaredField("m_currentCommandIndex");
             fieldIndex.setAccessible(true);
@@ -106,7 +106,7 @@ public class LogUtil {
         }
     }
 
-    public static List<Command> getParallelCommandCurrentCommands(ParallelCommandGroup command) {
+    static List<Command> getParallelCommandCurrentCommands(ParallelCommandGroup command) {
         try {
             List<Command> list = new ArrayList<>();
             final Field fieldCommands = ParallelCommandGroup.class.getDeclaredField("m_commands");
@@ -122,7 +122,7 @@ public class LogUtil {
         }
     }
 
-    public static Command getWrapperCommandInner(WrapperCommand command) {
+    static Command getWrapperCommandInner(WrapperCommand command) {
         try {
             final Field cmd = WrapperCommand.class.getDeclaredField("m_command");
             cmd.setAccessible(true);

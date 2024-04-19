@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -19,24 +20,24 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 /**
- * Used to log fields and methods(Can't have parameters 
- * and must return something) to network tables for viewing or editing(in the case of fields). <p>
- * <b> Static fields and methods will be automatically retrieved </b> but if 
- * you want instance fields or methods you must provide an instance to back the values.
- * Use {@link NTLogger#addInstance(Object obj)} to supply these to the Logger.
+ * Used to log fields to network tables and data log for viewing during testing and after a match. <p>
+ * You must register your object using {@link NTLogger#register(Loggable obj)} for its values to be 
+ * put onto network tables when running {@link NTLogger#log()}. <p>
+ * {@link NTLogger#log()} should be called in Robot Periodic.
  * @author WispySparks
  * 
  */
 public final class NTLogger {
 
     private static NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("Logging");
+    private static NetworkTable schedulerTable = mainTable.getSubTable("Command Scheduler");
     private static Map<Loggable, Integer> indexedLoggables = new HashMap<>();
     private static Map<Loggable, Map<String, Object>> loggablesMaps = new HashMap<>();
 
     private NTLogger() {}
 
     /**
-     * Convenience method to start the data log manager in a directory and log driver station and joystick data.
+     * Convenience method to start the data log manager and log driver station and joystick data.
      */
     public static void initDataLogger() {
         DataLogManager.start();
@@ -48,6 +49,7 @@ public final class NTLogger {
      */
     public static void log() {
         logDS();
+        logCommandInterrupts();
         indexedLoggables.forEach((loggable, index) -> {
             NetworkTable table = (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
                 mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
@@ -80,7 +82,6 @@ public final class NTLogger {
     /**
      * Use this method to fill your map with talon status signals
      * @param talon to log
-     * @return
      */
     public static void putTalonLog(TalonFX talon, String name, Map<String, Object> map) {
         map.put(name + ": Device ID", talon.getDeviceID());
@@ -146,6 +147,15 @@ public final class NTLogger {
         mainTable.getEntry("_Robot Enabled").setBoolean(DriverStation.isEnabled());
         mainTable.getEntry("_Match Time").setDouble(DriverStation.getMatchTime());
         mainTable.getEntry("_is FMS Attached").setBoolean(DriverStation.isFMSAttached());
+    }
+
+    private static void logCommandInterrupts() {
+        CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
+            Command interruptingCommand = interrupter.orElseGet(Commands::none);
+            DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
+            schedulerTable.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
+            schedulerTable.getEntry("Last Interrupting Command").setString(interruptedCommand.getName());
+        });
     }
 
 }
