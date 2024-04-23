@@ -1,15 +1,30 @@
 package frc.robot.lib.logging;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.networktables.StructTopic;
+import edu.wpi.first.util.struct.Struct;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +48,8 @@ public final class NTLogger {
     private static NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("Logging");
     private static NetworkTable schedulerTable = mainTable.getSubTable("Command Scheduler");
     private static Map<Loggable, Integer> indexedLoggables = new HashMap<>();
-    private static Map<Loggable, Map<String, Object>> loggablesMaps = new HashMap<>();
+    private static Map<Loggable, Map<String, Object>> loggingMaps = new HashMap<>();
+    private static List<StructPublisher<?>> structPublishers = new ArrayList<>();
 
     private NTLogger() {}
 
@@ -54,10 +70,11 @@ public final class NTLogger {
         indexedLoggables.forEach((loggable, index) -> {
             NetworkTable table = (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
                 mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
-            loggable.log(loggablesMaps.get(loggable)).forEach((name, val) -> {
+            loggable.log(loggingMaps.get(loggable)).forEach((name, val) -> {
                 if (name == null || val == null) return;
-                if (val instanceof Pose2d pose) {
-                    logPose2d(table, name, pose);
+                Optional<Struct<?>> struct = getStruct(val);
+                if (struct.isPresent()) {
+                    logStruct(table, name, val, struct.get());
                     return;
                 }
                 NetworkTableEntry entry = table.getEntry(name);
@@ -81,7 +98,7 @@ public final class NTLogger {
             .collect(Collectors.toList())
             .size();
         indexedLoggables.put(obj, index);
-        loggablesMaps.put(obj, new HashMap<>());
+        loggingMaps.put(obj, new HashMap<>());
     }
 
     /**
@@ -137,8 +154,36 @@ public final class NTLogger {
         map.put("Command Group Current Command", commandGroupCurrentCommand);
     }
 
-    private static void logPose2d(NetworkTable table, String name, Pose2d pose) {
-        table.getStructTopic(name, Pose2d.struct).publish().set(pose);
+    @SuppressWarnings("unchecked")
+    private static void logStruct(NetworkTable table, String name, Object objToLog, Struct<?> struct) {
+        StructTopic<?> topic = table.getStructTopic(name, struct);
+        for (StructPublisher<?> publisher : structPublishers) {
+            if (publisher.getTopic().equals(topic)) {
+                ((StructPublisher<Object>) publisher).set(objToLog);
+                return;
+            }
+        }
+        StructPublisher<?> publisher = topic.publish();
+        structPublishers.add(publisher);
+    }
+
+    /**
+     * Gets the corresponding struct value for an object e.g. Pose2d.struct for a Pose2d.
+     * @param obj to get struct for
+     * @return An Object's struct value or empty if there is none
+     */
+    private static Optional<Struct<?>> getStruct(Object obj) {
+        if (obj instanceof Pose2d) return Optional.of(Pose2d.struct);
+        if (obj instanceof Pose3d) return Optional.of(Pose3d.struct);
+        if (obj instanceof Rotation2d) return Optional.of(Rotation2d.struct);
+        if (obj instanceof Rotation3d) return Optional.of(Rotation3d.struct);
+        if (obj instanceof Translation2d) return Optional.of(Translation2d.struct);
+        if (obj instanceof Translation3d) return Optional.of(Translation3d.struct);
+        if (obj instanceof Transform2d) return Optional.of(Transform2d.struct);
+        if (obj instanceof Transform3d) return Optional.of(Transform3d.struct);
+        if (obj instanceof Twist2d) return Optional.of(Twist2d.struct);
+        if (obj instanceof Twist3d) return Optional.of(Twist3d.struct);
+        return Optional.empty();
     }
 
     private static void logDS() {
