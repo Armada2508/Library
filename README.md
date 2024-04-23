@@ -32,7 +32,7 @@ Make sure GradleRIO version matches. <br>
 Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix 6. <br>
 
 **Important** - I would run `./gradlew build` before continuing. <br>
-
+*Note* - It might be important to add `"java.gradle.buildServer.enabled": "off"` to your VSCode settings.json file depending on your extensions.
 ### Updating your submodules
 To update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
 `git submodule update --remote` <br>
