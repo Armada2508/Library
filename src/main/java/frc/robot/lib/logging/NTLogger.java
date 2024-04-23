@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -55,6 +56,10 @@ public final class NTLogger {
                 mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
             loggable.log(loggablesMaps.get(loggable)).forEach((name, val) -> {
                 if (name == null || val == null) return;
+                if (val instanceof Pose2d pose) {
+                    logPose2d(table, name, pose);
+                    return;
+                }
                 NetworkTableEntry entry = table.getEntry(name);
                 try {
                     entry.setValue(val);
@@ -130,6 +135,10 @@ public final class NTLogger {
         map.put("Default Command", subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
         map.put("Current Command", currentCommand == null ? "None" : currentCommand.getName());
         map.put("Command Group Current Command", commandGroupCurrentCommand);
+    }
+
+    private static void logPose2d(NetworkTable table, String name, Pose2d pose) {
+        table.getStructTopic(name, Pose2d.struct).publish().set(pose);
     }
 
     private static void logDS() {
