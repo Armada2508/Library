@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
-import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -73,7 +72,7 @@ public final class NTLogger {
                 mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
             loggable.log(loggingMaps.get(loggable)).forEach((name, val) -> {
                 if (name == null || val == null) return;
-                Optional<Struct<?>> struct = getStruct(val);
+                Optional<Struct<Object>> struct = getStruct(val);
                 if (struct.isPresent()) {
                     logStruct(table, name, val, struct.get());
                     return;
@@ -156,24 +155,23 @@ public final class NTLogger {
     }
 
     /**
-     * Logs a value that uses structs to network tables. Keep in mind that {@code objToLog} and {@code struct} 
-     * must match each other, e.g. a {@link Pose2d} and {@link Pose2dStruct}.
+     * Logs a value that uses structs to network tables. 
      * @param table network table to log value to
      * @param name for value
-     * @param objToLog object that will be logged as a struct, must match with {@code struct}
-     * @param struct implementation that will be used for network tables to log object, must match with {@code objToLog}
+     * @param objToLog object that will be logged as a struct
+     * @param struct implementation that will be used for network tables to log object
      */
     @SuppressWarnings("unchecked")
-    private static void logStruct(NetworkTable table, String name, Object objToLog, Struct<?> struct) {
-        StructTopic<?> topic = table.getStructTopic(name, struct);
+    private static <T> void logStruct(NetworkTable table, String name, T objToLog, Struct<T> struct) {
+        StructTopic<T> topic = table.getStructTopic(name, struct);
         for (StructPublisher<?> publisher : structPublishers) {
             if (publisher.getTopic().equals(topic)) {
-                ((StructPublisher<Object>) publisher).set(objToLog);
+                ((StructPublisher<T>) publisher).set(objToLog);
                 return;
             }
         }
-        StructPublisher<?> publisher = topic.publish();
-        ((StructPublisher<Object>) publisher).set(objToLog);
+        StructPublisher<T> publisher = topic.publish();
+        publisher.set(objToLog);    
         structPublishers.add(publisher);
     }
 
@@ -182,18 +180,20 @@ public final class NTLogger {
      * @param obj to get struct for
      * @return An Object's struct implementation or empty if there is none
      */
-    private static Optional<Struct<?>> getStruct(Object obj) {
-        if (obj instanceof Pose2d) return Optional.of(Pose2d.struct);
-        if (obj instanceof Pose3d) return Optional.of(Pose3d.struct);
-        if (obj instanceof Rotation2d) return Optional.of(Rotation2d.struct);
-        if (obj instanceof Rotation3d) return Optional.of(Rotation3d.struct);
-        if (obj instanceof Translation2d) return Optional.of(Translation2d.struct);
-        if (obj instanceof Translation3d) return Optional.of(Translation3d.struct);
-        if (obj instanceof Transform2d) return Optional.of(Transform2d.struct);
-        if (obj instanceof Transform3d) return Optional.of(Transform3d.struct);
-        if (obj instanceof Twist2d) return Optional.of(Twist2d.struct);
-        if (obj instanceof Twist3d) return Optional.of(Twist3d.struct);
-        return Optional.empty();
+    @SuppressWarnings("unchecked")
+    private static <T> Optional<Struct<T>> getStruct(T obj) {
+        Struct<?> struct = null;
+        if (obj instanceof Pose2d) struct = Pose2d.struct;
+        if (obj instanceof Pose3d) struct = Pose3d.struct;
+        if (obj instanceof Rotation2d) struct = Rotation2d.struct;
+        if (obj instanceof Rotation3d) struct = Rotation3d.struct;
+        if (obj instanceof Translation2d) struct = Translation2d.struct;
+        if (obj instanceof Translation3d) struct = Translation3d.struct;
+        if (obj instanceof Transform2d) struct = Transform2d.struct;
+        if (obj instanceof Transform3d) struct = Transform3d.struct;
+        if (obj instanceof Twist2d) struct = Twist2d.struct;
+        if (obj instanceof Twist3d) struct = Twist3d.struct;
+        return Optional.ofNullable((Struct<T>) struct);
     }
 
     private static void logDS() {
