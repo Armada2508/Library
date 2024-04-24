@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
+import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -154,6 +155,14 @@ public final class NTLogger {
         map.put("Command Group Current Command", commandGroupCurrentCommand);
     }
 
+    /**
+     * Logs a value that uses structs to network tables. Keep in mind that {@code objToLog} and {@code struct} 
+     * must match each other, e.g. a {@link Pose2d} and {@link Pose2dStruct}.
+     * @param table network table to log value to
+     * @param name for value
+     * @param objToLog object that will be logged as a struct, must match with {@code struct}
+     * @param struct implementation that will be used for network tables to log object, must match with {@code objToLog}
+     */
     @SuppressWarnings("unchecked")
     private static void logStruct(NetworkTable table, String name, Object objToLog, Struct<?> struct) {
         StructTopic<?> topic = table.getStructTopic(name, struct);
@@ -164,13 +173,14 @@ public final class NTLogger {
             }
         }
         StructPublisher<?> publisher = topic.publish();
+        ((StructPublisher<Object>) publisher).set(objToLog);
         structPublishers.add(publisher);
     }
 
     /**
-     * Gets the corresponding struct value for an object e.g. Pose2d.struct for a Pose2d.
+     * Gets the corresponding struct implementation for an object e.g. Pose2d.struct for a Pose2d.
      * @param obj to get struct for
-     * @return An Object's struct value or empty if there is none
+     * @return An Object's struct implementation or empty if there is none
      */
     private static Optional<Struct<?>> getStruct(Object obj) {
         if (obj instanceof Pose2d) return Optional.of(Pose2d.struct);
