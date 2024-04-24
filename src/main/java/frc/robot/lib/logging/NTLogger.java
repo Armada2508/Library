@@ -54,7 +54,7 @@ public final class NTLogger {
     private NTLogger() {}
 
     /**
-     * Convenience method to start the data log manager and log driver station and joystick data.
+     * Convenience method to start the data log manager, log driver station and joystick data.
      */
     public static void initDataLogger() {
         DataLogManager.start();
@@ -62,10 +62,11 @@ public final class NTLogger {
     }
 
     /**
-     * Call this in robot periodic to log all registered objects to network tables.
+     * Call this in robot periodic to log all registered objects, extra driver station data
+     * and command interrupts to network tables.
      */
     public static void log() {
-        logDS();
+        logDriverStation();
         logCommandInterrupts();
         indexedLoggables.forEach((loggable, index) -> {
             NetworkTable table = (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
@@ -89,7 +90,7 @@ public final class NTLogger {
 
     /**
      * Registers an object to the logger who's 'log' method will be called.
-     * @param obj
+     * @param obj to register
      */
     public static void register(Loggable obj) {
         int index = indexedLoggables.values()
@@ -102,10 +103,13 @@ public final class NTLogger {
     }
 
     /**
-     * Use this method to fill your map with talon status signals
+     * Fills your map with TalonFX StatusSignals.
      * @param talon to log
+     * @param name of talon for logging
+     * @param map to fill
+     * @return the map passed in for method chaining
      */
-    public static void putTalonLog(TalonFX talon, String name, Map<String, Object> map) {
+    public static Map<String, Object> getTalonLog(TalonFX talon, String name, Map<String, Object> map) {
         map.put(name + ": Device ID", talon.getDeviceID());
         map.put(name + ": Control Mode", talon.getControlMode().getValue().toString());
         map.put(name + ": Rotor Polarity", talon.getAppliedRotorPolarity().getValue().name());
@@ -122,18 +126,27 @@ public final class NTLogger {
         map.put(name + ": Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
         map.put(name + ": Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
         map.put(name + ": Has Reset Occurred", talon.hasResetOccurred());
+        return map;
     }
 
-    public static void putTalonLog(TalonFX talon, Map<String, Object> map) {
+    /**
+     * Fills your map with TalonFX StatusSignals, name defaults to the TalonFX's device ID.
+     * @param talon to log
+     * @param map to fill
+     * @return the map passed in for method chaining
+     */
+    public static Map<String, Object> getTalonLog(TalonFX talon, Map<String, Object> map) {
         int ID = talon.getDeviceID();
-        putTalonLog(talon, "TalonFX " + ID, map);
+        return getTalonLog(talon, "TalonFX " + ID, map);
     }
     
     /**
-     * Fills your map with subsystem logged values
+     * Fills your map with values to log on a subsystem.
      * @param subsystem to log
+     * @param map to fill
+     * @return the map passed in for method chaining
      */
-    public static void putSubsystemLog(Subsystem subsystem, Map<String, Object> map) {
+    public static Map<String, Object> putSubsystemLog(Subsystem subsystem, Map<String, Object> map) {
         Command currentCommand = subsystem.getCurrentCommand();
         Command innerCommand = Commands.none();
         String commandGroupCurrentCommand = "None";
@@ -152,6 +165,7 @@ public final class NTLogger {
         map.put("Default Command", subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
         map.put("Current Command", currentCommand == null ? "None" : currentCommand.getName());
         map.put("Command Group Current Command", commandGroupCurrentCommand);
+        return map;
     }
 
     /**
@@ -177,8 +191,8 @@ public final class NTLogger {
 
     /**
      * Gets the corresponding struct implementation for an object e.g. Pose2d.struct for a Pose2d.
-     * @param obj to get struct for
-     * @return An Object's struct implementation or empty if there is none
+     * @param obj object to get struct for
+     * @return An object's struct implementation or empty if there is none
      */
     @SuppressWarnings("unchecked")
     private static <T> Optional<Struct<T>> getStruct(T obj) {
@@ -196,7 +210,10 @@ public final class NTLogger {
         return Optional.ofNullable((Struct<T>) struct);
     }
 
-    private static void logDS() {
+    /**
+     * Logs common Driver Station data like robot mode and match time etc.
+     */
+    private static void logDriverStation() {
         String mode = "Unknown";
         if (DriverStation.isTeleop()) {
             mode = "Teleop";
