@@ -15,6 +15,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class TalonMusic {
 
+    /**
+     * Prevent this class from being instantiated.
+     */
+    private TalonMusic() {}
+
     private static final Orchestra orchestra = new Orchestra();
     private static final AudioConfigs audioConfigs = new AudioConfigs().withAllowMusicDurDisable(true);
     private static final List<Subsystem> subsystems = new ArrayList<>();

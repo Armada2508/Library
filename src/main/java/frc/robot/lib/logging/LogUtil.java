@@ -21,6 +21,11 @@ import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 public class LogUtil {
 
+    /**
+     * Prevent this class from being instantiated.
+     */
+    private LogUtil() {}
+
 	// RFC2822
     private static SimpleDateFormat kDateFormat = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
 	private static SimpleDateFormat kSessionNameFormat = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss", Locale.US);

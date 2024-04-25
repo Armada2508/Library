@@ -57,6 +57,9 @@ public final class NTLogger {
     private static List<StructPublisher<?>> structPublishers = new ArrayList<>();
     private static List<ProtobufPublisher<?>> protobufPublishers = new ArrayList<>();
 
+    /**
+     * Prevent this class from being instantiated.
+     */
     private NTLogger() {}
 
     /**

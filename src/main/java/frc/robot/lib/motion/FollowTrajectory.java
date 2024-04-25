@@ -27,6 +27,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  */
 public class FollowTrajectory {
 
+    /**
+     * Prevent this class from being instantiated.
+     */
+    private FollowTrajectory() {}
+
     private static SimpleMotorFeedforward feedForward;
     private static DifferentialDriveKinematics diffKinematics;
     private static RamseteController ramseteController;

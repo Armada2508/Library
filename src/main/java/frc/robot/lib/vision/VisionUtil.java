@@ -5,6 +5,11 @@ import edu.wpi.first.math.Pair;
 import frc.robot.lib.util.Util;
 
 public class VisionUtil {
+
+    /**
+     * Prevent this class from being instantiated.
+     */
+    private VisionUtil() {}
     
     /**
      * Converts a pixel input to an angle output(measured in degrees)

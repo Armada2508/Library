@@ -3,6 +3,11 @@ package frc.robot.lib;
 public class Encoder {
 
     /**
+     * Prevent this class from being instantiated.
+     */
+    private Encoder() {}
+
+    /**
      * Converts from encoder units to real-world units
      * @param sensorPosition The current value read from the sensor
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox

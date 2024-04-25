@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class LEDStrip {
 
-    private final AddressableLED mStrip;
-    private final AddressableLEDBuffer mBuffer;
-    private int mHue;
-    private int mBandIndex;
+    private final AddressableLED strip;
+    private final AddressableLEDBuffer buffer;
+    private int hue;
+    private int bandIndex;
 
     /**
      * Creates a new LEDStrip Object
@@ -23,11 +23,11 @@ public class LEDStrip {
      * @param length The length of the LED strip
      */
     public LEDStrip(int port, int length) {
-        mStrip = new AddressableLED(port);
-        mBuffer = new AddressableLEDBuffer(length);
-        mStrip.setLength(length);
-        mStrip.setData(mBuffer);
-        mStrip.start();
+        strip = new AddressableLED(port);
+        buffer = new AddressableLEDBuffer(length);
+        strip.setLength(length);
+        strip.setData(buffer);
+        strip.start();
     }
 
     /**
@@ -35,7 +35,7 @@ public class LEDStrip {
      * @param color The color to set the strip to
      */
     public void set(Color color) {
-        set(0, mBuffer.getLength(), color);
+        set(0, buffer.getLength(), color);
     }
 
     /**
@@ -44,8 +44,8 @@ public class LEDStrip {
      * @param color The color to set the specified LED to
      */
     public void set(int index, Color color) {
-        mBuffer.setLED(index, color);
-        mStrip.setData(mBuffer);
+        buffer.setLED(index, color);
+        strip.setData(buffer);
     }
     
     /**
@@ -56,9 +56,9 @@ public class LEDStrip {
      */
     public void set(int start, int end, Color color) {
         for (int i = start; i < end; i++) {
-            mBuffer.setLED(i, color);
+            buffer.setLED(i, color);
         }
-        mStrip.setData(mBuffer);
+        strip.setData(buffer);
     }
     
     /**
@@ -68,7 +68,7 @@ public class LEDStrip {
      * @param v The value of the color
      */
     public void setHSV(int h, int s, int v) {
-        setHSV(0, mBuffer.getLength(), h, s, v);
+        setHSV(0, buffer.getLength(), h, s, v);
     }
     
     /**
@@ -79,8 +79,8 @@ public class LEDStrip {
      * @param v The value of the color
      */
     public void setHSV(int index, int h, int s, int v) {
-        mBuffer.setHSV(index, h, s, v);
-        mStrip.setData(mBuffer);
+        buffer.setHSV(index, h, s, v);
+        strip.setData(buffer);
     }
     
     /**
@@ -93,9 +93,9 @@ public class LEDStrip {
      */
     public void setHSV(int start, int end, int h, int s, int v) {
         for (int i = start; i < end; i++) {
-            mBuffer.setHSV(i, h, s, v);
+            buffer.setHSV(i, h, s, v);
         }
-        mStrip.setData(mBuffer);
+        strip.setData(buffer);
     }
 
 
@@ -103,7 +103,7 @@ public class LEDStrip {
      * @return The length of the LED Strip
      */
     public int getLength() {
-        return mBuffer.getLength();
+        return buffer.getLength();
     }
 
     /**
@@ -112,7 +112,7 @@ public class LEDStrip {
      * @return The color of the LED
      */
     public Color getColor(int index) {
-        return mBuffer.getLED(index);
+        return buffer.getLED(index);
     }
 
     /**
@@ -130,9 +130,9 @@ public class LEDStrip {
      * @param v The value(brightness) of the color
      */
     public void rainbow(double increment, int s, int v) {
-        mHue += increment;
-        mHue %= 180;
-        setHSV(mHue, s, v);
+        hue += increment;
+        hue %= 180;
+        setHSV(hue, s, v);
     }
 
     /**
@@ -150,13 +150,13 @@ public class LEDStrip {
      * @param v The value(brightness) of the color
      */
     public void rainbowBand(double increment, int s, int v) {
-        mHue += increment;
-        mHue %= 180;
-        for (int i = 0; i < mBuffer.getLength(); i++) {
-            int hue = (mHue + (i * 180 / mBuffer.getLength())) % 180;
-            mBuffer.setHSV(i, hue, s, v);
+        hue += increment;
+        hue %= 180;
+        for (int i = 0; i < buffer.getLength(); i++) {
+            int newHue = (hue + (i * 180 / buffer.getLength())) % 180;
+            buffer.setHSV(i, newHue, s, v);
         }
-        mStrip.setData(mBuffer);
+        strip.setData(buffer);
     }
 
     /**
@@ -175,15 +175,15 @@ public class LEDStrip {
      * @param nodes How many nodes the effect has
      */
     public void band(double increment, Color color, int nodes) {
-        mBandIndex += increment;
-        for (int i = 0; i < mBuffer.getLength(); i++) {
-            int halfWavelength = mBuffer.getLength() / (2 * nodes);
-            int index = ( i + mBandIndex ) % mBuffer.getLength();
+        bandIndex += increment;
+        for (int i = 0; i < buffer.getLength(); i++) {
+            int halfWavelength = buffer.getLength() / (2 * nodes);
+            int index = ( i + bandIndex ) % buffer.getLength();
             int brightness = (halfWavelength - Math.abs(index % (2*halfWavelength) - halfWavelength) ) / halfWavelength;
             Color ledColor = new Color(color.red * brightness, color.green * brightness, color.blue * brightness);
-            mBuffer.setLED(index, ledColor);
+            buffer.setLED(index, ledColor);
         }
-        mStrip.setData(mBuffer);
+        strip.setData(buffer);
     }
 
     /**
