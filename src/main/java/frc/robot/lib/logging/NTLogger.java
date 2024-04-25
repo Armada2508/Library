@@ -60,47 +60,20 @@ public final class NTLogger {
     private NTLogger() {}
 
     /**
-     * Convenience method to start the data log manager, log driver station and joystick data.
+     * Convenience method to start the data log manager, log driver station, joystick data and command interrupts.
      */
     public static void initDataLogger() {
         DataLogManager.start();
 		DriverStation.startDataLog(DataLogManager.getLog());
-    }
-
-    /**
-     * Call this in robot periodic to log all registered objects, extra driver station data
-     * and command interrupts to network tables.
-     */
-    public static void log() {
-        logDriverStation();
-        logCommandInterrupts();
-        indexedLoggables.forEach((loggable, index) -> {
-            NetworkTable table = (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
-                mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
-            loggingMap.clear();
-            loggable.log(loggingMap).forEach((name, val) -> {
-                if (name == null || val == null) return;
-                Optional<Struct<Object>> struct = getStruct(val);
-                Optional<Protobuf<Object, ProtoMessage<?>>> protobuf = getProtobuf(val);
-                if (struct.isPresent()) {
-                    logStruct(table, name, val, struct.get());
-                    return;
-                }
-                if (protobuf.isPresent()) {
-                    logProtobuf(table, name, val, protobuf.get());
-                    return;
-                }
-                NetworkTableEntry entry = table.getEntry(name);
-                try {
-                    entry.setValue(val);
-                } catch (IllegalArgumentException e) {
-                    entry.setString(val.toString());
-                }
-            });
+        CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
+            Command interruptingCommand = interrupter.orElseGet(Commands::none);
+            DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
+            schedulerTable.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
+            schedulerTable.getEntry("Last Interrupting Command").setString(interruptedCommand.getName());
         });
     }
 
-    /**
+     /**
      * Registers an object to the logger who's 'log' method will be called.
      * @param obj to register
      */
@@ -111,6 +84,69 @@ public final class NTLogger {
             .collect(Collectors.toList())
             .size();
         indexedLoggables.put(obj, index);
+    }
+
+    /**
+     * Call this in robot periodic to log all registered objects, extra driver station data
+     * and command interrupts to network tables.
+     */
+    public static void logEverything() {
+        logDriverStation();
+        indexedLoggables.forEach((loggable, index) -> {
+            NetworkTable table = getLoggablesTable(loggable, index);
+            loggingMap.clear();
+            loggable.log(loggingMap).forEach((name, val) -> logValue(table, name, val));
+        });
+    }
+
+    /**
+     * Logs an invidual value to the loggable's network table. Useful for logging one off values inside of methods. 
+     * @param loggable used to find the right network table
+     * @param name for value
+     * @param val to log
+     */
+    public static void log(Loggable loggable, String name, Object val) {
+        int index = indexedLoggables.get(loggable);
+        NetworkTable table = getLoggablesTable(loggable, index);
+        logValue(table, name, val);
+    }
+
+    /**
+     * Gets a loggable's network table to log to
+     * @param loggable to get network table for
+     * @param index of loggable, counts up for every instance
+     * @return loggable's network table 
+     */
+    private static NetworkTable getLoggablesTable(Loggable loggable, int index) {
+        return (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
+            mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
+    }
+
+    /**
+     * Logs a value into a network table, correctly logs structs and protobufs. 
+     * If it's not a supported type it just calls {@link Object#toString()}. 
+     * @param table to log to
+     * @param name for value
+     * @param val to log
+     */
+    private static void logValue(NetworkTable table, String name, Object val) {
+        if (name == null || val == null) return;
+        Optional<Struct<Object>> struct = getStruct(val);
+        Optional<Protobuf<Object, ProtoMessage<?>>> protobuf = getProtobuf(val);
+        if (struct.isPresent()) {
+            logStruct(table, name, val, struct.get());
+            return;
+        }
+        if (protobuf.isPresent()) {
+            logProtobuf(table, name, val, protobuf.get());
+            return;
+        }
+        NetworkTableEntry entry = table.getEntry(name);
+        try {
+            entry.setValue(val);
+        } catch (IllegalArgumentException e) {
+            entry.setString(val.toString());
+        }
     }
 
     /**
@@ -272,15 +308,6 @@ public final class NTLogger {
         mainTable.getEntry("_Robot Enabled").setBoolean(DriverStation.isEnabled());
         mainTable.getEntry("_Match Time").setDouble(DriverStation.getMatchTime());
         mainTable.getEntry("_is FMS Attached").setBoolean(DriverStation.isFMSAttached());
-    }
-
-    private static void logCommandInterrupts() {
-        CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
-            Command interruptingCommand = interrupter.orElseGet(Commands::none);
-            DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
-            schedulerTable.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
-            schedulerTable.getEntry("Last Interrupting Command").setString(interruptedCommand.getName());
-        });
     }
 
 }
