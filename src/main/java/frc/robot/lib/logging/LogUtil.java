@@ -9,9 +9,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.BooleanTopic;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -90,11 +92,28 @@ public class LogUtil {
         System.out.println(getFormatted(names, variables));
     }
 
-    public static GenericEntry getTuner(String name, Object defaultValue) {
-        GenericEntry entry = NetworkTableInstance.getDefault().getTable("Tuning")
-            .getTopic(name).getGenericEntry(new PubSubOption[0]);
-        entry.setValue(defaultValue);
-        return entry;
+    /**
+     * Used for getting tunable numbers for quick iteration. Don't call this method in a loop as it will create NT subscribers and publishers.
+     * @param name of value in network tables
+     * @param defaultValue 
+     * @return A subscriber that can be used to get the value from network tables
+     */
+    public static DoubleSubscriber getTunableNumber(String name, double defaultValue) {
+        DoubleTopic topic = NetworkTableInstance.getDefault().getTable("Tuning").getDoubleTopic(name);
+        topic.publish().set(defaultValue);
+        return topic.subscribe(defaultValue);
+    }
+
+    /**
+     * Used for getting tunable booleans for quick iteration. Don't call this method in a loop as it will create NT subscribers and publishers.
+     * @param name of value in network tables
+     * @param defaultValue 
+     * @return A subscriber that can be used to get the value from network tables
+     */
+    public static BooleanSubscriber getTunableBoolean(String name, boolean defaultValue) {
+        BooleanTopic topic = NetworkTableInstance.getDefault().getTable("Tuning").getBooleanTopic(name);
+        topic.publish().set(defaultValue);
+        return topic.subscribe(defaultValue);
     }
 
     static Command getSequentialCommandCurrentCommand(SequentialCommandGroup command) {
