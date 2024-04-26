@@ -225,10 +225,8 @@ public class Util {
      * @return
      */
     public static Pair<Double, Double> toCartesianCoordinates(double distance, double theta) {
-        double x = 0;
-        double y = 0;
-        x = distance * Math.cos(theta);
-        y = distance * Math.sin(theta);
+        double x = distance * Math.cos(theta);
+        double y = distance * Math.sin(theta);
         return new Pair<Double,Double>(x, y);
     }
 

@@ -71,7 +71,7 @@ public class SmartJoystick extends Joystick {
     }
 
     public boolean throttleOverHalf() {
-        return getThrottle() < 0; // Throttle is backwards on joystick. YAY!
+        return getThrottle() < 0; // Throttle is backwards on joystick. 
     }
 
 }

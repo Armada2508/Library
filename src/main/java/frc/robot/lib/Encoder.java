@@ -2,6 +2,8 @@ package frc.robot.lib;
 
 public class Encoder {
 
+    public static final double degreesPerRotation = 360.0;
+
     /**
      * Prevent this class from being instantiated.
      */
@@ -156,7 +158,7 @@ public class Encoder {
      * @return Angle in degrees
      */
     public static double toAngle(double sensorPosition, double encoderUnitsPerRev, double gearRatio) {
-        return sensorPosition * (360.0 / encoderUnitsPerRev) / gearRatio;
+        return sensorPosition * (degreesPerRotation / encoderUnitsPerRev) / gearRatio;
     }
 
     /**
@@ -177,7 +179,7 @@ public class Encoder {
      * @return Angle in encoder units
      */
     public static double fromAngle(double angleDegrees, double encoderUnitsPerRev, double gearRatio) {
-        return angleDegrees * (encoderUnitsPerRev / 360.0) * gearRatio;
+        return angleDegrees * (encoderUnitsPerRev / degreesPerRotation) * gearRatio;
     }
 
     /**
