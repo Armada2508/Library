@@ -240,6 +240,7 @@ public final class NTLogger {
     }
 
     /**
+     * If an object has both struct and protobuf, prefer struct as it's faster.
      * Gets the corresponding struct implementation for an object e.g. Pose2d.struct for a Pose2d.
      * @param obj object to get struct for
      * @return An object's struct implementation or empty if there is none
@@ -282,6 +283,7 @@ public final class NTLogger {
     }
 
     /**
+     * If an object has both struct and protobuf, prefer struct as it's faster.
      * Gets the corresponding protobuf implementation for an object e.g. Pose2d.proto for a Pose2d.
      * @param obj object to get struct for
      * @return An object's protobuf implementation or empty if there is none
