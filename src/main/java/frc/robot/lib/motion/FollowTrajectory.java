@@ -33,7 +33,7 @@ public class FollowTrajectory {
     private static DifferentialDriveKinematics diffKinematics;
 
     /**
-     * Shorter config call for when using the Talon commands
+     * Configure FollowTrajectory for using its static methods, must be called.
      * @param b The B constant(RAMSETE)
      * @param zeta The Zeta constant(RAMSETE)
      * @param trackWidth The width of the drivetrain(Kinematics)
