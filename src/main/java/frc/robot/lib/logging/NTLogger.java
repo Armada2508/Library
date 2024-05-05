@@ -102,22 +102,22 @@ public final class NTLogger {
     /** 
      * Logs a value to network tables. Supported types are those supported by network tables, 
      * types that have struct or protobuf implementations, TalonFX and Subsystem.
-     * @param obj used to find the right network table to log under
+     * @param owner used to find the right network table to log under
      * @param name for value
      * @param val to log
      */
-    public static void log(Object obj, String name, Object val) {
-        if (!registeredObjects.containsKey(obj)) { // Adds object to map of not in it already
+    public static void log(Object owner, String name, Object val) {
+        if (!registeredObjects.containsKey(owner)) { // Adds object to map of not in it already
             int index = registeredObjects.values()
                 .stream()
-                .filter((value) -> value.getClass().equals(obj.getClass()))
+                .filter((value) -> value.getClass().equals(owner.getClass()))
                 .collect(Collectors.toList())
                 .size(); 
-            registeredObjects.put(obj, index);
+            registeredObjects.put(owner, index);
         }
-        int index = registeredObjects.get(obj);
-        NetworkTable table = (index == 0) ? mainTable.getSubTable(obj.getClass().getSimpleName()) : 
-            mainTable.getSubTable(obj.getClass().getSimpleName() + "-" + index);
+        int index = registeredObjects.get(owner);
+        NetworkTable table = (index == 0) ? mainTable.getSubTable(owner.getClass().getSimpleName()) : 
+            mainTable.getSubTable(owner.getClass().getSimpleName() + "-" + index);
         logValue(table, name, val);
     }
 
@@ -146,7 +146,7 @@ public final class NTLogger {
             return;
         }
         if (val instanceof Subsystem subsystem) {
-            logSubystem(table, subsystem);
+            logSubystem(table, name, subsystem);
             return;
         }
         NetworkTableEntry entry = table.getEntry(name); // This creates an entry if it doesn't exist yet
@@ -196,9 +196,10 @@ public final class NTLogger {
     /**
      * Logs a subsystem to network tables.
      * @param table to log to
+     * @param name for subsystem
      * @param subsystem to log
      */
-    private static void logSubystem(NetworkTable table, Subsystem subsystem) {
+    private static void logSubystem(NetworkTable table, String name, Subsystem subsystem) {
         Command currentCommand = subsystem.getCurrentCommand();
         Command innerCommand = Commands.none();
         String commandGroupCurrentCommand = "None";
@@ -213,10 +214,10 @@ public final class NTLogger {
                 commandGroupCurrentCommand += c.getName() + " ";
             }
         }
-        table.getEntry("Subsystem: _Name").setString(subsystem.getName());
-        table.getEntry("Subsystem: Default Command").setString(subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
-        table.getEntry("Subsystem: Current Command").setString(currentCommand == null ? "None" : currentCommand.getName());
-        table.getEntry("Subsystem: Command Group Current Command").setString(commandGroupCurrentCommand);
+        table.getEntry(name + ": _Name").setString(subsystem.getName());
+        table.getEntry(name + ": Default Command").setString(subsystem.getDefaultCommand() == null ? "None" : subsystem.getDefaultCommand().getName());
+        table.getEntry(name + ": Current Command").setString(currentCommand == null ? "None" : currentCommand.getName());
+        table.getEntry(name + ": Command Group Current Command").setString(commandGroupCurrentCommand);
     }
 
     /**
