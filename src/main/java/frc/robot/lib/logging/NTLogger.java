@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -166,31 +167,45 @@ public final class NTLogger {
     private static void logTalonFX(NetworkTable table, String name, TalonFX talon) {
         if (!talonfxSignals.containsKey(talon)) {
             talonfxSignals.put(talon, List.of(
-                Pair.of("Control Mode", talon.getControlMode())
+                Pair.of("Control Mode", talon.getControlMode()),
+                Pair.of("Rotor Polarity", talon.getAppliedRotorPolarity()),
+                Pair.of("Fwd Limit Switch", talon.getForwardLimit()),
+                Pair.of("Rev Limit Switch", talon.getReverseLimit()),
+                Pair.of("Position (Rots)", talon.getPosition()),
+                Pair.of("Velocity (Rots\\\\s)", talon.getVelocity()),
+                Pair.of("Acceleration (Rots\\\\s^2)", talon.getAcceleration()),
+                Pair.of("Closed Loop Target", talon.getClosedLoopReference()),
+                Pair.of("Closed Loop Slot", talon.getClosedLoopSlot()),
+                Pair.of("Supply Voltage (V)", talon.getSupplyVoltage()),
+                Pair.of("Motor Voltage (V)", talon.getMotorVoltage()),
+                Pair.of("Supply Current (A)", talon.getSupplyCurrent()),
+                Pair.of("Torque Current (A)", talon.getTorqueCurrent()),
+                Pair.of("Device Temperature (C)", talon.getDeviceTemp())
             ));
         }
         var signals = talonfxSignals.get(talon);
-        // BaseStatusSignal.refreshAll((BaseStatusSignal[]) signals.toArray());
+        // Turning list of pairs of strings and signals into just an array of signals
+        BaseStatusSignal[] arr = new BaseStatusSignal[signals.size()];
+        for (int i = 0; i < arr.length; i++) { 
+            arr[i] = signals.get(i).getSecond();
+        }
+        BaseStatusSignal.refreshAll(arr); // Refresh all status signals for a TalonFX at once
+        for (var pair : signals) { // Log each signal appropriately
+            NetworkTableEntry entry = table.getEntry(name + ": " + pair.getFirst());
+            StatusSignal<?> signal = pair.getSecond();
+            Class<?> signalType = signal.getTypeClass();
+            if (signalType == Double.class) {
+                entry.setDouble(signal.getValueAsDouble());
+                continue;
+            }
+            if (signalType == Integer.class) {
+                entry.setInteger((int) signal.getValueAsDouble());
+                continue;
+            }
+            entry.setString(signal.getValue().toString());
+        }
         table.getEntry(name + ": Device ID").setInteger(talon.getDeviceID());
         table.getEntry(name + ": Has Reset Occurred").setBoolean(talon.hasResetOccurred());
-        for (var pair : signals) {
-            table.getEntry(name + ": " + pair.getFirst()).setValue(pair.getSecond().getValue().toString());
-            System.out.println(pair.getFirst() +" " + pair.getSecond().getTypeClass() + " " + pair.getSecond().getName());
-        }
-        // table.getEntry(name + ": Control Mode").setString(signals.get(0).getValue().toString());
-        // table.getEntry(name + ": Rotor Polarity").setString(signals.get(1).getValue().toString());
-        // table.getEntry(name + ": Fwd Limit Switch").setString(signals.get(2).getValue().toString());
-        // table.getEntry(name + ": Rev Limit Switch").setString(signals.get(3).getValue().toString());
-        // table.getEntry(name + ": Position (Rots)").setDouble(signals.get(4).getValueAsDouble());
-        // table.getEntry(name + ": Velocity (Rots\\s)").setDouble(signals.get(5).getValueAsDouble());
-        // table.getEntry(name + ": Acceleration (Rots\\s^2)").setDouble(signals.get(6).getValueAsDouble());
-        // table.getEntry(name + ": Closed Loop Target").setDouble(signals.get(7).getValueAsDouble());
-        // table.getEntry(name + ": Closed Loop Slot").setInteger((int) signals.get(8).getValueAsDouble());
-        // table.getEntry(name + ": Supply Voltage (V)").setDouble(signals.get(9).getValueAsDouble());
-        // table.getEntry(name + ": Motor Voltage (V)").setDouble(signals.get(10).getValueAsDouble());
-        // table.getEntry(name + ": Supply Current (A)").setDouble(signals.get(11).getValueAsDouble());
-        // table.getEntry(name + ": Torque Current (A)").setDouble(signals.get(12).getValueAsDouble());
-        // table.getEntry(name + ": Device Temperature (C)").setDouble(signals.get(13).getValueAsDouble());
     }
 
     /**
