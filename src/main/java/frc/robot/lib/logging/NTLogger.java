@@ -153,8 +153,8 @@ public final class NTLogger {
         NetworkTableEntry entry = table.getEntry(name); // This creates an entry if it doesn't exist yet
         try {
             entry.setValue(val);
-        } catch (IllegalArgumentException e) {
-            entry.setString(val.toString());
+        } catch (IllegalArgumentException e) { 
+            entry.setString(val.toString()); //? I probably should check type of val instead of waiting for an exception to be thrown
         }
     }
 
@@ -180,7 +180,8 @@ public final class NTLogger {
                 Pair.of("Motor Voltage (V)", talon.getMotorVoltage()),
                 Pair.of("Supply Current (A)", talon.getSupplyCurrent()),
                 Pair.of("Torque Current (A)", talon.getTorqueCurrent()),
-                Pair.of("Device Temperature (C)", talon.getDeviceTemp())
+                Pair.of("Device Temperature (C)", talon.getDeviceTemp()),
+                Pair.of("Firmware Version", talon.getVersion())
             ));
         }
         var signals = talonfxSignals.get(talon);
