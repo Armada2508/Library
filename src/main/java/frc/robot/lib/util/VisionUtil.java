@@ -1,8 +1,7 @@
-package frc.robot.lib.vision;
+package frc.robot.lib.util;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
-import frc.robot.lib.util.Util;
 
 public class VisionUtil {
 
@@ -44,7 +43,7 @@ public class VisionUtil {
      * 
      * @return The normalized coordinate
      * 
-     * @see {@link frc.lib.vision.VisionUtil#centerPixels(double pixel, double resolution, boolean inverted)}
+     * @see {@link VisionUtil#centerPixels()}
      */
     public static double normalizePixels(double pixel, double resolution) {
         pixel = MathUtil.clamp(pixel, -resolution/2.0, resolution/2.0);

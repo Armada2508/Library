@@ -1,74 +1,53 @@
 package frc.robot.lib.pneumatics;
 
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
+/**
+ * Convenience class for controlling a piston with two single solenoids.
+ */
 public class Piston {
 
     private final Solenoid extend;
     private final Solenoid retract;
-    private boolean extendInverted = false;
-    private boolean retractInverted = false;
 
     /**
-     * Creates a new Piston Object
-     * @param retractSolenoid The ID of the solenoid connected to the piston that causes it to retract
-     * @param extendSolenoid The ID of the solenoid connected to the piston that causes it to extend
+     * Creates a new piston.
+     * @param extendSolenoid The solenoid connected to the piston that causes it to extend.
+     * @param retractSolenoid The solenoid connected to the piston that causes it to retract.
      */
-    public Piston(int retractSolenoid, int extendSolenoid) {
-        extend = new Solenoid(PneumaticsModuleType.CTREPCM, extendSolenoid);
-        retract = new Solenoid(PneumaticsModuleType.CTREPCM, retractSolenoid);
+    public Piston(Solenoid extendSolenoid, Solenoid retractSolenoid) {
+        extend = extendSolenoid;
+        retract = retractSolenoid;
     }
 
     /**
-     * Sets if the extend solenoid is inverted
-     * @param inverted If the extend solenoid is inverted
-     */
-    public void extendInverted(boolean inverted) {
-        extendInverted = inverted;
-    }
-
-
-    /**
-     * Sets if the retract solenoid is inverted
-     * @param inverted If the retract solenoid is inverted
-     */
-    public void retractInverted(boolean inverted) {
-        retractInverted = inverted;
-    }
-
-    /**
-     * Extend the Piston
+     * Extends the piston.
      */
     public void extend() {
-        extend.set(!extendInverted);
-        retract.set(retractInverted);
+        extend.set(true); 
+        retract.set(false); 
     }
 
     /**
-     * Retract the Piston
+     * Retracts the piston.
      */
     public void retract() {
-        extend.set(extendInverted);
-        retract.set(!retractInverted);
+        extend.set(false); 
+        retract.set(true); 
     }
 
     /**
-     * Vent the Piston
-     */
-    public void vent() {
-        extend.set(extendInverted);
-        retract.set(retractInverted);
-    }
-
-    /**
-     * Turn off all solenoids
+     * Turns off all solenoids.
      */
     public void disable() {
         extend.set(false);
         retract.set(false);
     }
 
+    /**
+     * Returns if the piston is currently extended.
+     * @return True if the piston is extended or false if it isn't.
+     */
     public boolean isExtended() {
         return extend.get() && !retract.get();
     }
