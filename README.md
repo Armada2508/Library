@@ -6,7 +6,7 @@ This should hold all of the common robot code to be developed and used throughou
 If you're here you are a collaborator that is working on one of our robot projects that requires this library as a submodule.
 ### Cloning a project with git submodules
 When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git. <br>
-`git clone URLTOREPO --recurse-submodules` <br>
+`git clone urltorepo --recurse-submodules` <br>
 ### Using a project with git submodules
 After you run git pull in a repo with submodules it only updates what commit they point to and does not update submodules themselves. To do that you must run this command after git pull. <br>
 `git submodule update --init --recursive` <br>
@@ -25,29 +25,34 @@ To add library as a submodule. <br>
 Of course if you want to track commits from a different branch then replace master with a branch of your choice.
 
 Add `implementation ':library'` to your dependencies block in build.gradle. <br>
-Add `includeBuild 'library'` to your settings.gradle.
+Add `includeBuild 'library'` to the end of your settings.gradle.
 
 Make sure source and target compatibility in build.gradle match that of the library, right now it's Java 17. <br>
 Make sure GradleRIO version matches. <br>
-Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently just CTRE Phoenix 6. <br>
+Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently only CTRE Phoenix 6. <br>
 
+*Note* - It might be important to add `"java.gradle.buildServer.enabled": "off"` to your VSCode settings.json file depending on your VSCode extensions. [Extension Issue](https://github.com/microsoft/vscode-gradle/issues/1435). <br>
 **Important** - I would run `./gradlew build` before continuing. <br>
-*Note* - It might be important to add `"java.gradle.buildServer.enabled": "off"` to your VSCode settings.json file depending on your VSCode extensions. [Extension Issue](https://github.com/microsoft/vscode-gradle/issues/1435).
 ### Updating your submodules
-To update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
+If you're at the root directory and you want to update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
 `git submodule update --remote` <br>
-Every time you update the library and you want to advance the commit that your repo points to you must run this.
+Every time you update the library and you want to advance the commit that your repo points to you must run this. <br>
+Alternatively you could do this from the library's git but make sure you're on a branch. <br>
+`cd library` <br>
+`git switch branchname` - if necessary <br>
+`git pull` <br>
+Finally from your main repository you can commit the updated submodule's reference and push it for everyone else to grab.  
 ### Editing library from within a project
 Once you want to start working on the library as a submodule from within another project you need to checkout a branch. <br>
-Cd into the libary's directory. <br>
-`git checkout branchname` <br>
-If you've updated the submodule since the last time you checked out a branch you probably need to run `git pull` in the library's directory.
+`cd library` <br>
+`git switch branchname` <br>
+If you've updated the submodule since the last time you checked out a branch you probably need to run `git pull` in the library's directory. <br>
+Now you can make your changes and when you're finished commit and push them.
 
-Add the merge flag to not delete your changes when pulling from upstream. <br>
+If you're at the root directory and want to pull new changes to the submodule from upstream, add the merge flag to not delete your local changes. <br>
 `git submodule update --remote --merge`
 
-Commit your changes and then when you want to push it, if you're at the root directory run this. <br>
+If you're at the root directory and you want to push committed changes from the submodule. <br>
 `git push --recurse-submodules=on-demand`
 
-Otherwise just cd into the directory and manually git push from there.
 VSCode source control tab should help out with using submodules or you can stick with commands in the terminal, both work.
