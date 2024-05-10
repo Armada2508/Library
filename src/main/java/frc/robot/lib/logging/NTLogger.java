@@ -193,17 +193,19 @@ public final class NTLogger {
         BaseStatusSignal.refreshAll(arr); // Refresh all status signals for a TalonFX at once
         for (var pair : signals) { // Log each signal appropriately
             NetworkTableEntry entry = table.getEntry(name + ": " + pair.getFirst());
-            StatusSignal<?> signal = pair.getSecond();
-            Class<?> signalType = signal.getTypeClass();
-            if (signalType == Double.class) {
-                entry.setDouble(signal.getValueAsDouble());
-                continue;
+            Object value = pair.getSecond().getValue();
+            if (value instanceof Double d) {
+                entry.setDouble(d);
             }
-            if (signalType == Integer.class) {
-                entry.setInteger((int) signal.getValueAsDouble());
-                continue;
+            else if (value instanceof Integer i) {
+                entry.setInteger(i);
             }
-            entry.setString(signal.getValue().toString());
+            else if (value instanceof Boolean b) {
+                entry.setBoolean(b);
+            }
+            else {
+                entry.setString(value.toString());
+            }
         }
         table.getEntry(name + ": Device ID").setInteger(talon.getDeviceID());
         table.getEntry(name + ": Has Reset Occurred").setBoolean(talon.hasResetOccurred());
