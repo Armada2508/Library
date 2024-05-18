@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+/**
+* Will be removed when https://github.com/wpilibsuite/allwpilib/pull/6344 is merged.
+*/
 public class LEDStrip {
 
     private final AddressableLED strip;
