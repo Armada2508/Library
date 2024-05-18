@@ -50,7 +50,7 @@ public class LEDStrip {
         buffer.setLED(index, color);
         strip.setData(buffer);
     }
-    
+
     /**
      * Set a range of the LED strip to a certain color
      * @param start The starting index
@@ -63,7 +63,7 @@ public class LEDStrip {
         }
         strip.setData(buffer);
     }
-    
+
     /**
      * Set the LED strip to a certain color
      * @param h The hue of the color
@@ -73,7 +73,7 @@ public class LEDStrip {
     public void setHSV(int h, int s, int v) {
         setHSV(0, buffer.getLength(), h, s, v);
     }
-    
+
     /**
      * Set an LED to a certain color
      * @param index The index of the LED to set
@@ -85,7 +85,7 @@ public class LEDStrip {
         buffer.setHSV(index, h, s, v);
         strip.setData(buffer);
     }
-    
+
     /**
      * Set a range of the LED strip to a certain color
      * @param start The starting index
@@ -190,20 +190,20 @@ public class LEDStrip {
     }
 
     /**
-     * @param color1 
+     * @param color1
      * @param color2
      * @param pulseTimeSeconds
      * @return A command that flashes the led strip between two colors which takes pulseTimeSeconds to do.
      */
     public Command pulseCommand(Color color1, Color color2, double pulseTimeSeconds) {
-		return new RepeatCommand(
-			new SequentialCommandGroup(
-				runOnce(() -> set(color1)),
-				waitSeconds(pulseTimeSeconds),
-				runOnce(() -> set(color2)),
-				waitSeconds(pulseTimeSeconds)
-		    )
-		);
+        return new RepeatCommand(
+            new SequentialCommandGroup(
+                runOnce(() -> set(color1)),
+                waitSeconds(pulseTimeSeconds),
+                runOnce(() -> set(color2)),
+                waitSeconds(pulseTimeSeconds)
+            )
+        );
     }
-    
+
 }

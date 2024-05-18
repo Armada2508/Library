@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
  * Contains basic functions that are used often.
  */
 public class Util {
-    
+
     public static final double kEpsilon = 1e-12;
 
     /**
@@ -62,7 +62,7 @@ public class Util {
     }
 
     /**
-     * 
+     *
      * @param value The value to check
      * @param min The minimum value
      * @param max The maximum value
@@ -74,7 +74,7 @@ public class Util {
 
     /**
      * Applies a deadband function to the input
-     * 
+     *
      * @param value The input value
      * @param threshold The deadband threshold
      * @return The deadband of the input at the set threshold
@@ -126,7 +126,7 @@ public class Util {
     public static boolean epsilonEquals(double a, double b, double epsilon) {
         return (a - epsilon <= b) && (a + epsilon >= b);
     }
-    
+
     /**
      * Checks if the difference between two values is less than a margin of error(some small value)
      * @param a The first value
@@ -199,7 +199,7 @@ public class Util {
     public static double boundedAngleDegreesPositive(double angle) {
         return (angle % 360 + 360) % 360;
     }
-    
+
 
     /**
      * @param rotation A Rotation2d object
@@ -208,7 +208,7 @@ public class Util {
     public static Rotation2d boundedAngle(Rotation2d rotation) {
         return new Rotation2d(boundedAngle(rotation.getRadians()));
     }
-    
+
 
     /**
      * @param rotation A Rotation2d object

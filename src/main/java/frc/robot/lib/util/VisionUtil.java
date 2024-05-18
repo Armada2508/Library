@@ -9,10 +9,10 @@ public class VisionUtil {
      * Prevent this class from being instantiated.
      */
     private VisionUtil() {}
-    
+
     /**
      * Converts a pixel input to an angle output(measured in degrees)
-     * 
+     *
      * @param pixel The pixel input
      * @param fov The full field of view of the camera in the desired direction
      * @param resolution The resolution of the camera in the desired direction
@@ -24,7 +24,7 @@ public class VisionUtil {
     }
     /**
      * Converts an angle input to a pixel output
-     * 
+     *
      * @param angle The angle input(measured in degrees)
      * @param fov The full field of view of the camera in the desired direction
      * @param resolution The resolution of the camera in the desired direction
@@ -37,12 +37,12 @@ public class VisionUtil {
 
     /**
      * Convert pixels to normalized coordinates(-1 to +1) from a centered pixel coordinate system(e.g. -159.5-159.5 if there were 320 pixels horizontally)
-     * 
+     *
      * @param pixel The pixel value to convert
      * @param resolution The resolution of the camera in the desired direction
-     * 
+     *
      * @return The normalized coordinate
-     * 
+     *
      * @see {@link VisionUtil#centerPixels()}
      */
     public static double normalizePixels(double pixel, double resolution) {
@@ -52,7 +52,7 @@ public class VisionUtil {
 
     /**
      * Convert pixels to centered coordinates(e.g. 159.5 to +159.5 for 320 resolution) from a pixel coordinate system(e.g. 0-319 for 320 resolution)
-     * 
+     *
      * @param pixel The pixel value to convert
      * @param resolution The resolution of the camera in the desired direction
      * @param inverted If the positive and negative directions are flipped
@@ -92,7 +92,7 @@ public class VisionUtil {
         double width = targetWidth;
         double angleLeft = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(x, fov.x(), resolution.x())-width/2.0, fov.x(), resolution.x());
         double angleRight = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(x, fov.x(), resolution.x())+width/2.0, fov.x(), resolution.x());
-        double widthAngle = angleRight-angleLeft; 
+        double widthAngle = angleRight-angleLeft;
         double distance = (realTargetWidth / 2.0) / (Math.tan(Math.toRadians((widthAngle / 2.0))));
         return distance;
     }

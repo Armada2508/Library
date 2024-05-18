@@ -19,8 +19,8 @@ public class DriveUtil {
      * @param x - value to use
      * @param deadband - should be positive
      * @param smoothing - how quickly the curve should reach  {@code x}, 1 means it will reach {@code x} when {@code x} = 1.
-     * Greater than 1 it will reach {@code x} sooner. 
-     * @return Returns a new value accounting for deadband that matches the sign of {@code x} and will 
+     * Greater than 1 it will reach {@code x} sooner.
+     * @return Returns a new value accounting for deadband that matches the sign of {@code x} and will
      * never have a larger magnitude than {@code x}
      */
     public static double processDeadband(double x, double deadband, double smoothing) {
@@ -29,7 +29,7 @@ public class DriveUtil {
             return 0;
         }
         else {
-           return MathUtil.clamp((smoothing / (1 - deadband)) * (positiveX - deadband), 0, positiveX) * Math.signum(x);
+        return MathUtil.clamp((smoothing / (1 - deadband)) * (positiveX - deadband), 0, positiveX) * Math.signum(x);
         }
     }
 

@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2024.3.2"
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 java {
@@ -26,3 +27,29 @@ test {
 }
 
 defaultTasks 'clean'
+
+spotless {
+    enforceCheck = false // Don't fail builds because of incorrectly formatted code
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**', '**/bin/**', "src/generated/**"
+        }
+        toggleOffOn()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
+        formatAnnotations()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**', '**/bin/**'
+        }
+        greclipse()
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}

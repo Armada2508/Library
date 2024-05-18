@@ -61,5 +61,5 @@ public class DriveUtilTest {
         assertEquals(-1.0, pair7.getFirst(), EPSILON);
         assertEquals(0.3/1.6, pair7.getSecond(), EPSILON);
     }
-    
+
 }

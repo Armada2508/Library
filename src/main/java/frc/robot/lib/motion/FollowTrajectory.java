@@ -77,11 +77,11 @@ public class FollowTrajectory {
         Timer timer = new Timer();
         return driveSubsystem.runOnce(() -> {
             timer.restart();
-        }) 
+        })
         .andThen(driveSubsystem.run(() -> {
             DifferentialDriveWheelSpeeds speeds = diffKinematics.toWheelSpeeds(controller.calculate(pose.get(), trajectory.sample(timer.get())));
             velocity.accept(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
         }).until(() -> timer.hasElapsed(trajectory.getTotalTimeSeconds())));
     }
-    
-} 
+
+}

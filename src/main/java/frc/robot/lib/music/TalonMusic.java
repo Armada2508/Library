@@ -48,7 +48,7 @@ public class TalonMusic {
     }
 
     /**
-     * Adds talons to the class's internal orchestra on track zero, 
+     * Adds talons to the class's internal orchestra on track zero,
      * also modifies their audio configs to allow music when disabled.
      * @param currentSubsystem to add for music requirements
      * @param talons to use in orchestra
@@ -56,7 +56,7 @@ public class TalonMusic {
     public static void addTalonFX(Subsystem currentSubsystem, TalonFX... talons) {
         addTalonFX(currentSubsystem, true, talons);
     }
-    
+
     /**
      * Returns a command that plays the Pacman startup tune.
      */

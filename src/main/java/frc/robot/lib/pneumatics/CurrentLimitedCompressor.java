@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class CurrentLimitedCompressor extends Compressor {
-    
+
     private double currentTime = 0;
     private final int maxAmps;
     private final double timeToTrip;

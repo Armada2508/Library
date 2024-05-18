@@ -24,16 +24,16 @@ public class Piston {
      * Extends the piston.
      */
     public void extend() {
-        extend.set(true); 
-        retract.set(false); 
+        extend.set(true);
+        retract.set(false);
     }
 
     /**
      * Retracts the piston.
      */
     public void retract() {
-        extend.set(false); 
-        retract.set(true); 
+        extend.set(false);
+        retract.set(true);
     }
 
     /**

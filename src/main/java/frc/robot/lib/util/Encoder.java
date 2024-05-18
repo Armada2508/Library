@@ -66,7 +66,7 @@ public class Encoder {
     public static double toVelocity(double velocity, double gearRatio, double wheelDiameter) {
         return toVelocity(velocity, 1, gearRatio, wheelDiameter, 1);
     }
-    
+
     /**
      * Converts encoder units per time unit specified to velocity
      * @param velocity The current velocity measured by the sensor
@@ -91,9 +91,9 @@ public class Encoder {
     public static double fromVelocity(double velocity, double gearRatio, double wheelDiameter) {
         return fromVelocity(velocity, 1, gearRatio, wheelDiameter, 1);
     }
-    
+
     /**
-     * Converts from units per second specified to encoder units per time unit specified 
+     * Converts from units per second specified to encoder units per time unit specified
      * @param velocity The current velocity measured by the sensor
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
@@ -151,7 +151,7 @@ public class Encoder {
     }
 
     /**
-     * Converts sensor units to an angle in degrees 
+     * Converts sensor units to an angle in degrees
      * @param sensorPosition The current value read from the sensor
      * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
      * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel

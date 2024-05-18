@@ -16,6 +16,8 @@ However there is a config to make git automatically run this command after every
 ## Maintainers
 Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules <br>
 You should be updating the versions of GradleRIO and vendor dependencies in your projects so they match that of the library as new updates are released. 
+### Spotless
+This project has spotless in its gradle configuration. This is a code formatter and can be run with `./gradlew spotlessApply`. If your code isn't correctly formatted don't worry it won't fail the build.
 ### Adding the library to a project
 **Important** - Before adding the library to a project you should have basic knowledge of git, gradle and navigating around directories. <br>
 Make sure you're in the project's root directory in the terminal. <br>

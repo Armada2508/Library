@@ -28,41 +28,41 @@ public class LogUtil {
      */
     private LogUtil() {}
 
-	// RFC2822
+    // RFC2822
     private static SimpleDateFormat kDateFormat = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
-	private static SimpleDateFormat kSessionNameFormat = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss", Locale.US);
+    private static SimpleDateFormat kSessionNameFormat = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss", Locale.US);
 
-	public static String getTimestamp() {
-		return kDateFormat.format(new Date());
-	}
+    public static String getTimestamp() {
+        return kDateFormat.format(new Date());
+    }
 
-	public static String getSessionName() {
-		return kSessionNameFormat.format(new Date());
-	}
+    public static String getSessionName() {
+        return kSessionNameFormat.format(new Date());
+    }
 
-	public static String getSessionNameEvent() {
-		return DriverStation.getMatchType().toString() + DriverStation.getMatchNumber() + "-" + DriverStation.getAlliance().toString() + DriverStation.getLocation() + (DriverStation.getEventName() == null ? "" : "-") + Optional.ofNullable(DriverStation.getEventName()).orElse("");
-	}
+    public static String getSessionNameEvent() {
+        return DriverStation.getMatchType().toString() + DriverStation.getMatchNumber() + "-" + DriverStation.getAlliance().toString() + DriverStation.getLocation() + (DriverStation.getEventName() == null ? "" : "-") + Optional.ofNullable(DriverStation.getEventName()).orElse("");
+    }
 
-	public static String getSessionNameAuto() {
-		if(DriverStation.isFMSAttached()) {
-			return getSessionNameEvent();
-		} else {
-			return getSessionName();
-		}
-	}
+    public static String getSessionNameAuto() {
+        if(DriverStation.isFMSAttached()) {
+            return getSessionNameEvent();
+        } else {
+            return getSessionName();
+        }
+    }
 
-	public static String boolToString(boolean bool) {
-		return bool ? "1" : "0";
-	}
+    public static String boolToString(boolean bool) {
+        return bool ? "1" : "0";
+    }
 
-	public static double boolToDouble(boolean bool) {
-		return bool ? 1d : 0d;
-	}
+    public static double boolToDouble(boolean bool) {
+        return bool ? 1d : 0d;
+    }
 
     /**
      * Formats a list of names with their associated variables.
-     * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll 
+     * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll
      * @param variables to print out
      */
     public static String getFormatted(String names, Object... variables) {
@@ -75,7 +75,7 @@ public class LogUtil {
             if (currentName.length() > 1) {
                 String n = (currentName.charAt(0) + "").toUpperCase() + currentName.substring(1);
                 formatted += n + ": " + currentVar + ", ";
-            } 
+            }
             else {
                 formatted += currentName.toUpperCase() + ": " + currentVar + ", ";
             }
@@ -85,7 +85,7 @@ public class LogUtil {
 
     /**
      * Pretty prints a list of names with their associated variables.
-     * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll 
+     * @param names space separated names for each variable, number should match number of variables. ex: yaw pitch roll
      * @param variables to print out
      */
     public static void printFormatted(String names, Object... variables) {
@@ -95,7 +95,7 @@ public class LogUtil {
     /**
      * Used for getting tunable numbers for quick iteration. Don't call this method in a loop as it will create NT subscribers and publishers.
      * @param name of value in network tables
-     * @param defaultValue 
+     * @param defaultValue
      * @return A subscriber that can be used to get the value from network tables
      */
     public static DoubleSubscriber getTunableNumber(String name, double defaultValue) {
@@ -107,7 +107,7 @@ public class LogUtil {
     /**
      * Used for getting tunable booleans for quick iteration. Don't call this method in a loop as it will create NT subscribers and publishers.
      * @param name of value in network tables
-     * @param defaultValue 
+     * @param defaultValue
      * @return A subscriber that can be used to get the value from network tables
      */
     public static BooleanSubscriber getTunableBoolean(String name, boolean defaultValue) {
@@ -154,6 +154,6 @@ public class LogUtil {
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             return Commands.none();
         }
-    } 
+    }
 
 }

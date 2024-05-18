@@ -42,11 +42,11 @@ import us.hebi.quickbuf.ProtoMessage;
 
 /**
  * Used to log fields to network tables and data log for viewing during testing and after a match. <p>
- * You must register your object using {@link NTLogger#register(Loggable obj)} for its values to be 
+ * You must register your object using {@link NTLogger#register(Loggable obj)} for its values to be
  * put onto network tables when running {@link NTLogger#log()}. <p>
  * {@link NTLogger#log()} should be called in Robot Periodic.
  * @author WispySparks
- * 
+ *
  */
 public final class NTLogger {
 
@@ -67,7 +67,7 @@ public final class NTLogger {
      */
     public static void initDataLogger() {
         DataLogManager.start();
-		DriverStation.startDataLog(DataLogManager.getLog());
+        DriverStation.startDataLog(DataLogManager.getLog());
         CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
             Command interruptingCommand = interrupter.orElseGet(Commands::none);
             DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
@@ -76,7 +76,7 @@ public final class NTLogger {
         });
     }
 
-     /**
+    /**
      * Registers an object to the logger who's 'log' method will be called.
      * @param obj to register
      */
@@ -103,7 +103,7 @@ public final class NTLogger {
     }
 
     /**
-     * Logs an invidual value to the loggable's network table. Useful for logging one off values inside of methods. 
+     * Logs an invidual value to the loggable's network table. Useful for logging one off values inside of methods.
      * @param loggable used to find the right network table
      * @param name for value
      * @param val to log
@@ -118,16 +118,16 @@ public final class NTLogger {
      * Gets a loggable's network table to log to
      * @param loggable to get network table for
      * @param index of loggable, counts up for every instance
-     * @return loggable's network table 
+     * @return loggable's network table
      */
     private static NetworkTable getLoggablesTable(Loggable loggable, int index) {
-        return (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) : 
+        return (index == 0) ? mainTable.getSubTable(loggable.getClass().getSimpleName()) :
             mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
     }
 
     /**
-     * Logs a value into a network table, correctly logs structs and protobufs. 
-     * If it's not a supported type it just calls {@link Object#toString()}. 
+     * Logs a value into a network table, correctly logs structs and protobufs.
+     * If it's not a supported type it just calls {@link Object#toString()}.
      * @param table to log to
      * @param name for value
      * @param val to log
@@ -189,7 +189,7 @@ public final class NTLogger {
         int ID = talon.getDeviceID();
         return putTalonLog(talon, "TalonFX " + ID, map);
     }
-    
+
     /**
      * Fills your map with values to log on a subsystem.
      * @param subsystem to log
@@ -219,7 +219,7 @@ public final class NTLogger {
     }
 
     /**
-     * Logs a value that uses structs to network tables. 
+     * Logs a value that uses structs to network tables.
      * @param table network table to log value to
      * @param name for value
      * @param objToLog object that will be logged as a struct
@@ -235,7 +235,7 @@ public final class NTLogger {
             }
         }
         StructPublisher<T> publisher = topic.publish();
-        publisher.set(objToLog);    
+        publisher.set(objToLog);
         structPublishers.add(publisher);
     }
 
@@ -262,7 +262,7 @@ public final class NTLogger {
     }
 
     /**
-     * Logs a value that uses protobufs to network tables. 
+     * Logs a value that uses protobufs to network tables.
      * @param table network table to log value to
      * @param name for value
      * @param objToLog object that will be logged as a protobuf
@@ -278,7 +278,7 @@ public final class NTLogger {
             }
         }
         ProtobufPublisher<T> publisher = topic.publish();
-        publisher.set(objToLog);    
+        publisher.set(objToLog);
         protobufPublishers.add(publisher);
     }
 
@@ -305,7 +305,7 @@ public final class NTLogger {
         }
         else if (DriverStation.isAutonomous()) {
             mode = "Autonomous";
-        } 
+        }
         else if (DriverStation.isTest()) {
             mode = "Test";
         }
