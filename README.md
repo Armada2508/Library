@@ -9,10 +9,13 @@ When running git clone on a repo with submodules pass the `--recurse-submodules`
 `git clone urltorepo --recurse-submodules` <br>
 ### Using a project with git submodules
 After you run git pull in a repo with submodules it only updates what commit they point to and does not update submodules themselves. To do that you must run this command after git pull. <br>
-`git submodule update --init --recursive` <br>
-
+```
+git submodule update --init --recursive
+```
 However there is a config to make git automatically run this command after every pull; **I strongly recommend** setting this config. <br>
-`git config --global submodule.recurse true` <br>
+```
+git config --global submodule.recurse true
+``` 
 ## Maintainers
 Docs for using git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules <br>
 You should be updating the versions of GradleRIO and vendor dependencies in your projects so they match that of the library as new updates are released. 
@@ -23,7 +26,9 @@ This project has spotless in its gradle configuration. This is a code formatter 
 Make sure you're in the project's root directory in the terminal. <br>
 ![](imgs/terminal.png) <br>
 To add library as a submodule. <br>
-`git submodule add -b master https://github.com/Armada2508/Library library` <br>
+```
+git submodule add -b master https://github.com/Armada2508/Library library
+```
 Of course if you want to track commits from a different branch then replace master with a branch of your choice.
 
 Add `implementation ':library'` to your dependencies block in build.gradle. <br>
