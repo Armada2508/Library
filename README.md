@@ -38,6 +38,11 @@ Make sure source and target compatibility in build.gradle match that of the libr
 Make sure GradleRIO version matches. <br>
 Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently only CTRE Phoenix 6. <br>
 
+#### Tests
+If you want the tests within the library to be checked/ran when you build the project you must add this to your test block in the build.gradle.
+```
+dependsOn gradle.includedBuilds*.task(":test")
+```
 *Note* - It might be important to add `"java.gradle.buildServer.enabled": "off"` to your VSCode settings.json file depending on your VSCode extensions. [Extension Issue](https://github.com/microsoft/vscode-gradle/issues/1435). <br>
 **Important** - I would run `./gradlew build` before continuing. <br>
 ### Updating your submodules
