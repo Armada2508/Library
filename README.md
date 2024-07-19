@@ -6,7 +6,9 @@ This should hold all of the common robot code to be developed and used throughou
 If you're here you are a collaborator that is working on one of our robot projects that requires this library as a submodule.
 ### Cloning a project with git submodules
 When running git clone on a repo with submodules pass the `--recurse-submodules` flag to git. <br>
-`git clone urltorepo --recurse-submodules` <br>
+```
+git clone urltorepo --recurse-submodules
+```
 ### Using a project with git submodules
 After you run git pull in a repo with submodules it only updates what commit they point to and does not update submodules themselves. To do that you must run this command after git pull. <br>
 ```
@@ -43,7 +45,6 @@ If you want the tests within the library to be checked/ran when you build the pr
 ```
 dependsOn gradle.includedBuilds*.task(":test")
 ```
-*Note* - It might be important to add `"java.gradle.buildServer.enabled": "off"` to your VSCode settings.json file depending on your VSCode extensions. [Extension Issue](https://github.com/microsoft/vscode-gradle/issues/1435). <br>
 **Important** - I would run `./gradlew build` before continuing. <br>
 ### Updating your submodules
 If you're at the root directory and you want to update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
