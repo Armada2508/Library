@@ -38,7 +38,7 @@ Add `includeBuild 'library'` to the end of your settings.gradle.
 
 Make sure source and target compatibility in build.gradle match that of the library, right now it's Java 17. <br>
 Make sure GradleRIO version matches. <br>
-Make sure you have all vender deps installed for the library to work and that they're all up to date. Currently only CTRE Phoenix 6. <br>
+Make sure you have all vendor deps installed for the library to work and that they're all up to date. Currently only CTRE Phoenix 6. <br>
 
 #### Tests
 If you want the tests within the library to be checked/ran when you build the project you must add this to your test block in the build.gradle.
