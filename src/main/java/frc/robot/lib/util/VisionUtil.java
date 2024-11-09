@@ -61,9 +61,9 @@ public class VisionUtil {
     public static double centerPixels(double pixel, double resolution, boolean inverted) {
         pixel = MathUtil.clamp(pixel, 0, resolution - 1.0);
         if(inverted) {
-            return (((resolution / 2.0) - 0.5) - (double)pixel);
+            return (((resolution / 2.0) - 0.5) - pixel);
         } else {
-            return ((double)pixel - ((resolution / 2.0) - 0.5));
+            return (pixel - ((resolution / 2.0) - 0.5));
         }
     }
 

@@ -18,7 +18,7 @@ public class Encoder {
      * @return Distance traveled
      */
     public static double toDistance(double sensorPosition, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
-        return ((double) sensorPosition / (double) (encoderUnitsPerRev * gearRatio)) * Math.PI * wheelDiameter;
+        return (sensorPosition / (encoderUnitsPerRev * gearRatio)) * Math.PI * wheelDiameter;
     }
 
     /**
@@ -41,7 +41,7 @@ public class Encoder {
      * @return Distance in encoder units
      */
     public static double fromDistance(double distance, int encoderUnitsPerRev, double gearRatio, double wheelDiameter) {
-        return (distance / ( Math.PI * wheelDiameter )) * (double) encoderUnitsPerRev * gearRatio;
+        return (distance / ( Math.PI * wheelDiameter )) * encoderUnitsPerRev * gearRatio;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Encoder {
      * @return RPM of the output
      */
     public static double toRPM(double velocity, int encoderUnitsPerRev, double gearRatio, double time) {
-        return (velocity * 60.0 / (double) encoderUnitsPerRev) / (gearRatio * time);
+        return (velocity * 60.0 / encoderUnitsPerRev) / (gearRatio * time);
     }
 
     /**
@@ -147,7 +147,7 @@ public class Encoder {
      * @return Encoder velocity
      */
     public static double fromRPM(double RPM, int encoderUnitsPerRev, double gearRatio, double time) {
-        return RPM * ((double) encoderUnitsPerRev / 60.0) * time * gearRatio;
+        return RPM * (encoderUnitsPerRev / 60.0) * time * gearRatio;
     }
 
     /**

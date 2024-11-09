@@ -75,9 +75,7 @@ public class FollowTrajectory {
     public static Command LTVControllerCommand(Trajectory trajectory, Supplier<Pose2d> pose, BiConsumer<Double, Double> velocity, Subsystem driveSubsystem) {
         LTVUnicycleController controller = new LTVUnicycleController(TimedRobot.kDefaultPeriod);
         Timer timer = new Timer();
-        return driveSubsystem.runOnce(() -> {
-            timer.restart();
-        })
+        return driveSubsystem.runOnce(timer::restart)
         .andThen(driveSubsystem.run(() -> {
             DifferentialDriveWheelSpeeds speeds = diffKinematics.toWheelSpeeds(controller.calculate(pose.get(), trajectory.sample(timer.get())));
             velocity.accept(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
