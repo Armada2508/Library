@@ -1,5 +1,12 @@
 package frc.robot.lib.util;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Rotations;
+
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+
 public class Encoder {
 
     public static final double degreesPerRotation = 360.0;
@@ -190,6 +197,28 @@ public class Encoder {
      */
     public static double fromAngle(double angleDegrees, double gearRatio) {
         return fromAngle(angleDegrees, 1, gearRatio);
+    }
+
+    /**
+     * Converts rotations of a motor shaft to distance traveled of a wheel.
+     * @param rotations The number of rotations
+     * @param gearRatio The ratio between rotations of the output shaft and rotations of the wheel, e.g. 10.71:1
+     * @param wheelDiameter The diameter of the wheel
+     * @return Distance traveled by the wheel
+     */
+    public static Measure<Distance> toDistance(Measure<Angle> rotations, double gearRatio, Measure<Distance> wheelDiameter) {
+        return Meters.of((rotations.in(Rotations) / gearRatio) * Math.PI * wheelDiameter.in(Meters));
+    }
+
+    /**
+     * Converts distance traveled by a wheel to rotations of a motor shaft.
+     * @param distance The distance traveled
+     * @param gearRatio The ratio between rotations of the output shaft and rotations of the wheel, e.g. 10.71:1
+     * @param wheelDiameter The diameter of the wheel
+     * @return Rotations of the motor shaft
+     */
+    public static Measure<Angle> toRotations(Measure<Distance> distance, double gearRatio, Measure<Distance> wheelDiameter) {
+        return Rotations.of(distance.in(Meters) / (Math.PI * wheelDiameter.in(Meters)) * gearRatio);
     }
 
 }

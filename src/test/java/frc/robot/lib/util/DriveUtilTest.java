@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class DriveUtilTest {
 
-    static final double EPSILON = 1e-3;
+    private static final double EPSILON = 1e-3;
 
     @Test
     void testProcessDeadband() {
