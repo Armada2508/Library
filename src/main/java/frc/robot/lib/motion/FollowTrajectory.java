@@ -10,8 +10,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,7 +37,7 @@ public class FollowTrajectory {
      * @param zeta The Zeta constant(RAMSETE)
      * @param trackWidth The width of the drivetrain(Kinematics)
      */
-    public static void config(double b, double zeta, Measure<Distance> trackWidth) {
+    public static void config(double b, double zeta, Distance trackWidth) {
         ramseteController = new RamseteController(b, zeta);
         diffKinematics = new DifferentialDriveKinematics(trackWidth);
     }

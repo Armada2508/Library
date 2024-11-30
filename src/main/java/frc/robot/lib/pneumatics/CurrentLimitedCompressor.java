@@ -3,9 +3,8 @@ package frc.robot.lib.pneumatics;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.Current;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
@@ -23,7 +22,7 @@ public class CurrentLimitedCompressor extends Compressor {
         numberInstances++;
     }
 
-    public CurrentLimitedCompressor(int module, PneumaticsModuleType moduleType, Measure<Current> maxAmps, Measure<Time> timeToTrip) {
+    public CurrentLimitedCompressor(int module, PneumaticsModuleType moduleType, Current maxAmps, Time timeToTrip) {
         this(module, moduleType, maxAmps.in(Amps), timeToTrip.in(Seconds));
     }
 
