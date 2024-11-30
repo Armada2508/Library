@@ -34,5 +34,5 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
-    
+
 }

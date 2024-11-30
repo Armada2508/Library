@@ -32,7 +32,7 @@ public class FollowTrajectory {
      * @param driveSubsystem The subsystem to require during the command
      * @return A command to follow a given trajectory using a LTVUnicycleController
      */
-    public static Command LTVControllerCommand(Trajectory trajectory, Supplier<Pose2d> pose, BiConsumer<Double, Double> velocity, 
+    public static Command LTVControllerCommand(Trajectory trajectory, Supplier<Pose2d> pose, BiConsumer<Double, Double> velocity,
             DifferentialDriveKinematics diffKinematics, Subsystem driveSubsystem) {
         LTVUnicycleController controller = new LTVUnicycleController(TimedRobot.kDefaultPeriod);
         Timer timer = new Timer();
