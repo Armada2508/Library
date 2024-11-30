@@ -30,6 +30,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Supply Current (A)", talon.getSupplyCurrent().getValueAsDouble());
         dataLogger.log("Torque Current (A)", talon.getTorqueCurrent().getValueAsDouble());
         dataLogger.log("Device Temperature (C)", talon.getDeviceTemp().getValueAsDouble());
+        dataLogger.log("Firmware Version", talon.getVersion().getValue());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
