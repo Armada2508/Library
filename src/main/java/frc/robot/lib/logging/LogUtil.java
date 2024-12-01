@@ -1,12 +1,8 @@
 package frc.robot.lib.logging;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 import edu.wpi.first.networktables.BooleanSubscriber;
@@ -15,11 +11,6 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 public class LogUtil {
 
@@ -84,44 +75,30 @@ public class LogUtil {
         return topic.subscribe(defaultValue);
     }
 
-    static Command getSequentialCommandCurrentCommand(SequentialCommandGroup command) {
-        try {
-            final Field fieldIndex = SequentialCommandGroup.class.getDeclaredField("m_currentCommandIndex");
-            fieldIndex.setAccessible(true);
-            final Field fieldCommands = SequentialCommandGroup.class.getDeclaredField("m_commands");
-            fieldCommands.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            List<Command> list = (List<Command>) fieldCommands.get(command);
-            return list.get(fieldIndex.getInt(command));
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            return Commands.none();
-        }
+    public static void logDriverStation() {
+        // String mode = "Unknown";
+        // if (DriverStation.isTeleop()) {
+        //     mode = "Teleop";
+        // }
+        // else if (DriverStation.isAutonomous()) {
+        //     mode = "Autonomous";
+        // }
+        // else if (DriverStation.isTest()) {
+        //     mode = "Test";
+        // }
+        // mainTable.getEntry("_DS Mode").setString(mode);
+        // mainTable.getEntry("_Robot Enabled").setBoolean(DriverStation.isEnabled());
+        // mainTable.getEntry("_Match Time").setDouble(DriverStation.getMatchTime());
+        // mainTable.getEntry("_is FMS Attached").setBoolean(DriverStation.isFMSAttached());
     }
 
-    static List<Command> getParallelCommandCurrentCommands(ParallelCommandGroup command) {
-        try {
-            List<Command> list = new ArrayList<>();
-            final Field fieldCommands = ParallelCommandGroup.class.getDeclaredField("m_commands");
-            fieldCommands.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            Map<Command, Boolean> map = (Map<Command, Boolean>) fieldCommands.get(command);
-            map.forEach((cmd, running) -> {
-                if (running) list.add(cmd);
-            });
-            return list;
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            return List.of(Commands.none());
-        }
-    }
-
-    static Command getWrapperCommandInner(WrapperCommand command) {
-        try {
-            final Field cmd = WrapperCommand.class.getDeclaredField("m_command");
-            cmd.setAccessible(true);
-            return (Command) cmd.get(command);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            return Commands.none();
-        }
+    public static void logCommandInterrupts() {
+        // CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
+        //     Command interruptingCommand = interrupter.orElseGet(Commands::none);
+        //     DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
+            // schedulerTable.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
+            // schedulerTable.getEntry("Last Interrupting Command").setString(interruptingCommand.getName());
+        // });
     }
 
 }
