@@ -8,6 +8,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
+// TODO: This should probably be removed, should fix the actual cause of your compressor drawing a bunch of current
 public class CurrentLimitedCompressor extends Compressor {
 
     private double currentTime = 0;

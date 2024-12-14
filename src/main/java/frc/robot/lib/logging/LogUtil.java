@@ -76,6 +76,7 @@ public class LogUtil {
     }
 
     public static void logDriverStation() {
+        // TODO: Implement
         // String mode = "Unknown";
         // if (DriverStation.isTeleop()) {
         //     mode = "Teleop";
@@ -93,6 +94,7 @@ public class LogUtil {
     }
 
     public static void logCommandInterrupts() {
+        // TODO: Implement
         // CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
         //     Command interruptingCommand = interrupter.orElseGet(Commands::none);
         //     DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
