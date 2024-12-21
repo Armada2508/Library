@@ -10,7 +10,12 @@ import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class LogUtil {
 
@@ -75,32 +80,40 @@ public class LogUtil {
         return topic.subscribe(defaultValue);
     }
 
+    /**
+     * Logs Driver Station data to NetworkTables. Has to be called periodically.
+     * Should try to get some of these into DriverStation's FMSInfo or DS datalog
+     */
     public static void logDriverStation() {
-        // TODO: Implement
-        // String mode = "Unknown";
-        // if (DriverStation.isTeleop()) {
-        //     mode = "Teleop";
-        // }
-        // else if (DriverStation.isAutonomous()) {
-        //     mode = "Autonomous";
-        // }
-        // else if (DriverStation.isTest()) {
-        //     mode = "Test";
-        // }
-        // mainTable.getEntry("_DS Mode").setString(mode);
-        // mainTable.getEntry("_Robot Enabled").setBoolean(DriverStation.isEnabled());
-        // mainTable.getEntry("_Match Time").setDouble(DriverStation.getMatchTime());
-        // mainTable.getEntry("_is FMS Attached").setBoolean(DriverStation.isFMSAttached());
+        String mode = "Unknown";
+        if (DriverStation.isTeleop()) {
+            mode = "Teleop";
+        }
+        else if (DriverStation.isAutonomous()) {
+            mode = "Autonomous";
+        }
+        else if (DriverStation.isTest()) {
+            mode = "Test";
+        }
+        var table = NetworkTableInstance.getDefault().getTable("Driver Station");
+        table.getEntry("DS Mode").setString(mode);
+        table.getEntry("Robot Enabled").setBoolean(DriverStation.isEnabled());
+        table.getEntry("Match Time").setDouble(DriverStation.getMatchTime());
+        table.getEntry("is FMS Attached").setBoolean(DriverStation.isFMSAttached());
     }
 
-    public static void logCommandInterrupts() {
-        // TODO: Implement
-        // CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
-        //     Command interruptingCommand = interrupter.orElseGet(Commands::none);
-        //     DataLogManager.log("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
-            // schedulerTable.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
-            // schedulerTable.getEntry("Last Interrupting Command").setString(interruptingCommand.getName());
-        // });
+    /**
+     * Logs command interrupts to NetworkTables and DataLog. Does not have to be called periodically.
+     */
+    public static void logCommandInterrupts(DataLog log) {
+        CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
+            Command interruptingCommand = interrupter.orElseGet(Commands::none);
+            var commandInterrupt = new StringLogEntry(log, "/Command Scheduler");
+            var table = NetworkTableInstance.getDefault().getTable("Command Scheduler");
+            commandInterrupt.append("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
+            table.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
+            table.getEntry("Last Interrupting Command").setString(interruptingCommand.getName());
+        });
     }
 
 }

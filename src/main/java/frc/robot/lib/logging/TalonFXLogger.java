@@ -4,7 +4,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
-import edu.wpi.first.epilogue.logging.DataLogger;
+import edu.wpi.first.epilogue.logging.EpilogueBackend;
 
 @CustomLoggerFor(TalonFX.class)
 public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
@@ -14,7 +14,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     }
 
     @Override
-    protected void update(DataLogger dataLogger, TalonFX talon) {
+    protected void update(EpilogueBackend dataLogger, TalonFX talon) {
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Control Mode", talon.getControlMode().getValue());
         dataLogger.log("Rotor Polarity", talon.getAppliedRotorPolarity().getValue());
