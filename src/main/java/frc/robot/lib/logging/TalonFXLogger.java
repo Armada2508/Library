@@ -1,4 +1,4 @@
-package frc.robot.lib.customloggers;
+package frc.robot.lib.logging;
 
 import java.util.HashMap;
 import java.util.Map;
