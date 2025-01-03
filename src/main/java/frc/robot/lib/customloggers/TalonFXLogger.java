@@ -25,6 +25,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
 
     private static Map<TalonFX, TalonFXSignals> talonFXSignals = new HashMap<>();
+    private static boolean selfRefresh = true;
 
     public TalonFXLogger() {
         super(TalonFX.class);
@@ -33,7 +34,9 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     @Override
     protected void update(EpilogueBackend dataLogger, TalonFX talon) {
         var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
-        signals.refresh();
+        if (selfRefresh) {
+            BaseStatusSignal.refreshAll(signals.allSignals());
+        }
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
         dataLogger.log("Control Mode", signals.controlMode().getValue());
@@ -51,6 +54,26 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Torque Current (A)", signals.torqueCurrent().getValueAsDouble());
         dataLogger.log("Device Temperature (C)", signals.deviceTemp().getValueAsDouble());
         dataLogger.log("Firmware Version", signals.version().getValue());
+    }
+
+    static BaseStatusSignal[] allLoggedSignals() {
+        BaseStatusSignal[] arr = new BaseStatusSignal[0];
+        int i = 0;
+        for (var signals : talonFXSignals.values()) {
+            var signalsArr = signals.allSignals();
+            if (arr.length == 0) {
+                arr = new BaseStatusSignal[signalsArr.length];
+            }
+            for (var signal : signalsArr) {
+                arr[i] = signal;
+                i++;
+            }
+        }
+        return arr;
+    }
+
+    static void disableSelfRefresh() {
+        selfRefresh = false;
     }
 
 }
@@ -92,8 +115,8 @@ record TalonFXSignals(
         );
     }
 
-    public void refresh() {
-        BaseStatusSignal.refreshAll(
+    public StatusSignal<?>[] allSignals() {
+        return new StatusSignal[]{
             controlMode,
             appliedRotorPolarity,
             forwardLimit,
@@ -109,6 +132,6 @@ record TalonFXSignals(
             torqueCurrent,
             deviceTemp,
             version
-        );
+        };
     }
 }
