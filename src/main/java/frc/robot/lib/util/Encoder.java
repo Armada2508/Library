@@ -3,9 +3,8 @@ package frc.robot.lib.util;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Rotations;
 
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 
 public class Encoder {
 
@@ -206,7 +205,7 @@ public class Encoder {
      * @param wheelDiameter The diameter of the wheel
      * @return Distance traveled by the wheel
      */
-    public static Measure<Distance> toDistance(Measure<Angle> rotations, double gearRatio, Measure<Distance> wheelDiameter) {
+    public static Distance toDistance(Angle rotations, double gearRatio, Distance wheelDiameter) {
         return Meters.of((rotations.in(Rotations) / gearRatio) * Math.PI * wheelDiameter.in(Meters));
     }
 
@@ -217,7 +216,7 @@ public class Encoder {
      * @param wheelDiameter The diameter of the wheel
      * @return Rotations of the motor shaft
      */
-    public static Measure<Angle> toRotations(Measure<Distance> distance, double gearRatio, Measure<Distance> wheelDiameter) {
+    public static Angle toRotations(Distance distance, double gearRatio, Distance wheelDiameter) {
         return Rotations.of(distance.in(Meters) / (Math.PI * wheelDiameter.in(Meters)) * gearRatio);
     }
 
