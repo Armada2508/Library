@@ -119,7 +119,7 @@ public class LogUtil {
     }
 
     /**
-     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually and returns a 
+     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually and returns a
      * Runnable which refreshes every TalonFX at once to be more performant. This should be added to the
      * periodic loop with {@code addPeriodic(LogUtil.refreshAllLoggedTalonFX(), kDefaultPeriod);}
      * @return A runnable to refresh all epilogue logged signals of a TalonFX
