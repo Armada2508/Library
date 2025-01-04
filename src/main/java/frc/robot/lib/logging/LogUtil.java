@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleSubscriber;
@@ -116,22 +114,6 @@ public class LogUtil {
             table.getEntry("Last Interrupted Command").setString(interruptedCommand.getName());
             table.getEntry("Last Interrupting Command").setString(interruptingCommand.getName());
         });
-    }
-
-    /**
-     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually and returns a
-     * Runnable which refreshes every TalonFX at once to be more performant. This should be added to the
-     * periodic loop with {@code addPeriodic(LogUtil.refreshAllLoggedTalonFX(), kDefaultPeriod);}
-     * @return A runnable to refresh all epilogue logged signals of a TalonFX
-     */
-    public static Runnable refreshAllLoggedTalonFX() {
-        TalonFXLogger.disableSelfRefresh();
-        return () -> {
-            var signals = TalonFXLogger.allLoggedSignals();
-            if (signals.length != 0) {
-                BaseStatusSignal.refreshAll(signals);
-            }
-        };
     }
 
 }

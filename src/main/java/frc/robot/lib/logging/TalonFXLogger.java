@@ -76,6 +76,22 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         selfRefresh = false;
     }
 
+    /**
+     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually and returns a
+     * Runnable which refreshes every TalonFX at once to be more performant. This should be added to the
+     * periodic loop with {@code addPeriodic(LogUtil.refreshAllLoggedTalonFX(), kDefaultPeriod);}
+     * @return A runnable to refresh all epilogue logged signals of a TalonFX
+     */
+    public static Runnable refreshAllLoggedTalonFX() {
+        disableSelfRefresh();
+        return () -> {
+            var signals = allLoggedSignals();
+            if (signals.length != 0) {
+                BaseStatusSignal.refreshAll(signals);
+            }
+        };
+    }
+
 }
 
 record TalonFXSignals(
