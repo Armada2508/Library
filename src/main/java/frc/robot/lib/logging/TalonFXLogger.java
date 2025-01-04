@@ -1,6 +1,8 @@
 package frc.robot.lib.logging;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -35,7 +37,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     protected void update(EpilogueBackend dataLogger, TalonFX talon) {
         var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
         if (selfRefresh) {
-            BaseStatusSignal.refreshAll(signals.allSignals());
+            BaseStatusSignal.refreshAll((BaseStatusSignal[]) signals.allSignals().toArray());
         }
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
@@ -56,26 +58,6 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Firmware Version", signals.version().getValue());
     }
 
-    static BaseStatusSignal[] allLoggedSignals() {
-        BaseStatusSignal[] arr = new BaseStatusSignal[0];
-        int i = 0;
-        for (var signals : talonFXSignals.values()) {
-            var signalsArr = signals.allSignals();
-            if (arr.length == 0) {
-                arr = new BaseStatusSignal[signalsArr.length];
-            }
-            for (var signal : signalsArr) {
-                arr[i] = signal;
-                i++;
-            }
-        }
-        return arr;
-    }
-
-    static void disableSelfRefresh() {
-        selfRefresh = false;
-    }
-
     /**
      * Disables the TalonFXLogger from automatically refreshing each TalonFX individually and returns a
      * Runnable which refreshes every TalonFX at once to be more performant. This should be added to the
@@ -83,11 +65,12 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
      * @return A runnable to refresh all epilogue logged signals of a TalonFX
      */
     public static Runnable refreshAllLoggedTalonFX() {
-        disableSelfRefresh();
+        selfRefresh = false;
         return () -> {
-            var signals = allLoggedSignals();
-            if (signals.length != 0) {
-                BaseStatusSignal.refreshAll(signals);
+            List<BaseStatusSignal> signals = new ArrayList<>();
+            talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals()));
+            if (signals.size() > 0) {
+                BaseStatusSignal.refreshAll((BaseStatusSignal[]) signals.toArray());
             }
         };
     }
@@ -131,8 +114,8 @@ record TalonFXSignals(
         );
     }
 
-    public StatusSignal<?>[] allSignals() {
-        return new StatusSignal[]{
+    public List<BaseStatusSignal> allSignals() {
+        return List.of(
             controlMode,
             appliedRotorPolarity,
             forwardLimit,
@@ -148,6 +131,6 @@ record TalonFXSignals(
             torqueCurrent,
             deviceTemp,
             version
-        };
+        );
     }
 }
