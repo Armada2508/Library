@@ -37,7 +37,8 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     protected void update(EpilogueBackend dataLogger, TalonFX talon) {
         var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
         if (selfRefresh) {
-            BaseStatusSignal.refreshAll((BaseStatusSignal[]) signals.allSignals().toArray());
+            var all = signals.allSignals();
+            BaseStatusSignal.refreshAll(all.toArray(new BaseStatusSignal[all.size()]));
         }
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
@@ -70,7 +71,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
             List<BaseStatusSignal> signals = new ArrayList<>();
             talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals()));
             if (signals.size() > 0) {
-                BaseStatusSignal.refreshAll((BaseStatusSignal[]) signals.toArray());
+                BaseStatusSignal.refreshAll(signals.toArray(new BaseStatusSignal[signals.size()]));
             }
         };
     }
@@ -115,6 +116,17 @@ record TalonFXSignals(
     }
 
     public List<BaseStatusSignal> allSignals() {
+        // List<BaseStatusSignal> allSignals = new ArrayList<>();
+        // for (var comp : getClass().getRecordComponents()) {
+        //     try {
+        //         Method method = getClass().getDeclaredMethod(comp.getName());
+        //         var signal = method.invoke(this);
+        //         allSignals.add((BaseStatusSignal) signal);
+        //     } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        //         e.printStackTrace();
+        //     }
+        // }
+        // return allSignals;
         return List.of(
             controlMode,
             appliedRotorPolarity,
