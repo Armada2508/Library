@@ -66,9 +66,10 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
      * @return A runnable to refresh all epilogue logged signals of a TalonFX
      */
     public static Runnable refreshAllLoggedTalonFX() {
+        // TODO take in a robot and do the configuration
         selfRefresh = false;
         return () -> {
-            List<BaseStatusSignal> signals = new ArrayList<>();
+            List<BaseStatusSignal> signals = new ArrayList<>(); // cache this
             talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals()));
             if (signals.size() > 0) {
                 BaseStatusSignal.refreshAll(signals.toArray(new BaseStatusSignal[signals.size()]));
@@ -116,6 +117,7 @@ record TalonFXSignals(
     }
 
     public List<BaseStatusSignal> allSignals() {
+        // TODO Use reflection and cache the list by making this a normal class ? Don't need to do that in the constructor.., could do everything in the constructor
         // List<BaseStatusSignal> allSignals = new ArrayList<>();
         // for (var comp : getClass().getRecordComponents()) {
         //     try {
