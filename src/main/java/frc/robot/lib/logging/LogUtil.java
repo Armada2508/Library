@@ -13,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -81,25 +82,28 @@ public class LogUtil {
     }
 
     /**
-     * Logs Driver Station data to NetworkTables. Has to be called periodically.
+     * Logs Driver Station data to NetworkTables. Adds a periodic callback to the given robot.
+     * @param robot The robot to add the callback to
      * Should try to get some of these into DriverStation's FMSInfo or DS datalog
      */
-    public static void logDriverStation() {
-        String mode = "Unknown";
-        if (DriverStation.isTeleop()) {
-            mode = "Teleop";
-        }
-        else if (DriverStation.isAutonomous()) {
-            mode = "Autonomous";
-        }
-        else if (DriverStation.isTest()) {
-            mode = "Test";
-        }
-        var table = NetworkTableInstance.getDefault().getTable("Driver Station");
-        table.getEntry("DS Mode").setString(mode);
-        table.getEntry("Robot Enabled").setBoolean(DriverStation.isEnabled());
-        table.getEntry("Match Time").setDouble(DriverStation.getMatchTime());
-        table.getEntry("is FMS Attached").setBoolean(DriverStation.isFMSAttached());
+    public static void logDriverStation(TimedRobot robot) {
+        robot.addPeriodic(() -> {
+            String mode = "Unknown";
+            if (DriverStation.isTeleop()) {
+                mode = "Teleop";
+            }
+            else if (DriverStation.isAutonomous()) {
+                mode = "Autonomous";
+            }
+            else if (DriverStation.isTest()) {
+                mode = "Test";
+            }
+            var table = NetworkTableInstance.getDefault().getTable("Driver Station");
+            table.getEntry("DS Mode").setString(mode);
+            table.getEntry("Robot Enabled").setBoolean(DriverStation.isEnabled());
+            table.getEntry("Match Time").setDouble(DriverStation.getMatchTime());
+            table.getEntry("is FMS Attached").setBoolean(DriverStation.isFMSAttached());
+        }, TimedRobot.kDefaultPeriod);
     }
 
     /**

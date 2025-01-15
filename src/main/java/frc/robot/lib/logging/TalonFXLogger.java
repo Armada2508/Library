@@ -21,7 +21,9 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.TimedRobot;
 
 @CustomLoggerFor(TalonFX.class)
 public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
@@ -60,21 +62,21 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     }
 
     /**
-     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually and returns a
-     * Runnable which refreshes every TalonFX at once to be more performant. This should be added to the
-     * periodic loop with {@code addPeriodic(LogUtil.refreshAllLoggedTalonFX(), kDefaultPeriod);}
-     * @return A runnable to refresh all epilogue logged signals of a TalonFX
+     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually refreshes them all at once
+     * periodically determined by the period and offset provided.
+     * @param robot The robot to add the callback to
+     * @param period The rate at which the TalonFXs should be refreshed
+     * @param offset The offset from the main loop at which this refresh should occur
      */
-    public static Runnable refreshAllLoggedTalonFX() {
-        // TODO take in a robot and do the configuration
+    public static void refreshAllLoggedTalonFX(TimedRobot robot, Time period, Time offset) {
         selfRefresh = false;
-        return () -> {
+        robot.addPeriodic(() -> {
             List<BaseStatusSignal> signals = new ArrayList<>(); // cache this
             talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals()));
             if (signals.size() > 0) {
                 BaseStatusSignal.refreshAll(signals.toArray(new BaseStatusSignal[signals.size()]));
             }
-        };
+        }, period, offset);
     }
 
 }
