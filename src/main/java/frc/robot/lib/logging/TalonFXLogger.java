@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
 
     private static Map<TalonFX, TalonFXSignals> talonFXSignals = new HashMap<>();
-    private static boolean selfRefresh = true;
 
     public TalonFXLogger() {
         super(TalonFX.class);
@@ -38,10 +37,6 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     @Override
     protected void update(EpilogueBackend dataLogger, TalonFX talon) {
         var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
-        if (selfRefresh) {
-            var all = signals.allSignals;
-            BaseStatusSignal.refreshAll(all.toArray(new BaseStatusSignal[all.size()]));
-        }
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
         dataLogger.log("Control Mode", signals.controlMode.getValue());
@@ -62,14 +57,13 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     }
 
     /**
-     * Disables the TalonFXLogger from automatically refreshing each TalonFX individually refreshes them all at once
-     * periodically determined by the period and offset provided.
+     * This must be called for your TalonFXs to be logged properly.
+     * Refreshes all of the TalonFX at once, periodically determined by the period and offset provided.
      * @param robot The robot to add the callback to
      * @param period The rate at which the TalonFXs should be refreshed
      * @param offset The offset from the main loop at which this refresh should occur
      */
     public static void refreshAllLoggedTalonFX(TimedRobot robot, Time period, Time offset) {
-        selfRefresh = false;
         robot.addPeriodic(() -> {
             List<BaseStatusSignal> signals = new ArrayList<>(); // cache this
             talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals));
