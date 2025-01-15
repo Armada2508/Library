@@ -3,7 +3,6 @@ package frc.robot.lib.util;
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.MathUtil;
 
-//! We might move this class into 2508lib, change around in constants if so
 
 /**
 * A class that limits the rate of change of an input value. Can have different rate limits for 
