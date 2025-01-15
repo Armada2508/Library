@@ -1,9 +1,6 @@
 package frc.robot.lib.util;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -230,17 +227,7 @@ public class Util {
         return new Pair<Double,Double>(x, y);
     }
 
-    @SafeVarargs
-    public static <T, U> Map<T, U> mergeMaps(Map<T, U>... mapsToMerge) {
-        Objects.requireNonNull(mapsToMerge);
-        Map<T, U> mergedMap = new HashMap<>();
-        for (Map<T, U> map : mapsToMerge) {
-            mergedMap.putAll(map);
-        }
-        return mergedMap;
-    }
-
-    public static void factoryResetTalons(TalonFX... talons) {
+    public static void factoryReset(TalonFX... talons) {
         for (TalonFX talon : talons) {
             talon.getConfigurator().apply(new TalonFXConfiguration());
         }
