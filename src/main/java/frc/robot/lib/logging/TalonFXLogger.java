@@ -39,26 +39,26 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     protected void update(EpilogueBackend dataLogger, TalonFX talon) {
         var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
         if (selfRefresh) {
-            var all = signals.allSignals();
+            var all = signals.allSignals;
             BaseStatusSignal.refreshAll(all.toArray(new BaseStatusSignal[all.size()]));
         }
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
-        dataLogger.log("Control Mode", signals.controlMode().getValue());
-        dataLogger.log("Rotor Polarity", signals.appliedRotorPolarity().getValue());
-        dataLogger.log("Fwd Limit Switch", signals.forwardLimit().getValue());
-        dataLogger.log("Rev Limit Switch", signals.reverseLimit().getValue());
-        dataLogger.log("Position (Rots)", signals.position().getValueAsDouble());
-        dataLogger.log("Velocity (Rots\\s)", signals.velocity().getValueAsDouble());
-        dataLogger.log("Acceleration (Rots\\s^2)", signals.acceleration().getValueAsDouble());
-        dataLogger.log("Closed Loop Reference", signals.closedLoopReference().getValueAsDouble());
-        dataLogger.log("Closed Loop Slot", signals.closedLoopSlot().getValue());
-        dataLogger.log("Supply Voltage (V)", signals.supplyVoltage().getValueAsDouble());
-        dataLogger.log("Motor Voltage (V)", signals.motorVoltage().getValueAsDouble());
-        dataLogger.log("Supply Current (A)", signals.supplyCurrent().getValueAsDouble());
-        dataLogger.log("Torque Current (A)", signals.torqueCurrent().getValueAsDouble());
-        dataLogger.log("Device Temperature (C)", signals.deviceTemp().getValueAsDouble());
-        dataLogger.log("Firmware Version", signals.version().getValue());
+        dataLogger.log("Control Mode", signals.controlMode.getValue());
+        dataLogger.log("Rotor Polarity", signals.appliedRotorPolarity.getValue());
+        dataLogger.log("Fwd Limit Switch", signals.forwardLimit.getValue());
+        dataLogger.log("Rev Limit Switch", signals.reverseLimit.getValue());
+        dataLogger.log("Position (Rots)", signals.position.getValueAsDouble());
+        dataLogger.log("Velocity (Rots\\s)", signals.velocity.getValueAsDouble());
+        dataLogger.log("Acceleration (Rots\\s^2)", signals.acceleration.getValueAsDouble());
+        dataLogger.log("Closed Loop Reference", signals.closedLoopReference.getValueAsDouble());
+        dataLogger.log("Closed Loop Slot", signals.closedLoopSlot.getValue());
+        dataLogger.log("Supply Voltage (V)", signals.supplyVoltage.getValueAsDouble());
+        dataLogger.log("Motor Voltage (V)", signals.motorVoltage.getValueAsDouble());
+        dataLogger.log("Supply Current (A)", signals.supplyCurrent.getValueAsDouble());
+        dataLogger.log("Torque Current (A)", signals.torqueCurrent.getValueAsDouble());
+        dataLogger.log("Device Temperature (C)", signals.deviceTemp.getValueAsDouble());
+        dataLogger.log("Firmware Version", signals.version.getValue());
     }
 
     /**
@@ -72,7 +72,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         selfRefresh = false;
         robot.addPeriodic(() -> {
             List<BaseStatusSignal> signals = new ArrayList<>(); // cache this
-            talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals()));
+            talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals));
             if (signals.size() > 0) {
                 BaseStatusSignal.refreshAll(signals.toArray(new BaseStatusSignal[signals.size()]));
             }
@@ -81,57 +81,42 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
 
 }
 
-record TalonFXSignals(
-    StatusSignal<ControlModeValue> controlMode,
-    StatusSignal<AppliedRotorPolarityValue> appliedRotorPolarity,
-    StatusSignal<ForwardLimitValue> forwardLimit,
-    StatusSignal<ReverseLimitValue> reverseLimit,
-    StatusSignal<Angle> position,
-    StatusSignal<AngularVelocity> velocity,
-    StatusSignal<AngularAcceleration> acceleration,
-    StatusSignal<Double> closedLoopReference,
-    StatusSignal<Integer> closedLoopSlot,
-    StatusSignal<Voltage> supplyVoltage,
-    StatusSignal<Voltage> motorVoltage,
-    StatusSignal<Current> supplyCurrent,
-    StatusSignal<Current> torqueCurrent,
-    StatusSignal<Temperature> deviceTemp,
-    StatusSignal<Integer> version
-){
-    public TalonFXSignals(TalonFX talon) {
-        this(
-            talon.getControlMode(),
-            talon.getAppliedRotorPolarity(),
-            talon.getForwardLimit(),
-            talon.getReverseLimit(),
-            talon.getPosition(),
-            talon.getVelocity(),
-            talon.getAcceleration(),
-            talon.getClosedLoopReference(),
-            talon.getClosedLoopSlot(),
-            talon.getSupplyVoltage(),
-            talon.getMotorVoltage(),
-            talon.getSupplyCurrent(),
-            talon.getTorqueCurrent(),
-            talon.getDeviceTemp(),
-            talon.getVersion()
-        );
-    }
+class TalonFXSignals {
+    
+    public final StatusSignal<ControlModeValue> controlMode;
+    public final StatusSignal<AppliedRotorPolarityValue> appliedRotorPolarity;
+    public final StatusSignal<ForwardLimitValue> forwardLimit;
+    public final StatusSignal<ReverseLimitValue> reverseLimit;
+    public final StatusSignal<Angle> position;
+    public final StatusSignal<AngularVelocity> velocity;
+    public final StatusSignal<AngularAcceleration> acceleration;
+    public final StatusSignal<Double> closedLoopReference;
+    public final StatusSignal<Integer> closedLoopSlot;
+    public final StatusSignal<Voltage> supplyVoltage;
+    public final StatusSignal<Voltage> motorVoltage;
+    public final StatusSignal<Current> supplyCurrent;
+    public final StatusSignal<Current> torqueCurrent;
+    public final StatusSignal<Temperature> deviceTemp;
+    public final StatusSignal<Integer> version;
+    public final List<BaseStatusSignal> allSignals;
 
-    public List<BaseStatusSignal> allSignals() {
-        // TODO Use reflection and cache the list by making this a normal class ? Don't need to do that in the constructor.., could do everything in the constructor
-        // List<BaseStatusSignal> allSignals = new ArrayList<>();
-        // for (var comp : getClass().getRecordComponents()) {
-        //     try {
-        //         Method method = getClass().getDeclaredMethod(comp.getName());
-        //         var signal = method.invoke(this);
-        //         allSignals.add((BaseStatusSignal) signal);
-        //     } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-        //         e.printStackTrace();
-        //     }
-        // }
-        // return allSignals;
-        return List.of(
+    public TalonFXSignals(TalonFX talon) {
+        this.controlMode = talon.getControlMode();
+        this.appliedRotorPolarity = talon.getAppliedRotorPolarity();
+        this.forwardLimit = talon.getForwardLimit();
+        this.reverseLimit = talon.getReverseLimit();
+        this.position = talon.getPosition();
+        this.velocity = talon.getVelocity();
+        this.acceleration = talon.getAcceleration();
+        this.closedLoopReference = talon.getClosedLoopReference();
+        this.closedLoopSlot = talon.getClosedLoopSlot();
+        this.supplyVoltage = talon.getSupplyVoltage();
+        this.motorVoltage = talon.getMotorVoltage();
+        this.supplyCurrent = talon.getSupplyCurrent();
+        this.torqueCurrent = talon.getTorqueCurrent();
+        this.deviceTemp = talon.getDeviceTemp();
+        this.version = talon.getVersion();
+        allSignals = List.of(
             controlMode,
             appliedRotorPolarity,
             forwardLimit,
@@ -149,4 +134,5 @@ record TalonFXSignals(
             version
         );
     }
+
 }
