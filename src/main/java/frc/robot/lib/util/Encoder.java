@@ -210,6 +210,16 @@ public class Encoder {
     }
 
     /**
+     * Converts an angular measurement to a linear measurement
+     * @param rotations The number of rotations
+     * @param wheelDiameter The Diameter of the wheel
+     * @return Distance traveled by the wheel
+     */
+    public static Distance toDistance(Angle rotations, Distance wheelDiameter) {
+        return toDistance(rotations, 1, wheelDiameter);
+    }
+
+    /**
      * Converts distance traveled by a wheel to rotations of a motor shaft.
      * @param distance The distance traveled
      * @param gearRatio The ratio between rotations of the output shaft and rotations of the wheel, e.g. 10.71:1
@@ -218,6 +228,16 @@ public class Encoder {
      */
     public static Angle toRotations(Distance distance, double gearRatio, Distance wheelDiameter) {
         return Rotations.of(distance.in(Meters) / (Math.PI * wheelDiameter.in(Meters)) * gearRatio);
+    }
+
+    /**
+     * Converts a linear measurement to an angular measurement
+     * @param distance The distance traveled
+     * @param wheelDiameter The diameter of the wheel
+     * @return Rotations of the motor shaft
+     */
+    public static Angle toRotations(Distance distance, Distance wheelDiameter) {
+        return toRotations(distance, 1, wheelDiameter);
     }
 
 }
