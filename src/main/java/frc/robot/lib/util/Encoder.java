@@ -215,7 +215,7 @@ public class Encoder {
      * @param wheelDiameter The Diameter of the wheel
      * @return Distance traveled by the wheel
      */
-    public static Distance toDistance(Angle rotations, Distance wheelDiameter) {
+    public static Distance angularToLinear(Angle rotations, Distance wheelDiameter) {
         return toDistance(rotations, 1, wheelDiameter);
     }
 
@@ -236,7 +236,7 @@ public class Encoder {
      * @param wheelDiameter The diameter of the wheel
      * @return Rotations of the motor shaft
      */
-    public static Angle toRotations(Distance distance, Distance wheelDiameter) {
+    public static Angle linearToAngular(Distance distance, Distance wheelDiameter) {
         return toRotations(distance, 1, wheelDiameter);
     }
 
