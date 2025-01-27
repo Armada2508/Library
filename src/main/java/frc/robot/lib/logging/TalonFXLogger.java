@@ -39,6 +39,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
+        dataLogger.log("Connected", talon.isConnected());
         dataLogger.log("Control Mode", signals.controlMode.getValue());
         dataLogger.log("Rotor Polarity", signals.appliedRotorPolarity.getValue());
         dataLogger.log("Fwd Limit Switch", signals.forwardLimit.getValue());
