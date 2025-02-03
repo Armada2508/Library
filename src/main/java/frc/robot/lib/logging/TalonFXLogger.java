@@ -1,34 +1,22 @@
 package frc.robot.lib.logging;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AppliedRotorPolarityValue;
-import com.ctre.phoenix6.signals.ControlModeValue;
-import com.ctre.phoenix6.signals.ForwardLimitValue;
-import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
 import edu.wpi.first.epilogue.logging.EpilogueBackend;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 @CustomLoggerFor(TalonFX.class)
 public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
 
-    private static Map<TalonFX, TalonFXSignals> talonFXSignals = new HashMap<>();
+    private static List<BaseStatusSignal> allSignals = new ArrayList<>();
+    private static List<TalonFX> trackedTalons = new ArrayList<>();
 
     public TalonFXLogger() {
         super(TalonFX.class);
@@ -36,25 +24,28 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
 
     @Override
     protected void update(EpilogueBackend dataLogger, TalonFX talon) {
-        var signals = talonFXSignals.computeIfAbsent(talon, TalonFXSignals::new);
+        if (!trackedTalons.contains(talon)) {
+            addTalonSignals(talon);
+            trackedTalons.add(talon);
+        }
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
         dataLogger.log("Connected", talon.isConnected());
-        dataLogger.log("Control Mode", signals.controlMode.getValue());
-        dataLogger.log("Rotor Polarity", signals.appliedRotorPolarity.getValue());
-        dataLogger.log("Fwd Limit Switch", signals.forwardLimit.getValue());
-        dataLogger.log("Rev Limit Switch", signals.reverseLimit.getValue());
-        dataLogger.log("Position (Rots)", signals.position.getValueAsDouble());
-        dataLogger.log("Velocity (Rots\\s)", signals.velocity.getValueAsDouble());
-        dataLogger.log("Acceleration (Rots\\s^2)", signals.acceleration.getValueAsDouble());
-        dataLogger.log("Closed Loop Reference", signals.closedLoopReference.getValueAsDouble());
-        dataLogger.log("Closed Loop Slot", signals.closedLoopSlot.getValue());
-        dataLogger.log("Supply Voltage (V)", signals.supplyVoltage.getValueAsDouble());
-        dataLogger.log("Motor Voltage (V)", signals.motorVoltage.getValueAsDouble());
-        dataLogger.log("Supply Current (A)", signals.supplyCurrent.getValueAsDouble());
-        dataLogger.log("Torque Current (A)", signals.torqueCurrent.getValueAsDouble());
-        dataLogger.log("Device Temperature (C)", signals.deviceTemp.getValueAsDouble());
-        dataLogger.log("Firmware Version", signals.version.getValue());
+        dataLogger.log("Control Mode", talon.getControlMode(false).getValue());
+        dataLogger.log("Rotor Polarity", talon.getAppliedRotorPolarity(false).getValue());
+        dataLogger.log("Fwd Limit Switch", talon.getForwardLimit(false).getValue());
+        dataLogger.log("Rev Limit Switch", talon.getReverseLimit(false).getValue());
+        dataLogger.log("Position (Rots)", talon.getPosition(false).getValueAsDouble());
+        dataLogger.log("Velocity (Rots\\s)", talon.getVelocity(false).getValueAsDouble());
+        dataLogger.log("Acceleration (Rots\\s^2)", talon.getAcceleration(false).getValueAsDouble());
+        dataLogger.log("Closed Loop Reference", talon.getClosedLoopReference(false).getValueAsDouble());
+        dataLogger.log("Closed Loop Slot", talon.getClosedLoopSlot(false).getValue());
+        dataLogger.log("Supply Voltage (V)", talon.getSupplyVoltage(false).getValueAsDouble());
+        dataLogger.log("Motor Voltage (V)", talon.getMotorVoltage(false).getValueAsDouble());
+        dataLogger.log("Supply Current (A)", talon.getSupplyCurrent(false).getValueAsDouble());
+        dataLogger.log("Torque Current (A)", talon.getTorqueCurrent(false).getValueAsDouble());
+        dataLogger.log("Device Temperature (C)", talon.getDeviceTemp(false).getValueAsDouble());
+        dataLogger.log("Firmware Version", talon.getVersion(false).getValue());
     }
 
     /**
@@ -66,68 +57,34 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
      */
     public static void refreshAllLoggedTalonFX(TimedRobot robot, Time period, Time offset) {
         robot.addPeriodic(() -> {
-            List<BaseStatusSignal> signals = new ArrayList<>(); // cache this
-            talonFXSignals.values().forEach(s -> signals.addAll(s.allSignals));
-            if (signals.size() > 0) {
-                BaseStatusSignal.refreshAll(signals.toArray(new BaseStatusSignal[signals.size()]));
+            if (allSignals.size() > 0) {
+                BaseStatusSignal.refreshAll(allSignals.toArray(new BaseStatusSignal[allSignals.size()]));
             }
         }, period, offset);
     }
 
-}
-
-class TalonFXSignals {
-    
-    public final StatusSignal<ControlModeValue> controlMode;
-    public final StatusSignal<AppliedRotorPolarityValue> appliedRotorPolarity;
-    public final StatusSignal<ForwardLimitValue> forwardLimit;
-    public final StatusSignal<ReverseLimitValue> reverseLimit;
-    public final StatusSignal<Angle> position;
-    public final StatusSignal<AngularVelocity> velocity;
-    public final StatusSignal<AngularAcceleration> acceleration;
-    public final StatusSignal<Double> closedLoopReference;
-    public final StatusSignal<Integer> closedLoopSlot;
-    public final StatusSignal<Voltage> supplyVoltage;
-    public final StatusSignal<Voltage> motorVoltage;
-    public final StatusSignal<Current> supplyCurrent;
-    public final StatusSignal<Current> torqueCurrent;
-    public final StatusSignal<Temperature> deviceTemp;
-    public final StatusSignal<Integer> version;
-    public final List<BaseStatusSignal> allSignals;
-
-    public TalonFXSignals(TalonFX talon) {
-        this.controlMode = talon.getControlMode();
-        this.appliedRotorPolarity = talon.getAppliedRotorPolarity();
-        this.forwardLimit = talon.getForwardLimit();
-        this.reverseLimit = talon.getReverseLimit();
-        this.position = talon.getPosition();
-        this.velocity = talon.getVelocity();
-        this.acceleration = talon.getAcceleration();
-        this.closedLoopReference = talon.getClosedLoopReference();
-        this.closedLoopSlot = talon.getClosedLoopSlot();
-        this.supplyVoltage = talon.getSupplyVoltage();
-        this.motorVoltage = talon.getMotorVoltage();
-        this.supplyCurrent = talon.getSupplyCurrent();
-        this.torqueCurrent = talon.getTorqueCurrent();
-        this.deviceTemp = talon.getDeviceTemp();
-        this.version = talon.getVersion();
-        allSignals = List.of(
-            controlMode,
-            appliedRotorPolarity,
-            forwardLimit,
-            reverseLimit,
-            position,
-            velocity,
-            acceleration,
-            closedLoopReference,
-            closedLoopSlot,
-            supplyVoltage,
-            motorVoltage,
-            supplyCurrent,
-            torqueCurrent,
-            deviceTemp,
-            version
-        );
+    /**
+     * Adds a talon's signals to be refreshed on a periodic loop since this logger doesn't refresh signals when directly logging them
+     */
+    private static void addTalonSignals(TalonFX talon) {
+        allSignals.addAll(List.of(
+            talon.getControlMode(),
+            talon.getAppliedRotorPolarity(),
+            talon.getForwardLimit(),
+            talon.getReverseLimit(),
+            talon.getPosition(),
+            talon.getVelocity(),
+            talon.getAcceleration(),
+            talon.getClosedLoopReference(),
+            talon.getClosedLoopSlot(),
+            talon.getSupplyVoltage(),
+            talon.getMotorVoltage(),
+            talon.getSupplyCurrent(),
+            talon.getTorqueCurrent(),
+            talon.getDeviceTemp(),
+            talon.getVersion()
+        ));
     }
 
 }
+
