@@ -39,6 +39,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Velocity (Rots\\s)", talon.getVelocity(false).getValueAsDouble());
         dataLogger.log("Acceleration (Rots\\s^2)", talon.getAcceleration(false).getValueAsDouble());
         dataLogger.log("Closed Loop Reference", talon.getClosedLoopReference(false).getValueAsDouble());
+        dataLogger.log("Closed Loop Reference Slope", talon.getClosedLoopReferenceSlope(false).getValueAsDouble());
         dataLogger.log("Closed Loop Slot", talon.getClosedLoopSlot(false).getValue());
         dataLogger.log("Supply Voltage (V)", talon.getSupplyVoltage(false).getValueAsDouble());
         dataLogger.log("Motor Voltage (V)", talon.getMotorVoltage(false).getValueAsDouble());
@@ -76,6 +77,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
             talon.getVelocity(),
             talon.getAcceleration(),
             talon.getClosedLoopReference(),
+            talon.getClosedLoopReferenceSlope(),
             talon.getClosedLoopSlot(),
             talon.getSupplyVoltage(),
             talon.getMotorVoltage(),
