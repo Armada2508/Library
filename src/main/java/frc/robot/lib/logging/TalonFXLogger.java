@@ -35,6 +35,8 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Rotor Polarity", talon.getAppliedRotorPolarity(false).getValue());
         dataLogger.log("Fwd Limit Switch", talon.getForwardLimit(false).getValue());
         dataLogger.log("Rev Limit Switch", talon.getReverseLimit(false).getValue());
+        dataLogger.log("Fwd Soft Limit Switch", talon.getFault_ForwardSoftLimit(false).getValue());
+        dataLogger.log("Rev Soft Limit Switch", talon.getFault_ReverseSoftLimit(false).getValue());
         dataLogger.log("Position (Rots)", talon.getPosition(false).getValueAsDouble());
         dataLogger.log("Velocity (Rots\\s)", talon.getVelocity(false).getValueAsDouble());
         dataLogger.log("Acceleration (Rots\\s^2)", talon.getAcceleration(false).getValueAsDouble());
@@ -73,6 +75,8 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
             talon.getAppliedRotorPolarity(),
             talon.getForwardLimit(),
             talon.getReverseLimit(),
+            talon.getFault_ForwardSoftLimit(),
+            talon.getFault_ReverseSoftLimit(),
             talon.getPosition(),
             talon.getVelocity(),
             talon.getAcceleration(),
