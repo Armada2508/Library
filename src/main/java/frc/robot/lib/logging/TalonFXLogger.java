@@ -31,6 +31,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
         dataLogger.log("Device ID", talon.getDeviceID());
         dataLogger.log("Has Reset Occurred", talon.hasResetOccurred());
         dataLogger.log("Connected", talon.isConnected());
+        dataLogger.log("Bridge Output", talon.getBridgeOutput(false).getValue());
         dataLogger.log("Control Mode", talon.getControlMode(false).getValue());
         dataLogger.log("Rotor Polarity", talon.getAppliedRotorPolarity(false).getValue());
         dataLogger.log("Fwd Limit Switch", talon.getForwardLimit(false).getValue());
@@ -71,6 +72,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
      */
     private static void addTalonSignals(TalonFX talon) {
         allSignals.addAll(List.of(
+            talon.getBridgeOutput(),
             talon.getControlMode(),
             talon.getAppliedRotorPolarity(),
             talon.getForwardLimit(),
