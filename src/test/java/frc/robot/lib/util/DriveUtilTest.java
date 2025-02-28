@@ -18,12 +18,24 @@ public class DriveUtilTest {
     }
 
     @Test
-    void testSquareInput() {
-        assertEquals(0.25, DriveUtil.squareInput(0.5), EPSILON);
-        assertEquals(-0.25, DriveUtil.squareInput(-0.5), EPSILON);
-        assertEquals(1, DriveUtil.squareInput(1), EPSILON);
-        assertEquals(0, DriveUtil.squareInput(0), EPSILON);
-        assertEquals(-1, DriveUtil.squareInput(-1), EPSILON);
+    void testSquareKeepSign() {
+        assertEquals(0.25, DriveUtil.squareKeepSign(0.5), EPSILON);
+        assertEquals(-0.25, DriveUtil.squareKeepSign(-0.5), EPSILON);
+        assertEquals(1, DriveUtil.squareKeepSign(1), EPSILON);
+        assertEquals(0, DriveUtil.squareKeepSign(0), EPSILON);
+        assertEquals(-1, DriveUtil.squareKeepSign(-1), EPSILON);
+    }
+
+    @Test
+    void testPowKeepSign() {
+        assertEquals(1, DriveUtil.powKeepSign(0.5, 0), EPSILON);
+        assertEquals(-0.5, DriveUtil.powKeepSign(-0.5, 1), EPSILON);
+        assertEquals(9, DriveUtil.powKeepSign(3, 2), EPSILON);
+        assertEquals(-8, DriveUtil.powKeepSign(-2, 3), EPSILON);
+        assertEquals(-0.125, DriveUtil.powKeepSign(-0.25, 1.5), EPSILON);
+        assertEquals(-3, DriveUtil.powKeepSign(-9, 0.5), EPSILON);
+        assertEquals(2.065, DriveUtil.powKeepSign(1.25, 3.25), EPSILON);
+        assertEquals(-0.806, DriveUtil.powKeepSign(-0.75, 0.75), EPSILON);
     }
 
     @Test
