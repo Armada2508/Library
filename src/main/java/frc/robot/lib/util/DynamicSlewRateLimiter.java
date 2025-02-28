@@ -1,5 +1,7 @@
 package frc.robot.lib.util;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.MathUtil;
 
@@ -10,8 +12,9 @@ import edu.wpi.first.math.MathUtil;
 * controlling something like robot acceleration and deceleration.
 */
 public class DynamicSlewRateLimiter {
-    private final double increasingRateLimit;
-    private final double decreasingRateLimit;
+
+    private final DoubleSupplier increasingRateLimit;
+    private final DoubleSupplier decreasingRateLimit;
     private double prevVal;
     private double prevTime;
     
@@ -24,14 +27,28 @@ public class DynamicSlewRateLimiter {
     * @param decreasingRateLimit The rate-of-change limit when the input is decreasing, in units per
     *     second. This is expected to be positive. How quickly the input can get closer to zero.
     */
-    public DynamicSlewRateLimiter(double increasingRateLimit, double decreasingRateLimit) {
-        if (increasingRateLimit < 0 || decreasingRateLimit < 0) {
-            throw new IllegalArgumentException("Rate limits can't be negative!");
-        }
+    public DynamicSlewRateLimiter(DoubleSupplier increasingRateLimit, DoubleSupplier decreasingRateLimit) {
         this.increasingRateLimit = increasingRateLimit;
         this.decreasingRateLimit = decreasingRateLimit;
         prevVal = 0;
         prevTime = MathSharedStore.getTimestamp();
+    }
+
+    /**
+    * Creates a new DynamicSlewRateLimiter with the given increasing and decreasing rate limits.
+    * Increasing is how fast the input can get farther from zero, Decreasing is how fast the input can get closer to zero.
+    * The rate limits are only magnitudes.
+    * @param increasingRateLimit The rate-of-change limit when the input is increasing, in units per
+    *     second. This is expected to be positive. How quickly the input can get farther from zero.
+    * @param decreasingRateLimit The rate-of-change limit when the input is decreasing, in units per
+    *     second. This is expected to be positive. How quickly the input can get closer to zero.
+    */
+    public DynamicSlewRateLimiter(double increasingRateLimit, double decreasingRateLimit) {
+        this(() -> increasingRateLimit, () -> decreasingRateLimit);
+        if (increasingRateLimit < 0 || decreasingRateLimit < 0) {
+            throw new IllegalArgumentException("Rate limits can't be negative! Increasing: "
+            + increasingRateLimit + ", Decreasing: " + decreasingRateLimit);
+        }
     }
     
     /**
@@ -44,12 +61,20 @@ public class DynamicSlewRateLimiter {
         double currentTime = MathSharedStore.getTimestamp();
         double elapsedTime = currentTime - prevTime;
         double sign = Math.signum(prevVal);
-        double positiveRateLimit = increasingRateLimit;
-        double negativeRateLimit = decreasingRateLimit;
+
+        double increasing = increasingRateLimit.getAsDouble();
+        double decreasing = decreasingRateLimit.getAsDouble();
+        if (increasing < 0 || decreasing < 0) { // Maybe not great to throw here but it fundamentally breaks the class
+            throw new IllegalArgumentException("Rate limits can't be negative! Increasing: "
+            + increasing + ", Decreasing: " + decreasing);
+        }
+
+        double positiveRateLimit = increasing;
+        double negativeRateLimit = decreasing;
         // Flip the positive and negative limits so that decreasing still means towards zero and increasing still means away.
         if (sign < 0) { 
-            positiveRateLimit = decreasingRateLimit;
-            negativeRateLimit = increasingRateLimit;
+            positiveRateLimit = decreasing;
+            negativeRateLimit = increasing;
         } 
         prevVal +=
         MathUtil.clamp(

@@ -35,6 +35,7 @@ public class DriveUtil {
 
     /**
      * Squares a value and retains its original sign.
+     * @param x value to square
      */
     public static double squareKeepSign(double x) {
         return powKeepSign(x, 2);
@@ -42,6 +43,8 @@ public class DriveUtil {
 
     /**
      * Raises a value to a power and retains its original sign.
+     * @param x value to raise to a power
+     * @param exponent exponent of the power function
      */
     public static double powKeepSign(double x, double exponent) {
         return Math.copySign(Math.pow(Math.abs(x), exponent), x);
