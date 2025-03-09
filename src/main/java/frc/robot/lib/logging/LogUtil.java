@@ -106,12 +106,13 @@ public class LogUtil {
         }, TimedRobot.kDefaultPeriod);
     }
 
+    private static final Command noInterrupter = Commands.none().withName("No Interrupter");
     /**
      * Logs command interrupts to NetworkTables and DataLog. Does not have to be called periodically.
      */
     public static void logCommandInterrupts(DataLog log) {
         CommandScheduler.getInstance().onCommandInterrupt((interruptedCommand, interrupter) -> {
-            Command interruptingCommand = interrupter.orElseGet(Commands::none);
+            Command interruptingCommand = interrupter.orElse(noInterrupter);
             var commandInterrupt = new StringLogEntry(log, "/Command Scheduler");
             var table = NetworkTableInstance.getDefault().getTable("Command Scheduler");
             commandInterrupt.append("Command: " + interruptedCommand.getName() + " was interrupted by " + interruptingCommand.getName() + ".");
