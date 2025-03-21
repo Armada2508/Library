@@ -157,55 +157,13 @@ public class Encoder {
     }
 
     /**
-     * Converts sensor units to an angle in degrees
-     * @param sensorPosition The current value read from the sensor
-     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
-     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
-     * @return Angle in degrees
-     */
-    public static double toAngle(double sensorPosition, double encoderUnitsPerRev, double gearRatio) {
-        return sensorPosition * (degreesPerRotation / encoderUnitsPerRev) / gearRatio;
-    }
-
-    /**
-     * Converts rotations to an angle in degrees for the TalonFX
-     * @param rotations The current value read from the sensor
-     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
-     * @return Angle in degrees
-     */
-    public static double toAngle(double rotations, double gearRatio) {
-        return toAngle(rotations, 1, gearRatio);
-    }
-
-    /**
-     * Converts an angle in degrees to sensor units
-     * @param sensorPosition The current value read from the sensor
-     * @param encoderUnitsPerRev The number of encoder units sensed per revolution of the output shaft of the gearbox
-     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
-     * @return Angle in encoder units
-     */
-    public static double fromAngle(double angleDegrees, double encoderUnitsPerRev, double gearRatio) {
-        return angleDegrees * (encoderUnitsPerRev / degreesPerRotation) * gearRatio;
-    }
-
-    /**
-     * Converts an angle in degrees to rotations for the TalonFX
-     * @param sensorPosition The current value read from the sensor
-     * @param gearRatio The ratio of gearing from the output shaft of the gearbox to the wheel
-     * @return Angle in rotations
-     */
-    public static double fromAngle(double angleDegrees, double gearRatio) {
-        return fromAngle(angleDegrees, 1, gearRatio);
-    }
-
-    /**
      * Converts rotations of a motor shaft to distance traveled of a wheel.
      * @param rotations The number of rotations
      * @param gearRatio The ratio between rotations of the output shaft and rotations of the wheel, e.g. 10.71:1
      * @param wheelDiameter The diameter of the wheel
      * @return Distance traveled by the wheel
      */
-    public static Distance toDistance(Angle rotations, double gearRatio, Distance wheelDiameter) {
+    public static Distance angularToLinear(Angle rotations, double gearRatio, Distance wheelDiameter) {
         return Meters.of((rotations.in(Rotations) / gearRatio) * Math.PI * wheelDiameter.in(Meters));
     }
 
@@ -216,7 +174,7 @@ public class Encoder {
      * @return Distance traveled by the wheel
      */
     public static Distance angularToLinear(Angle rotations, Distance wheelDiameter) {
-        return toDistance(rotations, 1, wheelDiameter);
+        return angularToLinear(rotations, 1, wheelDiameter);
     }
 
     /**
@@ -226,7 +184,7 @@ public class Encoder {
      * @param wheelDiameter The diameter of the wheel
      * @return Rotations of the motor shaft
      */
-    public static Angle toRotations(Distance distance, double gearRatio, Distance wheelDiameter) {
+    public static Angle linearToAngular(Distance distance, double gearRatio, Distance wheelDiameter) {
         return Rotations.of(distance.in(Meters) / (Math.PI * wheelDiameter.in(Meters)) * gearRatio);
     }
 
@@ -237,7 +195,7 @@ public class Encoder {
      * @return Rotations of the motor shaft
      */
     public static Angle linearToAngular(Distance distance, Distance wheelDiameter) {
-        return toRotations(distance, 1, wheelDiameter);
+        return linearToAngular(distance, 1, wheelDiameter);
     }
 
 }

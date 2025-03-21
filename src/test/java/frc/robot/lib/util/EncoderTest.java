@@ -17,19 +17,19 @@ public class EncoderTest {
         var rotations = Rotations.of(3);
         double gearRatio = 1;
         var wheelDiameter = Meters.of(2);
-        var result = Encoder.toDistance(rotations, gearRatio, wheelDiameter);
+        var result = Encoder.angularToLinear(rotations, gearRatio, wheelDiameter);
         assertEquals(18.85, result.in(Meters), EPSILON);
         gearRatio = 10.71;
-        result = Encoder.toDistance(rotations, gearRatio, wheelDiameter);
+        result = Encoder.angularToLinear(rotations, gearRatio, wheelDiameter);
         assertEquals(1.76, result.in(Meters), EPSILON);
         rotations = Rotations.of(10);
         wheelDiameter = Inches.of(6);
-        result = Encoder.toDistance(rotations, gearRatio, wheelDiameter);
+        result = Encoder.angularToLinear(rotations, gearRatio, wheelDiameter);
         assertEquals(0.447, result.in(Meters), EPSILON);
         rotations = Degrees.of(90);
         gearRatio = 2;
         wheelDiameter = Inches.of(18);
-        result = Encoder.toDistance(rotations, gearRatio, wheelDiameter);
+        result = Encoder.angularToLinear(rotations, gearRatio, wheelDiameter);
         assertEquals(0.179, result.in(Meters), EPSILON);
     }
 
@@ -38,17 +38,17 @@ public class EncoderTest {
         var distance = Meters.of(3);
         double gearRatio = 1;
         var wheelDiameter = Meters.of(2);
-        var result = Encoder.toRotations(distance, gearRatio, wheelDiameter);
+        var result = Encoder.linearToAngular(distance, gearRatio, wheelDiameter);
         assertEquals(0.477, result.in(Rotations), EPSILON);
         distance = Feet.of(8);
         gearRatio = 12.75;
         wheelDiameter = Meters.of(3);
-        result = Encoder.toRotations(distance, gearRatio, wheelDiameter);
+        result = Encoder.linearToAngular(distance, gearRatio, wheelDiameter);
         assertEquals(3.298, result.in(Rotations), EPSILON);
         distance = Meters.of(5.5);
         gearRatio = 6;
         wheelDiameter = Inches.of(3);
-        result = Encoder.toRotations(distance, gearRatio, wheelDiameter);
+        result = Encoder.linearToAngular(distance, gearRatio, wheelDiameter);
         assertEquals(137.85, result.in(Rotations), EPSILON);
     }
 
