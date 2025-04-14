@@ -33,18 +33,28 @@ git submodule add -b master https://github.com/Armada2508/Library library
 ```
 Of course if you want to track commits from a different branch then replace master with a branch of your choice.
 
-Add `implementation ':library'` to your dependencies block in build.gradle. <br>
-Add `includeBuild 'library'` to the end of your settings.gradle.
+Add this block to your build.gradle.
+```groovy
+sourceSets {
+    main {
+        java {
+            srcDirs 'library/src/main/java/'
+        }
+    }
+    test {
+        java {
+            srcDirs 'library/src/test/java'
+        }
+    }
+}
+```
+Add `ignoreFailures = true` to the test block in your build.gradle. Otherwise failing tests could stop a build/deploy.
 
 Make sure source and target compatibility in build.gradle match that of the library, right now it's Java 17. <br>
 Make sure GradleRIO version matches. <br>
 Make sure you have all vendor deps installed for the library to work and that they're all up to date. Currently only CTRE Phoenix 6. <br>
 
-#### Tests
-If you want the tests within the library to be checked/ran when you build the project you must add this to your test block in the build.gradle.
-```
-dependsOn gradle.includedBuilds*.task(":test")
-```
+
 **Important** - I would run `./gradlew build` before continuing. <br>
 ### Updating your submodules
 If you're at the root directory and you want to update the commit that the submodule points to on the branch specified in .gitmodules. (Pull from upstream)<br>
